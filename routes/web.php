@@ -11,7 +11,9 @@ use App\Http\Controllers\SellerController;
 use Illuminate\Support\Facades\Route;
 
 // Public routes
-Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/', function () {
+    return redirect()->route('login');
+})->name('home');
 Route::get('/menus', [MenuController::class, 'index'])->name('menus.index');
 Route::get('/menus/{menu}', [MenuController::class, 'show'])->name('menus.show');
 Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
@@ -49,7 +51,7 @@ Route::middleware('auth')->group(function () {
     // Seller routes
     Route::middleware('role:seller')->prefix('seller')->name('seller.')->group(function () {
         Route::get('/dashboard', [SellerController::class, 'dashboard'])->name('dashboard');
-        
+
         // Products management
         Route::get('/products', [ProductController::class, 'index'])->name('products.index');
         Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
@@ -57,7 +59,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
         Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
         Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
-        
+
         // Menus management
         Route::get('/menus', [SellerController::class, 'menuIndex'])->name('menus.index');
         Route::get('/menus/create', [MenuController::class, 'create'])->name('menus.create');
@@ -65,7 +67,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/menus/{menu}/edit', [MenuController::class, 'edit'])->name('menus.edit');
         Route::put('/menus/{menu}', [MenuController::class, 'update'])->name('menus.update');
         Route::delete('/menus/{menu}', [MenuController::class, 'destroy'])->name('menus.destroy');
-        
+
         // Orders management
         Route::get('/orders', [OrderController::class, 'sellerIndex'])->name('orders.index');
         Route::put('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
