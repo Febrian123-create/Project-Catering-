@@ -75,20 +75,16 @@ class User extends Authenticatable
         return $this->role === 'buyer';
     }
 
-    public function isSeller(): bool
+    public function isSeller()
     {
-        return $this->role === 'seller';
+        // Allow Admin to access Seller features (Dashboard)
+        return strtolower($this->role) === 'seller' || strtolower($this->role) === 'admin';
     }
 
-    // Generate ID
-    public static function generateUserId(): string
+    public function isAdmin()
     {
-        // Format: USR000000001
-        $last = self::orderBy('user_id', 'desc')->first();
-        if ($last) {
-            $num = (int) substr($last->user_id, 3);
-            return 'USR' . str_pad($num + 1, 9, '0', STR_PAD_LEFT);
-        }
-        return 'USR000000001';
+        return strtolower($this->role) === 'admin';
     }
+
+
 }

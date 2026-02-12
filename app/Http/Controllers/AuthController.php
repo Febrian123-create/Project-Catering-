@@ -53,7 +53,7 @@ class AuthController extends Controller
         $otp = rand(1000, 9999);
 
         $user = new User();
-        $user->user_id = User::generateUserId();
+
         $user->nama = $validated['nama'];
         $user->username = $validated['username'];
         $user->kontak = $validated['kontak']; // Langsung ambil dari validated

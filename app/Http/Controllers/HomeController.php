@@ -10,7 +10,7 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $menus = Menu::with('products')
+        $menus = Menu::with('product')
             ->where('tgl_tersedia', '>=', now()->toDateString())
             ->orderBy('tgl_tersedia')
             ->take(6)

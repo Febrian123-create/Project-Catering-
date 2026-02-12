@@ -8,7 +8,11 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\SellerController;
+use App\Http\Controllers\PaymentController;
 use Illuminate\Support\Facades\Route;
+
+// Midtrans Notification (Webhook)
+Route::post('/payment/notification', [PaymentController::class, 'notification'])->name('midtrans.notification');
 
 // Public routes
 // Route untuk nampilin halaman input OTP
@@ -54,9 +58,19 @@ Route::middleware('auth')->group(function () {
     Route::put('/reviews/{review}', [ReviewController::class, 'update'])->name('reviews.update');
     Route::delete('/reviews/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
 
+    // Notifications
+    Route::get('/notifications', [App\Http\Controllers\NotificationController::class, 'index'])->name('notifications.index');
+    Route::put('/notifications/{id}/read', [App\Http\Controllers\NotificationController::class, 'markAsRead'])->name('notifications.read');
+
+    // Requests
+    Route::get('/requests', [App\Http\Controllers\RequestController::class, 'index'])->name('requests.index');
+    Route::get('/requests/create', [App\Http\Controllers\RequestController::class, 'create'])->name('requests.create');
+    Route::post('/requests', [App\Http\Controllers\RequestController::class, 'store'])->name('requests.store');
+
     // Seller routes
     Route::middleware('role:seller')->prefix('seller')->name('seller.')->group(function () {
         Route::get('/dashboard', [SellerController::class, 'dashboard'])->name('dashboard');
+
 
         // Products management
         Route::get('/products', [ProductController::class, 'index'])->name('products.index');

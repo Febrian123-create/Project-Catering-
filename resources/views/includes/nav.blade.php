@@ -11,8 +11,16 @@
                 <a href="{{ url('/') }}" class="{{ Request::is('/') ? 'active' : '' }}">home</a>
                 <a href="{{ route('menus.index') }}" class="{{ Request::is('menus*') ? 'active' : '' }}">menus</a>
                 <a href="{{ route('cart.index') }}" class="{{ Request::is('cart*') ? 'active' : '' }}">cart</a>
-                <a href="{{ route('history.index') }}" class="{{ Request::is('history*') ? 'active' : '' }}">history</a>
-                <a href="{{ route('profile') }}" class="{{ Request::is('profile*') ? 'active' : '' }}">profile</a>
+                <a href="{{ route('orders.index') }}" class="{{ Request::is('orders*') ? 'active' : '' }}">buku pesanan</a>
+                <a href="{{ route('requests.index') }}" class="{{ Request::is('requests*') ? 'active' : '' }}">request</a>
+                <a href="{{ route('notifications.index') }}" class="{{ Request::is('notifications*') ? 'active' : '' }}">notifikasi</a>
+                
+                @if(Auth::user()->isSeller())
+                    <a href="{{ route('seller.dashboard') }}" class="{{ Request::is('seller*') ? 'fw-bold text-primary' : '' }}">Statistik (Admin)</a>
+                @endif
+
+                {{-- <a href="{{ route('profile') }}" class="{{ Request::is('profile*') ? 'active' : '' }}">profile</a> --}}
+                <a href="#" class="">profile</a>
 
                 <a href="{{ route('logout') }}"
                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();"

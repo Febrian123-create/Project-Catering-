@@ -1,7 +1,29 @@
 :root {
-    --bg-krem: #fff9e6;
-    --primary-orange: #fa6255;
-    --text-brown: #61593d;
+    /* Fanhua Palette */
+    --fh-yellow: #fdcb46;
+    --fh-red: #fa6255;
+    --fh-green: #a6d17d;
+    --fh-blue: #91bef8;
+    --fh-purple: #e1c7ec;
+    --fh-cream: #fff9e6;
+
+    /* System Colors */
+    --bg-white: #fff9e6;
+    --text-black: #121212;
+
+    /* Legacy Mappings (adapted) */
+    --bg-krem: var(--bg-white);
+    /* Main background is now white as requested */
+    --primary-orange: var(--fh-red);
+    /* Keep primary action as Red */
+    --text-brown: var(--text-black);
+    /* Text is now Black */
+
+    /* Additional Utility Colors */
+    --accent-yellow: var(--fh-yellow);
+    --accent-green: var(--fh-green);
+    --accent-blue: var(--fh-blue);
+    --accent-purple: var(--fh-purple);
 }
 
 * {
@@ -12,7 +34,8 @@
 }
 
 body {
-    background-color: var(--bg-krem);
+    background-color: var(--bg-white);
+    color: var(--text-black);
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -139,7 +162,7 @@ main.container.auth-page {
 }
 
 .form-section h1 {
-    color: var(--primary-orange);
+    color: var(--text-black);
     font-weight: 800;
     margin-bottom: 30px;
     letter-spacing: -2px;
@@ -185,9 +208,10 @@ main.container.auth-page {
     box-shadow: 0 3px 0 #d9534f;
 }
 
-.signup-container .illustration-section img{
+.signup-container .illustration-section img {
     max-width: 450px;
-    width: 100%;}
+    width: 100%;
+}
 
 .input-row {
     display: flex;
@@ -254,9 +278,11 @@ main.container.auth-page {
     .navbar-main {
         padding: 20px 30px;
     }
+
     .navbar-main .nav-links {
         gap: 15px;
     }
+
     .navbar-main .nav-links a {
         font-size: 14px;
     }
