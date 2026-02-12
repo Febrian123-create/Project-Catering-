@@ -18,6 +18,30 @@ body {
     flex-direction: column;
 }
 
+main .container {
+    display: block;
+    flex: none;
+    padding: 20px;
+}
+
+main.container.auth-page {
+    display: flex;
+    flex: 1;
+    min-height: 80vh;
+}
+
+.hero-section {
+    padding: 60px 0;
+    text-align: left;
+}
+
+.hero-section h1 {
+    line-height: 1;
+    margin-bottom: 20px;
+}
+
+
+
 .navbar {
     display: flex;
     justify-content: space-between;
@@ -67,7 +91,6 @@ body {
     text-decoration: none;
     color: var(--primary-orange);
     font-weight: 600;
-    font-size: 18px;
     transition: 0.3s;
     opacity: 0.7;
 }
@@ -91,6 +114,8 @@ body {
     background-color: #e5564a;
     transform: scale(1.05);
 }
+
+
 
 .container {
     display: flex;

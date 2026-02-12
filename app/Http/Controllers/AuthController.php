@@ -24,10 +24,10 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
-            if (Auth::user()->isSeller()) {
-                return redirect()->intended(route('seller.dashboard'));
+            if (Auth::user()->role === 'seller' || Auth::user()->role === 'admin') {
+                return redirect()->intended('/admin/dashboard'); // Sesuaikan URL dashboard kamu
             }
-            return redirect()->intended(route('home'));
+            return redirect()->route('home');
         }
 
         return back()->withErrors([

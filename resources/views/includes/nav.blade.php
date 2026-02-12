@@ -1,22 +1,28 @@
-<nav class="navbar">
-    {{-- Ganti link ke route home --}}
-    <a class="brand" href="{{ route('home') }}">namanya apaya</a>
+<nav class="navbar-main">
+    <div class="nav-container">
+        <a href="/" class="brand">dosinyam</a>
 
-    <div class="nav-links">
-        {{-- Logika otomatis: jika belum login, tampilkan tombol login/register --}}
-        @guest
-            @if(Route::currentRouteName() == 'login')
-                <a href="{{ route('register') }}" class="btn-nav-auth">Sign Up</a>
-            @else
-                <a href="{{ route('login') }}" class="btn-nav-auth">Sign In</a>
-            @endif
-        @else
-            {{-- Jika sudah login, tampilkan nama user --}}
-            <span class="text-white me-3">Halo, {{ Auth::user()->nama }}</span>
-            <form action="{{ route('logout') }}" method="POST" class="d-inline">
-                @csrf
-                <button type="submit" class="btn-nav-auth border-0">Logout</button>
-            </form>
-        @endguest
+        <div class="nav-links">
+            @guest
+                <a href="{{ route('register') }}" class="{{ Request::is('register') ? 'active' : '' }}">Sign Up</a>
+            @endguest
+
+            @auth
+                <a href="{{ url('/') }}" class="{{ Request::is('/') ? 'active' : '' }}">home</a>
+                <a href="{{ route('menus.index') }}" class="{{ Request::is('menus*') ? 'active' : '' }}">menus</a>
+                <a href="{{ route('cart.index') }}" class="{{ Request::is('cart*') ? 'active' : '' }}">cart</a>
+                <a href="{{ route('history.index') }}" class="{{ Request::is('history*') ? 'active' : '' }}">history</a>
+                <a href="{{ route('profile') }}" class="{{ Request::is('profile*') ? 'active' : '' }}">profile</a>
+
+                <a href="{{ route('logout') }}"
+                   onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+                   style="color: var(--primary-orange); font-weight: 800; margin-left: 20px;">
+                    logout
+                </a>
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                    @csrf
+                </form>
+            @endauth
+        </div>
     </div>
 </nav>

@@ -19,9 +19,7 @@ Route::get('/verify-otp', function() {
 // Route untuk memproses angka OTP yang diketik user
 Route::post('/verify-otp', [App\Http\Controllers\AuthController::class, 'verifyOtp'])->name('otp.verify.process');
 
-Route::get('/', function () {
-    return redirect()->route('login');
-})->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/menus', [MenuController::class, 'index'])->name('menus.index');
 Route::get('/menus/{menu}', [MenuController::class, 'show'])->name('menus.show');
 Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
