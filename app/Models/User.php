@@ -16,12 +16,39 @@ class User extends Authenticatable
     protected $keyType = 'string';
     public $timestamps = false;
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            // Cari user terakhir yang ID-nya punya format 'B-'
+            $lastUser = self::where('user_id', 'LIKE', 'B-%')
+                ->orderBy('user_id', 'desc')
+                ->first();
+
+            if (!$lastUser) {
+                // Kalau benar-benar kosong, mulai dari B-001
+                $model->user_id = 'B-001';
+            } else {
+                // Ambil angka setelah 'B-' (substr mulai dari indeks ke-2)
+                // Contoh: 'B-001' -> ambil '001', lalu jadikan integer (1)
+                $lastNumber = (int) substr($lastUser->user_id, 2);
+
+                // Tambah 1 dan kasih nol di depan (pad) biar tetap 3 digit
+                $newNumber = str_pad($lastNumber + 1, 3, '0', STR_PAD_LEFT);
+
+                // Gabungkan jadi B-002, B-003, dst.
+                $model->user_id = 'B-' . $newNumber;
+            }
+        });
+    }
     protected $fillable = [
-        'user_id',
         'nama',
         'kontak',
         'alamat_default',
         'username',
+        'otp_code',
+        'is_verified',
         'role',
         'password',
     ];

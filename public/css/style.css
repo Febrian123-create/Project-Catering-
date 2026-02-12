@@ -109,6 +109,8 @@ body {
 .form-section {
     width: 100%;
     max-width: 600px;
+    border-radius: 20px !important;
+    overflow: hidden;
 }
 
 .form-section h1 {

@@ -6,11 +6,20 @@
     <main class="container signup-container">
         <div class="form-section">
             <h1>Sign Up</h1>
-
-            <form action="sign-up-logic.php" method="POST">
+            @if ($errors->any())
+                <div style="color: red; background: #ffe6e6; padding: 10px; margin-bottom: 10px;">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+            <form action="{{ route('register.process') }}" method="POST">
+                @csrf
                 <div class="input-group">
                     <label>Name</label>
-                    <input type="text" name="name" placeholder="Full Name" required>
+                    <input type="text" name="nama" placeholder="Full Name" required>
                 </div>
 
                 <div class="input-row">
@@ -20,13 +29,13 @@
                     </div>
                     <div class="input-group">
                         <label>Contact</label>
-                        <input type="text" name="contact" placeholder="Phone number" required>
+                        <input type="text" name="kontak" placeholder="Phone number" required>
                     </div>
                 </div>
 
                 <div class="input-group">
                     <label>Address</label>
-                    <textarea name="address" placeholder="Address" rows="3" required></textarea>
+                    <textarea name="alamat_default" placeholder="Address" rows="3" required></textarea>
                 </div>
 
                 <div class="input-group">
@@ -36,10 +45,10 @@
 
                 <div class="input-group">
                     <label>Confirm Password</label>
-                    <input type="password" name="confirm_password" placeholder="Confirm password" required>
+                    <input type="password" name="password_confirmation" placeholder="Confirm password" required>
                 </div>
 
-                <button type="submit" class="btn-signin">Sign Up</button>
+                <button type="submit" class="btn-signin">Sign Up & Send OTP code</button>
             </form>
 
             <p class="footer-text">Already have account? <a href="{{ route('login') }}">Sign In</a></p>

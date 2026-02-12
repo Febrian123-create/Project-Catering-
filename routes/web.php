@@ -11,6 +11,14 @@ use App\Http\Controllers\SellerController;
 use Illuminate\Support\Facades\Route;
 
 // Public routes
+// Route untuk nampilin halaman input OTP
+Route::get('/verify-otp', function() {
+    return view('auth.verify-otp');
+})->name('otp.view');
+
+// Route untuk memproses angka OTP yang diketik user
+Route::post('/verify-otp', [App\Http\Controllers\AuthController::class, 'verifyOtp'])->name('otp.verify.process');
+
 Route::get('/', function () {
     return redirect()->route('login');
 })->name('home');
@@ -23,7 +31,7 @@ Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
     Route::post('/login', [AuthController::class, 'login']);
     Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
-    Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/register', [AuthController::class, 'register'])->name('register.process');
 });
 
 // Authenticated routes
