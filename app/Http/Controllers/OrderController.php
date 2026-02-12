@@ -101,7 +101,13 @@ class OrderController extends Controller
 
         $order->load('orderDetails.menu.product', 'user');
 
-        return view('orders.show', compact('order'));
+        $snapToken = null;
+        if ($order->status_pembayaran === 'pending') {
+            $midtrans = new \App\Services\MidtransService();
+            $snapToken = $midtrans->getSnapToken($order);
+        }
+
+        return view('orders.show', compact('order', 'snapToken'));
     }
 
     // Seller methods
