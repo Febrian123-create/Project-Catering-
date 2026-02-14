@@ -3,44 +3,7 @@
 @section('title', 'Detail Pesanan #' . $order->order_id)
 
 @push('styles')
-<style>
-    .order-header-card {
-        border: none;
-        border-radius: 24px;
-        background: white;
-        padding: 30px;
-    }
-    .payment-card {
-        border: none;
-        border-radius: 24px;
-        background: #fff9e6;
-        padding: 25px;
-    }
-    .item-card {
-        border: none;
-        border-radius: 15px;
-        background: #f8f9fa;
-        margin-bottom: 15px;
-        transition: all 0.3s ease;
-    }
-    .item-card:hover { border-left: 5px solid var(--fh-blue); }
-    
-    .rating-btn {
-        border-radius: 12px;
-        font-weight: 600;
-        transition: all 0.2s ease;
-    }
-    .rating-btn:hover { background: var(--fh-yellow); color: black !important; border-color: var(--fh-yellow); }
-    
-    .btn-pay {
-        background: var(--fh-green);
-        border: none;
-        border-radius: 15px;
-        padding: 15px;
-        font-weight: 700;
-        color: white;
-    }
-</style>
+    <link rel="stylesheet" href="{{ asset('css/orders.css') }}">
 @endpush
 
 @section('content')

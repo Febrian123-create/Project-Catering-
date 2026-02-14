@@ -3,52 +3,7 @@
 @section('title', 'Request Menu Baru')
 
 @push('styles')
-<style>
-    .request-card {
-        border: none;
-        border-radius: 24px;
-        background: white;
-    }
-    .form-label {
-        font-weight: 700;
-        color: var(--text-black);
-        margin-bottom: 8px;
-    }
-    .form-control {
-        border-radius: 12px;
-        border: 2px solid #eee;
-        padding: 12px 18px;
-        transition: all 0.3s ease;
-    }
-    .form-control:focus {
-        border-color: var(--fh-blue);
-        box-shadow: none;
-    }
-    .input-group-text {
-        background: #f8f9fa;
-        border: 2px solid #eee;
-        border-right: none;
-        border-radius: 12px 0 0 12px;
-        color: var(--fh-blue);
-    }
-    .form-control-with-icon {
-        border-left: none;
-        border-radius: 0 12px 12px 0;
-    }
-    .btn-send {
-        background: var(--fh-blue);
-        border: none;
-        border-radius: 15px;
-        padding: 15px;
-        font-weight: 800;
-        transition: all 0.3s ease;
-    }
-    .btn-send:hover {
-        background: #3e9ae8;
-        transform: translateY(-2px);
-        box-shadow: 0 10px 20px rgba(52, 152, 219, 0.2);
-    }
-</style>
+    <link rel="stylesheet" href="{{ asset('css/requests.css') }}">
 @endpush
 
 @section('content')

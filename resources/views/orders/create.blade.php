@@ -3,54 +3,7 @@
 @section('title', 'Checkout')
 
 @push('styles')
-<style>
-    .checkout-card {
-        border: none;
-        border-radius: 24px;
-        background: white;
-    }
-    .form-label {
-        font-weight: 700;
-        color: var(--text-black);
-        margin-bottom: 10px;
-    }
-    .form-control {
-        border-radius: 12px;
-        border: 2px solid #eee;
-        padding: 12px 18px;
-        transition: all 0.3s ease;
-    }
-    .form-control:focus {
-        border-color: var(--fh-blue);
-        box-shadow: none;
-    }
-    .item-row {
-        padding: 15px 0;
-        border-bottom: 1px solid #f8f9fa;
-    }
-    .item-row:last-child {
-        border-bottom: none;
-    }
-    .summary-box {
-        background: #f8f9fa;
-        border-radius: 20px;
-        padding: 20px;
-    }
-    .btn-order {
-        background: var(--fh-red);
-        border: none;
-        border-radius: 15px;
-        padding: 18px;
-        font-weight: 800;
-        font-size: 1.1rem;
-        transition: all 0.3s ease;
-    }
-    .btn-order:hover {
-        background: #e5564a;
-        transform: translateY(-2px);
-        box-shadow: 0 10px 20px rgba(250, 98, 85, 0.2);
-    }
-</style>
+    <link rel="stylesheet" href="{{ asset('css/orders.css') }}">
 @endpush
 
 @section('content')

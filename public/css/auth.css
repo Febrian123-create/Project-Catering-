@@ -1,0 +1,188 @@
+/* Registration Page Styles */
+body.register-page {
+    background-color: #FFF9E1;
+    /* Light cream background from reference */
+    font-family: 'Outfit', 'Inter', sans-serif;
+    overflow-x: hidden;
+}
+
+.signup-page-container {
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 40px 80px;
+}
+
+/* Reset some layout.app defaults if they interfere */
+.register-page #main-content,
+.register-page .container.py-4 {
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* Header matching reference */
+.signup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.brand-logo {
+    color: #FF7361;
+    font-size: 2rem;
+    font-weight: 900;
+    text-decoration: none !important;
+}
+
+.header-links a {
+    color: #FF7361;
+    font-weight: 700;
+    font-size: 1.2rem;
+    margin-left: 30px;
+    text-decoration: none !important;
+}
+
+.signup-content-wrapper {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.signup-main-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    width: 100%;
+    max-width: 1200px;
+    align-items: center;
+}
+
+.form-section {
+    max-width: 500px;
+}
+
+.illustration-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.illustration-section img {
+    width: 100%;
+    max-width: 600px;
+    height: auto;
+}
+
+.signup-title {
+    color: #FF7361;
+    font-size: 4rem;
+    font-weight: 800;
+    margin-bottom: 40px;
+    text-align: left;
+}
+
+.form-label {
+    color: #FF7361;
+    font-weight: 700;
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.form-control {
+    background: white;
+    border: 2px solid #FF7361;
+    border-radius: 15px;
+    padding: 14px 22px;
+    color: #333;
+    font-size: 1.1rem;
+    margin-bottom: 25px;
+    width: 100%;
+}
+
+.form-control::placeholder {
+    color: #D1D1D1;
+}
+
+.input-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.btn-signup {
+    background-color: #FF7361;
+    color: white;
+    border: none;
+    border-radius: 15px;
+    padding: 16px 60px;
+    font-size: 1.4rem;
+    font-weight: 800;
+    margin-top: 15px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.btn-signup:hover {
+    background-color: #E86352;
+    transform: translateY(-2px);
+}
+
+.footer-text {
+    margin-top: 30px;
+    color: #333;
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+
+.footer-text strong {
+    color: #FF7361;
+    font-weight: 800;
+}
+
+.footer-text a {
+    text-decoration: none !important;
+}
+
+/* Login specific overrides if any */
+.login-title {
+    color: #FF7361;
+    font-size: 4rem;
+    font-weight: 800;
+    margin-bottom: 40px;
+}
+
+@media (max-width: 992px) {
+    .signup-page-container {
+        padding: 20px;
+    }
+
+    .signup-main-grid {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+
+    .signup-title {
+        text-align: center;
+        font-size: 3rem;
+    }
+
+    .form-section {
+        margin: 0 auto;
+    }
+
+    .input-row {
+        grid-template-columns: 1fr;
+    }
+
+    .signup-header {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
