@@ -51,6 +51,7 @@ class User extends Authenticatable
         'is_verified',
         'role',
         'password',
+        'foto',
     ];
 
     // Relationships

@@ -3,12 +3,12 @@
 @section('title', 'My Profile')
 
 @push('styles')
-    <link rel="stylesheet" href="{{ asset('css/profile.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/profile.css') }}?v={{ time() }}">
 @endpush
 
 @section('content')
 <div class="profile-container">
-    <div class="d-flex gap-4">
+    <div class="d-flex gap-5 justify-content-center align-items-stretch w-100" style="max-width: 1800px;">
         <!-- Sidebar -->
         <aside class="sidebar-pill">
             <a href="{{ route('profile.index') }}" class="sidebar-icon active" title="Profile">
@@ -55,18 +55,18 @@
                                 <input type="password" class="form-control custom-input" value="********" readonly>
                             </div>
                             <div class="mt-4">
-                                <a href="#" class="btn btn-coral-outline btn-sm rounded-pill px-3">change password</a>
+                                <a href="{{ route('profile.password') }}" class="btn btn-coral-outline btn-sm rounded-pill px-3">change password</a>
                             </div>
                         </div>
 
                         <div class="text-center mt-5">
-                            <a href="#" class="btn btn-coral btn-lg rounded-pill px-5">Edit Profile</a>
+                            <a href="{{ route('profile.edit') }}" class="btn btn-coral btn-lg rounded-pill px-5">Edit Profile</a>
                         </div>
                     </form>
                 </div>
 
                 <!-- Profile Picture -->
-                <div class="col-md-5 d-flex flex-column align-items-center justify-content-center">
+                <div class="col-md-5 d-flex flex-column align-items-center mt-5">
                     <div class="profile-image-container mb-3">
                         @if($user->foto)
                             <img src="{{ asset('storage/' . $user->foto) }}" alt="Profile" class="profile-img">

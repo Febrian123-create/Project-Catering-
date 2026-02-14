@@ -117,21 +117,30 @@ body.register-page {
 }
 
 .btn-signup {
-    background-color: #FF7361;
+    background-color: #FF6B6B;
     color: white;
     border: none;
-    border-radius: 15px;
-    padding: 16px 60px;
+    border-radius: 20px;
+    padding: 16px 40px;
     font-size: 1.4rem;
     font-weight: 800;
     margin-top: 15px;
-    transition: all 0.3s ease;
+    transition: all 0.1s ease;
     cursor: pointer;
+    box-shadow: 0 6px 0 #D9534F;
+    /* Darker red for 3D effect */
+    display: inline-block;
 }
 
 .btn-signup:hover {
-    background-color: #E86352;
+    background-color: #FF5252;
     transform: translateY(-2px);
+    box-shadow: 0 8px 0 #D9534F;
+}
+
+.btn-signup:active {
+    transform: translateY(4px);
+    box-shadow: 0 2px 0 #D9534F;
 }
 
 .footer-text {

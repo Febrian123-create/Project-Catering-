@@ -48,42 +48,135 @@ class ProfileController extends Controller
 
             $path = $request->file('profile_img')->store('photos', 'public');
             
-            // Assuming the column name is 'foto' based on previous context, 
-            // but the migration didn't show it. We might need to handle this.
-            // For now, let's assume we can save it.
-            // If the column doesn't exist, this might fail, but we'll try standard way first.
-            
-            // Note: The user migration showed: name, email, password. 
-            // It did NOT show 'foto', 'kontak', 'alamat', 'username'.
-            // The User model showed $fillable with 'kontak', 'alamat_default', 'username', 'otp_code', 'is_verified', 'role'.
-            // So 'foto' might be missing or named differently. Use 'foto' as consistent with the request.
-            
-            // Update the user model - using forceFill to bypass fillable check just in case,
-            // or we should add it to fillable. detailed check of User.php showed it wasn't in fillable.
-            // But let's check if the column exists dynamically or just use what we have.
-            // To be safe, let's use forceFill or direct assignment if we are sure.
-            // Actually, best to check if the column exists in the table first? 
-            // No, that's too much overhead. Let's assume the user will add it or it exists.
-            
-            // Wait, looking at User model again in Step 21:
-            // $fillable = ['nama', 'kontak', 'alamat_default', 'username', 'otp_code', 'is_verified', 'role', 'password'];
-            // It suggests 'nama' instead of 'name' from migration? 
-            // Step 26 migration showed 'name'.
-            // Step 21 User model uses 'user' table (protected $table = 'user';)
-            // But Migration created 'users'. 
-            // This is a discrepancy. The User model has `protected $table = 'user';`.
-            // So we should respect the User model configuration.
-            
-            $user->foto = $path; // or whatever the column is. Snippet used `fotoPelanggan` etc. 
-            // Let's use 'foto' as a generic name and standard Laravel conventions.
-            // If the user provided code used `fotoPelanggan`, we might need to adapt.
-            // The provided snippet had logic: $user['foto_profil'] which came from a select alias.
-            
+            $user->foto = $path;
             $user->save();
 
             return redirect()->back()->with('success', 'Profile photo updated successfully.');
         }
 
         return redirect()->back()->with('error', 'Failed to upload photo.');
+    }
+
+
+    public function edit()
+    {
+        $user = Auth::user();
+        return view('profile.edit', compact('user'));
+    }
+
+    public function update(Request $request)
+    {
+        $user = Auth::user();
+        
+        $request->validate([
+            'nama' => 'required|string|max:255',
+            'username' => 'required|string|max:255|unique:user,username,' . $user->user_id . ',user_id',
+            'kontak' => 'required|string|max:20',
+            'alamat_default' => 'required|string',
+        ]);
+
+        if ($user->kontak !== $request->kontak) {
+            $request->validate([
+                'kontak' => 'unique:user,kontak',
+            ]);
+
+            // Save pending data to session
+            $otp = rand(1000, 9999);
+            session([
+                'profile_pending_data' => $request->only(['nama', 'username', 'kontak', 'alamat_default']),
+                'profile_new_kontak' => $request->kontak,
+                'profile_otp' => $otp
+            ]);
+
+            // Send OTP via WhatsApp
+            $this->sendWhatsApp($request->kontak, $otp);
+
+            return redirect()->route('profile.otp.form')->with('success', 'OTP sent to your new number. Please verify.');
+        }
+
+        $user->nama = $request->nama;
+        $user->username = $request->username;
+        // $user->kontak = $request->kontak; // Kontak is updated only if unchanged, or via OTP if changed
+        $user->alamat_default = $request->alamat_default;
+        
+        $user->save();
+
+        return redirect()->route('profile.index')->with('success', 'Profile updated successfully.');
+    }
+
+    public function verifyOtpForm()
+    {
+        if (!session('profile_otp')) {
+            return redirect()->route('profile.edit');
+        }
+        return view('profile.verify-otp');
+    }
+
+    public function verifyOtpProcess(Request $request)
+    {
+        $request->validate([
+            'otp' => 'required|numeric',
+        ]);
+
+        if ($request->otp == session('profile_otp')) {
+            $user = Auth::user();
+            $data = session('profile_pending_data');
+
+            $user->nama = $data['nama'];
+            $user->username = $data['username'];
+            $user->kontak = $data['kontak'];
+            $user->alamat_default = $data['alamat_default'];
+            $user->save();
+
+            session()->forget(['profile_pending_data', 'profile_new_kontak', 'profile_otp']);
+
+            return redirect()->route('profile.index')->with('success', 'Profile updated successfully.');
+        }
+
+        return back()->withErrors(['otp' => 'Invalid OTP code.']);
+    }
+
+    private function sendWhatsApp($target, $otp)
+    {
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => 'https://api.fonnte.com/send',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => array(
+                'target' => $target,
+                'message' => "Kode OTP Bento kamu adalah: $otp. Jangan beritahu siapapun ya!",
+            ),
+            CURLOPT_HTTPHEADER => array(
+                "Authorization: " . env('FONNTE_TOKEN')
+            ),
+        ));
+        $response = curl_exec($curl);
+        curl_close($curl);
+        return $response;
+    }
+
+    public function editPassword()
+    {
+        return view('profile.password');
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => 'required',
+            'password' => 'required|min:8|confirmed',
+        ]);
+
+        $user = Auth::user();
+
+        if (!\Illuminate\Support\Facades\Hash::check($request->current_password, $user->password)) {
+            return back()->withErrors(['current_password' => 'Current password does not match.']);
+        }
+
+        $user->password = \Illuminate\Support\Facades\Hash::make($request->password);
+        $user->save();
+
+        return redirect()->route('profile.index')->with('success', 'Password updated successfully.');
     }
 }

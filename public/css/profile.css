@@ -3,19 +3,22 @@
 :root {
     --bg-krem: #FFFBF0;
     --primary-orange: #FF6B6B;
-    --input-bg: #FFC4C4; /* Light pink/peach */
+    --input-bg: #FFC4C4;
+    /* Light pink/peach */
     --text-brown: #4A4A4A;
     --sidebar-width: 80px;
 }
 
 body {
     background-color: var(--bg-krem);
-    font-family: 'Quicksand', sans-serif; /* Matching the font from app.blade.php if applicable */
+    font-family: 'Quicksand', sans-serif;
+    /* Matching the font from app.blade.php if applicable */
 }
 
 .profile-container {
     padding: 2rem;
-    min-height: calc(100vh - 100px); /* Adjust based on header/footer */
+    min-height: calc(100vh - 100px);
+    /* Adjust based on header/footer */
     display: flex;
     justify-content: center;
 }
@@ -24,15 +27,19 @@ body {
 .sidebar-pill {
     width: var(--sidebar-width);
     background: white;
-    border-radius: 50px;
+    border-radius: 60px;
     padding: 2rem 0;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 2rem;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    height: fit-content;
-    min-height: 400px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    height: auto;
+    /* Allow flex to stretch it */
+    min-height: 500px;
+    /* Minimum height */
+    justify-content: flex-start;
+    padding-top: 3rem;
 }
 
 .sidebar-icon {
@@ -48,12 +55,18 @@ body {
     text-decoration: none;
 }
 
+.sidebar-icon i {
+    font-size: 1.5rem;
+    line-height: 1;
+}
+
 .sidebar-icon:hover {
     background-color: #f8f9fa;
 }
 
 .sidebar-icon.active {
-    background-color: #FFC107; /* Yellow */
+    background-color: #FFC107;
+    /* Yellow */
     color: white;
 }
 
@@ -69,11 +82,11 @@ body {
 /* Profile Card */
 .profile-card {
     background: white;
-    border-radius: 40px;
+    border-radius: 60px;
     padding: 3rem;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-    width: 100%;
-    max-width: 900px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    width: 80%;
+    /* max-width is now handled by the container */
 }
 
 .profile-title {
@@ -91,8 +104,8 @@ body {
 .custom-input {
     background-color: var(--input-bg);
     border: none;
-    border-radius: 10px;
-    padding: 0.8rem 1rem;
+    border-radius: 15px;
+    padding: 1rem 1.2rem;
     color: var(--text-brown);
     font-weight: 500;
 }
@@ -108,6 +121,8 @@ body {
     background-color: var(--primary-orange);
     color: white;
     border: none;
+    border-radius: 30px;
+    padding: 12px 30px;
     font-weight: 600;
     transition: all 0.3s ease;
 }
@@ -136,11 +151,14 @@ body {
     border-radius: 50%;
     overflow: hidden;
     border: 5px solid white;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    position: relative;
+    flex-shrink: 0;
 }
 
 .profile-img {
-    width: 100%;
-    height: 100%;
+    width: 100% !important;
+    height: 100% !important;
     object-fit: cover;
+    display: block;
 }

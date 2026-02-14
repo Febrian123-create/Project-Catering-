@@ -124,7 +124,9 @@ class AuthController extends Controller
             $user->save();
 
             Auth::login($user); // Baru sekarang boleh login otomatis
-            return redirect()->route('home')->with('success', 'Verifikasi berhasil!');
+            $request->session()->regenerate(); // Regenerate session ID to prevent fixation
+
+            return redirect()->route('menus.index')->with('success', 'Verifikasi berhasil!');
         }
 
         return back()->withErrors(['otp_error' => 'Kode OTP salah!']);

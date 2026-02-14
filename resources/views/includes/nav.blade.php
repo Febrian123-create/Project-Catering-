@@ -24,16 +24,7 @@
                 @endif
 
                 {{-- <a href="{{ route('profile') }}" class="{{ Request::is('profile*') ? 'active' : '' }}">profile</a> --}}
-                <a href="#" class="">profile</a>
-
-                <a href="{{ route('logout') }}"
-                   onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
-                   style="color: var(--primary-orange); font-weight: 800; margin-left: 20px;">
-                    logout
-                </a>
-                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                    @csrf
-                </form>
+                <a href="{{ route('profile.index') }}" class="{{ Request::is('profile*') ? 'active' : '' }}">profile</a>
             @endauth
         </div>
     </div>
