@@ -3,54 +3,7 @@
 @section('title', 'Riwayat Request Menu')
 
 @push('styles')
-<style>
-    .request-item-card {
-        border: none;
-        border-radius: 20px;
-        transition: all 0.3s ease;
-        overflow: hidden;
-        background: white;
-    }
-    .request-item-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 15px 30px rgba(0,0,0,0.08) !important;
-    }
-    .status-badge {
-        font-size: 0.75rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        padding: 6px 14px;
-        border-radius: 50px;
-        letter-spacing: 0.5px;
-    }
-    .badge-pending { background: #fff8e1; color: #f57c00; }
-    .badge-accepted { background: #e8f5e9; color: #2e7d32; }
-    .badge-rejected { background: #ffebee; color: #c62828; }
-    
-    .menu-accent {
-        width: 4px;
-        height: 100%;
-        position: absolute;
-        left: 0;
-        top: 0;
-    }
-    .accent-pending { background: #ffa000; }
-    .accent-accepted { background: #4caf50; }
-    .accent-rejected { background: #f44336; }
-
-    .btn-create-request {
-        background: var(--fh-blue);
-        border: none;
-        border-radius: 12px;
-        padding: 10px 20px;
-        font-weight: 700;
-        transition: all 0.3s ease;
-    }
-    .btn-create-request:hover {
-        background: #3e9ae8;
-        transform: scale(1.05);
-    }
-</style>
+    <link rel="stylesheet" href="{{ asset('css/requests.css') }}">
 @endpush
 
 @section('content')

@@ -45,9 +45,11 @@ class AuthController extends Controller
         $validated = $request->validate([
             'nama' => 'required|string|max:80',
             'username' => 'required|string|max:20|unique:user',
-            'kontak' => 'required|string|max:20',
+            'kontak' => 'required|string|max:20|unique:user,kontak',
             'alamat_default' => 'nullable|string|max:150',
             'password' => 'required|string|min:8|confirmed',
+        ], [
+            'kontak.unique' => 'Nomor WhatsApp ini sudah terdaftar.',
         ]);
 
         $otp = rand(1000, 9999);
@@ -110,8 +112,11 @@ class AuthController extends Controller
             'otp_input' => 'required|numeric',
         ]);
 
-        // Cari user berdasarkan nomor kontak yang ada di session
-        $user = User::where('kontak', session('pending_user_kontak'))->first();
+        // Cari user berdasarkan nomor kontak yang ada di session DAN yang belum diverifikasi
+        $user = User::where('kontak', session('pending_user_kontak'))
+            ->where('is_verified', 0)
+            ->latest('user_id')
+            ->first();
 
         if ($user && $user->otp_code == $request->otp_input) {
             $user->is_verified = 1; // Ubah status jadi sudah verifikasi
