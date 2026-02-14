@@ -4,7 +4,11 @@
 
         <div class="nav-links">
             @guest
-                <a href="{{ route('register') }}" class="{{ Request::is('register') ? 'active' : '' }}">Sign Up</a>
+                @if(Request::is('register'))
+                    <a href="{{ route('login') }}">Sign In</a>
+                @else
+                    <a href="{{ route('register') }}" class="{{ Request::is('register') ? 'active' : '' }}">Sign Up</a>
+                @endif
             @endguest
 
             @auth
@@ -14,7 +18,7 @@
                 <a href="{{ route('orders.index') }}" class="{{ Request::is('orders*') ? 'active' : '' }}">buku pesanan</a>
                 <a href="{{ route('requests.index') }}" class="{{ Request::is('requests*') ? 'active' : '' }}">request</a>
                 <a href="{{ route('notifications.index') }}" class="{{ Request::is('notifications*') ? 'active' : '' }}">notifikasi</a>
-                
+
                 @if(Auth::user()->isSeller())
                     <a href="{{ route('seller.dashboard') }}" class="{{ Request::is('seller*') ? 'fw-bold text-primary' : '' }}">Statistik (Admin)</a>
                 @endif
