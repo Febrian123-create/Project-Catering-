@@ -5,9 +5,9 @@
         <div class="nav-links">
             @guest
                 @if(Request::is('register'))
-                    <a href="{{ route('login') }}">Sign In</a>
+                    <a href="{{ route('login') }}" class="btn-nav-auth">Sign In</a>
                 @else
-                    <a href="{{ route('register') }}" class="{{ Request::is('register') ? 'active' : '' }}">Sign Up</a>
+                    <a href="{{ route('register') }}" class="btn-nav-auth {{ Request::is('register') ? 'active' : '' }}">Sign Up</a>
                 @endif
             @endguest
 

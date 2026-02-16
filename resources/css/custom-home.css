@@ -1,0 +1,265 @@
+/* Custom Home Styles for Dosinyam */
+:root {
+    --bg-krem: #fff9e6;
+    --primary-orange: #fa6255;
+    --text-brown: #121212;
+    --accent-yellow: #fdcb46;
+    --accent-green: #a6d17d;
+    --accent-blue: #91bef8;
+    --accent-purple: #e1c7ec;
+}
+
+body {
+    background-color: var(--bg-krem);
+}
+
+/* Animations */
+@keyframes float {
+    0% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+@keyframes float-slower {
+    0% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-15px);
+    }
+
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+.floating {
+    animation: float 3s ease-in-out infinite;
+}
+
+.floating-slower {
+    animation: float-slower 4s ease-in-out infinite;
+}
+
+/* Hero Section */
+.hero-circle-container {
+    position: relative;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.main-hero-img {
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 5px solid white;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    z-index: 2;
+    position: relative;
+}
+
+.orbit-item {
+    position: absolute;
+    border-radius: 50%;
+    border: 3px solid white;
+    object-fit: cover;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    z-index: 1;
+}
+
+.orbit-1 {
+    top: 80px;
+    left: 50px;
+    width: 100px;
+    height: 100px;
+    animation-delay: 0s;
+}
+
+.orbit-2 {
+    bottom: 40px;
+    right: 60px;
+    width: 120px;
+    height: 120px;
+    animation-delay: 1s;
+}
+
+.orbit-3 {
+    top: 50%;
+    right: -20px;
+    width: 80px;
+    height: 80px;
+    animation-delay: 2s;
+}
+
+.curved-text {
+    position: absolute;
+    top: -150px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    text-align: center;
+    font-weight: bold;
+    color: var(--text-brown);
+    font-size: 1.2rem;
+    font-family: 'Quicksand', sans-serif;
+}
+
+/* Clouds Section (Dosinyam) */
+.cloud-separator-top {
+    height: 100px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%23e1c7ec' fill-opacity='0.4' d='M0,224L60,213.3C120,203,240,181,360,186.7C480,192,600,224,720,213.3C840,203,960,149,1080,138.7C1200,128,1320,160,1380,176L1440,192L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: bottom;
+    margin-bottom: -1px;
+}
+
+.cloud-content {
+    background-color: rgba(225, 199, 236, 0.4);
+    /* Accent purple transparent */
+    padding: 20px 0;
+}
+
+.cloud-separator-bottom {
+    height: 100px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%23e1c7ec' fill-opacity='0.4' d='M0,96L60,122.7C120,149,240,203,360,197.3C480,192,600,128,720,117.3C840,107,960,149,1080,170.7C1200,192,1320,192,1380,192L1440,192L1440,0L1380,0C1320,0,1200,0,1080,0C960,0,840,0,720,0C600,0,480,0,360,0C240,0,120,0,60,0L0,0Z'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: top;
+    margin-top: -1px;
+}
+
+/* Special Events / Carousel */
+.scroll-container {
+    overflow-x: auto;
+    white-space: nowrap;
+    padding: 20px 0;
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+}
+
+.scroll-container::-webkit-scrollbar {
+    display: none;
+}
+
+.menu-card {
+    display: inline-block;
+    width: 250px;
+    white-space: normal;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    margin-right: 20px;
+    vertical-align: top;
+    transition: transform 0.2s;
+    border: 1px solid var(--accent-yellow);
+}
+
+.menu-card:hover {
+    transform: translateY(-5px);
+}
+
+.menu-img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 20px 20px 0 0;
+}
+
+/* Origin Story */
+.origin-story-box {
+    background: white;
+    border-radius: 30px;
+    padding: 2rem;
+    box-shadow: 8px 8px 0px var(--accent-blue);
+    border: 2px solid var(--text-brown);
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.dosi-text {
+    font-size: 3rem;
+    color: var(--primary-orange);
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 900;
+    text-shadow: 2px 2px 0px var(--accent-yellow);
+}
+
+/* Gallery Grid */
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+}
+
+.gallery-item {
+    border-radius: 15px;
+    overflow: hidden;
+    height: 200px;
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s;
+}
+
+.gallery-item:hover img {
+    transform: scale(1.1);
+}
+
+/* Reviews */
+.review-card {
+    background: #fff0f5;
+    /* Light pinkish based on palette */
+    border-radius: 20px;
+    padding: 20px;
+    border: 2px dashed var(--accent-purple);
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.review-card::before {
+    content: '"';
+    font-size: 4rem;
+    color: var(--accent-purple);
+    position: absolute;
+    top: -20px;
+    left: 20px;
+    font-family: serif;
+    opacity: 0.5;
+}
+
+/* Stickers / Decorations */
+.sticker {
+    position: absolute;
+    z-index: 0;
+    opacity: 0.8;
+}
+
+.star-1 {
+    width: 30px;
+    top: 10%;
+    left: 5%;
+    color: var(--accent-yellow);
+}
+
+.star-2 {
+    width: 40px;
+    bottom: 15%;
+    right: 10%;
+    color: var(--accent-blue);
+}
