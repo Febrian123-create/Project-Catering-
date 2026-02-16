@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Models\OrderDetail;
+use App\Models\Notification;
 use App\Models\Cart;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -83,6 +84,14 @@ class OrderController extends Controller
             // Clear cart
             Cart::where('user_id', Auth::id())->delete();
 
+            // Notify buyer
+            Notification::create([
+                'user_id' => Auth::id(),
+                'title' => 'Pesanan Berhasil Dibuat',
+                'message' => 'Pesanan #' . $order->order_id . ' senilai Rp ' . number_format($total, 0, ',', '.') . ' berhasil dibuat. Silakan lakukan pembayaran.',
+                'is_read' => false,
+            ]);
+
             DB::commit();
 
             return redirect()->route('orders.show', $order)
@@ -128,6 +137,19 @@ class OrderController extends Controller
 
         $order->update($validated);
 
+        // Notify buyer about status change
+        $statusLabel = match($validated['status_pembayaran']) {
+            'paid' => 'Pembayaran Diterima ✅',
+            'cancelled' => 'Pesanan Dibatalkan ❌',
+            default => 'Status Diperbarui',
+        };
+        Notification::create([
+            'user_id' => $order->user_id,
+            'title' => $statusLabel,
+            'message' => 'Pesanan #' . $order->order_id . ' — ' . $statusLabel,
+            'is_read' => false,
+        ]);
+
         return redirect()->back()
             ->with('success', 'Status pesanan berhasil diupdate!');
     }
@@ -140,6 +162,22 @@ class OrderController extends Controller
         ]);
 
         $orderDetail->update($validated);
+
+        // Notify buyer about shipping update
+        $order = Order::where('order_id', $orderDetail->order_id)->first();
+        if ($order) {
+            $shippingLabel = match($validated['status_kirim']) {
+                'shipped' => 'Pesanan Dikirim 🚚',
+                'delivered' => 'Pesanan Diterima 📦',
+                default => 'Status Pengiriman Diperbarui',
+            };
+            Notification::create([
+                'user_id' => $order->user_id,
+                'title' => $shippingLabel,
+                'message' => 'Pesanan #' . $order->order_id . ' — ' . $shippingLabel,
+                'is_read' => false,
+            ]);
+        }
 
         return redirect()->back()
             ->with('success', 'Status pengiriman berhasil diupdate!');

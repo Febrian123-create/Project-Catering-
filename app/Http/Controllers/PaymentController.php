@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -42,11 +43,29 @@ class PaymentController extends Controller
                 $order->update(['status_pembayaran' => 'pending']);
             } else if ($fraudStatus == 'accept') {
                 $order->update(['status_pembayaran' => 'paid']);
+                Notification::create([
+                    'user_id' => $order->user_id,
+                    'title' => 'Pembayaran Berhasil ✅',
+                    'message' => 'Pembayaran untuk pesanan #' . $order->order_id . ' senilai Rp ' . number_format($order->total_bayar, 0, ',', '.') . ' telah diterima.',
+                    'is_read' => false,
+                ]);
             }
         } else if ($transactionStatus == 'settlement') {
             $order->update(['status_pembayaran' => 'paid']);
+            Notification::create([
+                'user_id' => $order->user_id,
+                'title' => 'Pembayaran Berhasil ✅',
+                'message' => 'Pembayaran untuk pesanan #' . $order->order_id . ' senilai Rp ' . number_format($order->total_bayar, 0, ',', '.') . ' telah diterima.',
+                'is_read' => false,
+            ]);
         } else if ($transactionStatus == 'cancel' || $transactionStatus == 'deny' || $transactionStatus == 'expire') {
             $order->update(['status_pembayaran' => 'cancelled']);
+            Notification::create([
+                'user_id' => $order->user_id,
+                'title' => 'Pembayaran Gagal ❌',
+                'message' => 'Pembayaran untuk pesanan #' . $order->order_id . ' gagal atau dibatalkan. Silakan coba lagi.',
+                'is_read' => false,
+            ]);
         } else if ($transactionStatus == 'pending') {
             $order->update(['status_pembayaran' => 'pending']);
         }

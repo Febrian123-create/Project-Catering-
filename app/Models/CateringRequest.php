@@ -12,11 +12,10 @@ class CateringRequest extends Model
     protected $fillable = [
         'user_id',
         'subject',
-        'message',
         'status',
         'nama_menu',
-        'jumlah_porsi',
-        'tanggal_kebutuhan',
+        'deskripsi',
+        'asal_daerah',
     ];
 
     public function user()

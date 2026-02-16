@@ -15,7 +15,7 @@
                 <a href="{{ url('/') }}" class="{{ Request::is('/') ? 'active' : '' }}">home</a>
                 <a href="{{ route('menus.index') }}" class="{{ Request::is('menus*') ? 'active' : '' }}">menus</a>
                 <a href="{{ route('cart.index') }}" class="{{ Request::is('cart*') ? 'active' : '' }}">cart</a>
-                <a href="{{ route('orders.index') }}" class="{{ Request::is('orders*') ? 'active' : '' }}">buku pesanan</a>
+                <a href="{{ route('orders.index') }}" class="{{ Request::is('orders*') ? 'active' : '' }}">pesanan</a>
                 <a href="{{ route('requests.index') }}" class="{{ Request::is('requests*') ? 'active' : '' }}">request</a>
                 <a href="{{ route('notifications.index') }}" class="{{ Request::is('notifications*') ? 'active' : '' }}">notifikasi</a>
 
