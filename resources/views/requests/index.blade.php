@@ -18,6 +18,13 @@
         </a>
     </div>
 
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show rounded-4 border-0 shadow-sm mb-4" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>{{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
+
     <div class="row g-4">
         @forelse($requests as $req)
             <div class="col-md-6 col-lg-4">
@@ -27,7 +34,7 @@
                         <div class="d-flex justify-content-between align-items-start mb-3">
                             <div>
                                 <h6 class="text-muted small mb-1">{{ $req->created_at->format('d M Y') }}</h6>
-                                <h5 class="fw-bold text-dark mb-0 line-clamp-1">{{ $req->subject }}</h5>
+                                <h5 class="fw-bold text-dark mb-0 line-clamp-1">{{ $req->nama_menu }}</h5>
                             </div>
                             <span class="status-badge badge-{{ $req->status }}">
                                 {{ $req->status == 'pending' ? 'Diproses' : ($req->status == 'accepted' ? 'Diterima' : 'Ditolak') }}
@@ -35,25 +42,22 @@
                         </div>
 
                         <div class="bg-light rounded-4 p-3 mb-3">
-                            <div class="d-flex align-items-center mb-2">
-                                <i class="bi bi-egg-fried text-primary me-2"></i>
-                                <span class="fw-bold small">{{ $req->nama_menu }}</span>
-                            </div>
-                            <div class="d-flex align-items-center mb-2">
-                                <i class="bi bi-people-fill text-primary me-2"></i>
-                                <span class="small">{{ $req->jumlah_porsi }} Porsi</span>
-                            </div>
-                            <div class="d-flex align-items-center">
-                                <i class="bi bi-calendar-check-fill text-primary me-2"></i>
-                                <span class="small">{{ \Carbon\Carbon::parse($req->tanggal_kebutuhan)->format('d M Y') }}</span>
-                            </div>
+                            @if($req->deskripsi)
+                                <div class="d-flex align-items-start mb-2">
+                                    <i class="bi bi-card-text text-primary me-2 mt-1"></i>
+                                    <span class="small line-clamp-2">{{ $req->deskripsi }}</span>
+                                </div>
+                            @endif
+                            @if($req->asal_daerah)
+                                <div class="d-flex align-items-start">
+                                    <i class="bi bi-geo-alt-fill text-primary me-2 mt-1"></i>
+                                    <span class="small">{{ $req->asal_daerah }}</span>
+                                </div>
+                            @endif
+                            @if(!$req->deskripsi && !$req->asal_daerah)
+                                <span class="small text-muted fst-italic">Tidak ada detail tambahan.</span>
+                            @endif
                         </div>
-
-                        @if($req->message)
-                            <p class="text-muted small mb-0 line-clamp-2">
-                                <i class="bi bi-chat-left-dots me-1"></i> "{{ $req->message }}"
-                            </p>
-                        @endif
                     </div>
                 </div>
             </div>

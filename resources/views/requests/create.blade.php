@@ -22,46 +22,24 @@
                         @csrf
                         
                         <div class="mb-4">
-                            <label class="form-label">Subjek Request</label>
-                            <input type="text" name="subject" class="form-control @error('subject') is-invalid @enderror" 
-                                placeholder="Contoh: Menu Diet Rendah Kalori" value="{{ old('subject') }}" required>
-                            @error('subject') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                        </div>
-
-                        <div class="row g-4 mb-4">
-                            <div class="col-md-6">
-                                <label class="form-label">Nama Menu</label>
-                                <input type="text" name="nama_menu" class="form-control @error('nama_menu') is-invalid @enderror" 
-                                    placeholder="Nama menu yang diinginkan" value="{{ old('nama_menu') }}" required>
-                                @error('nama_menu') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Jumlah Porsi</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-people"></i></span>
-                                    <input type="number" name="jumlah_porsi" class="form-control form-control-with-icon @error('jumlah_porsi') is-invalid @enderror" 
-                                        placeholder="Min. 1" value="{{ old('jumlah_porsi') }}" required>
-                                </div>
-                                @error('jumlah_porsi') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
-                            </div>
+                            <label class="form-label">Nama Menu <span class="text-danger">*</span></label>
+                            <input type="text" name="nama_menu" class="form-control @error('nama_menu') is-invalid @enderror" 
+                                placeholder="Contoh: Rendang Sapi, Nasi Goreng Seafood" value="{{ old('nama_menu') }}" required>
+                            @error('nama_menu') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
 
                         <div class="mb-4">
-                            <label class="form-label">Tanggal Kebutuhan</label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="bi bi-calendar-event"></i></span>
-                                <input type="date" name="tanggal_kebutuhan" class="form-control form-control-with-icon @error('tanggal_kebutuhan') is-invalid @enderror" 
-                                    value="{{ old('tanggal_kebutuhan') }}" required>
-                            </div>
-                            <small class="text-muted mt-2 d-block">Pilih tanggal di masa mendatang agar kami punya waktu persiapan.</small>
-                            @error('tanggal_kebutuhan') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
+                            <label class="form-label">Deskripsi</label>
+                            <textarea name="deskripsi" class="form-control @error('deskripsi') is-invalid @enderror" rows="3" 
+                                placeholder="Jelaskan menu yang Anda inginkan, misalnya: Rendang sapi empuk dengan bumbu rempah khas Padang...">{{ old('deskripsi') }}</textarea>
+                            @error('deskripsi') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
 
                         <div class="mb-5">
-                            <label class="form-label">Pesan Tambahan (Opsional)</label>
-                            <textarea name="message" class="form-control @error('message') is-invalid @enderror" rows="4" 
-                                placeholder="Detail tambahan: alergi, tingkat kepedasan, dll.">{{ old('message') }}</textarea>
-                            @error('message') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                            <label class="form-label">Asal (Kota/Negara)</label>
+                            <input type="text" name="asal_daerah" class="form-control @error('asal_daerah') is-invalid @enderror" 
+                                placeholder="Contoh: Padang, Jepang, Italia" value="{{ old('asal_daerah') }}">
+                            @error('asal_daerah') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
 
                         <div class="d-grid gap-3 d-md-flex justify-content-md-between align-items-center">
