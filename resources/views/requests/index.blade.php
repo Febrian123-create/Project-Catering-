@@ -2,10 +2,6 @@
 
 @section('title', 'Riwayat Request Menu')
 
-@push('styles')
-    <link rel="stylesheet" href="{{ asset('css/requests.css') }}">
-@endpush
-
 @section('content')
 <div class="sticker-container">
     <i class="bi bi-envelope-heart sticker sticker-1"></i>
@@ -14,11 +10,17 @@
     <i class="bi bi-gift sticker sticker-4"></i>
     <i class="bi bi-brightness-high sticker sticker-5"></i>
 </div>
+
 <div class="container py-5">
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-5 gap-3">
-        <div>
-            <h2 class="section-title mb-1">{{ Auth::user()->isAdmin() ? 'Kelola Request Menu' : 'Riwayat Request Menu' }}</h2>
-            <p class="text-muted mb-0 fw-bold">{{ Auth::user()->isAdmin() ? 'Tinjau dan terima permintaan menu kustom dari buyer.' : 'Lacak status permintaan menu kustom Anda.' }}</p>
+        <div class="d-flex align-items-center">
+            <div class="bg-warning border border-2 border-dark p-3 rounded-circle me-3 shadow-sm">
+                <i class="bi bi-chat-heart h3 mb-0 text-dark"></i>
+            </div>
+            <div>
+                <h2 class="section-title mb-1">{{ Auth::user()->isAdmin() ? 'Kelola Request Menu' : 'Riwayat Request' }}</h2>
+                <p class="text-muted mb-0 fw-bold">{{ Auth::user()->isAdmin() ? 'Tinjau dan terima permintaan menu kustom dari buyer.' : 'Lacak status permintaan menu kustom spesial Anda.' }}</p>
+            </div>
         </div>
         @if(!Auth::user()->isAdmin())
             <a href="{{ route('requests.create') }}" class="brand-btn brand-btn-primary text-white text-decoration-none shadow-sm">
@@ -35,9 +37,16 @@
     @endif
 
     <div class="row g-4">
-        @forelse($requests as $req)
+        @forelse($requests as $index => $req)
+            @php
+                $card_styles = ['brand-card-blue', 'brand-card-green', 'brand-card-purple', ''];
+                $status_badge_class = '';
+                if($req->status == 'pending') $status_badge_class = 'bg-warning text-dark';
+                elseif($req->status == 'accepted') $status_badge_class = 'bg-success text-white';
+                elseif($req->status == 'rejected') $status_badge_class = 'bg-danger text-white';
+            @endphp
             <div class="col-md-6 col-lg-4">
-                <div class="brand-card {{ $req->status == 'pending' ? 'brand-card-blue' : ($req->status == 'accepted' ? 'brand-card-green' : 'brand-card-purple') }} h-100 position-relative">
+                <div class="brand-card {{ $card_styles[$index % 4] }} h-100 position-relative">
                     <div class="card-body p-4 d-flex flex-column">
                         <div class="d-flex justify-content-between align-items-start mb-3">
                             <div>
@@ -47,9 +56,9 @@
                                         • <span class="text-primary">{{ $req->user->nama }}</span>
                                     @endif
                                 </h6>
-                                <h5 class="fw-bold text-dark mb-0 line-clamp-1 fs-5">{{ $req->nama_menu }}</h5>
+                                <h5 class="fw-bold text-dark mb-0 fs-5">{{ $req->nama_menu }}</h5>
                             </div>
-                            <span class="badge {{ $req->status == 'pending' ? 'bg-warning' : ($req->status == 'accepted' ? 'bg-success' : 'bg-danger') }} rounded-pill border border-dark px-3 py-2 fw-bold shadow-sm">
+                            <span class="badge {{ $status_badge_class }} rounded-pill border border-dark px-3 py-2 fw-bold shadow-sm">
                                 {{ $req->status == 'pending' ? 'Pending' : ($req->status == 'accepted' ? 'Diterima' : 'Ditolak') }}
                             </span>
                         </div>
@@ -58,13 +67,13 @@
                             @if($req->deskripsi)
                                 <div class="d-flex align-items-start mb-2">
                                     <i class="bi bi-card-text text-primary me-2 mt-1"></i>
-                                    <span class="small fw-bold">{{ Str::limit($req->deskripsi, 80) }}</span>
+                                    <span class="small fw-bold text-dark">{{ Str::limit($req->deskripsi, 80) }}</span>
                                 </div>
                             @endif
                             @if($req->asal_daerah)
                                 <div class="d-flex align-items-start">
                                     <i class="bi bi-geo-alt-fill text-danger me-2 mt-1"></i>
-                                    <span class="small fw-bold">{{ $req->asal_daerah }}</span>
+                                    <span class="small fw-bold text-dark">{{ $req->asal_daerah }}</span>
                                 </div>
                             @endif
                         </div>
@@ -98,8 +107,10 @@
         @endforelse
     </div>
 
-    <div class="mt-5 d-flex justify-content-center">
-        {{ $requests->links() }}
-    </div>
+    @if($requests->hasPages())
+        <div class="mt-5 d-flex justify-content-center">
+            {{ $requests->links() }}
+        </div>
+    @endif
 </div>
 @endsection
