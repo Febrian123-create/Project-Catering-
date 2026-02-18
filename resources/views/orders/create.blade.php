@@ -43,7 +43,7 @@
                 <div class="card-body p-4">
                     <h5 class="fw-bold mb-4">Rincian Item</h5>
                     <div class="px-2">
-                        @foreach($keranjangs as $item)
+                        @foreach($cartItems as $item)
                             <div class="item-row">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
@@ -73,7 +73,7 @@
                     
                     <div class="summary-box mb-4">
                         <div class="d-flex justify-content-between mb-2">
-                            <span class="text-muted">Subtotal ({{ $keranjangs->sum('qty') }} item)</span>
+                            <span class="text-muted">Subtotal ({{ $cartItems->sum('qty') }} item)</span>
                             <span>Rp {{ number_format($total, 0, ',', '.') }}</span>
                         </div>
                         <div class="d-flex justify-content-between mb-2">

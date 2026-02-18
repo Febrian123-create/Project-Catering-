@@ -131,4 +131,118 @@ class AuthController extends Controller
 
         return back()->withErrors(['otp_error' => 'Kode OTP salah!']);
     }
+
+    // ==========================================
+    // FORGOT PASSWORD FLOW
+    // ==========================================
+
+    public function showForgotPassword()
+    {
+        return view('auth.forgot-password');
+    }
+
+    public function sendResetOtp(Request $request)
+    {
+        $request->validate([
+            'username' => 'required|string',
+            'kontak' => 'required|string',
+        ]);
+
+        // Cari user yang username DAN kontak-nya cocok
+        $user = User::where('username', $request->username)
+            ->where('kontak', $request->kontak)
+            ->where('is_verified', 1)
+            ->first();
+
+        if (!$user) {
+            return back()
+                ->withInput()
+                ->with('error', 'Username atau nomor WhatsApp tidak cocok, atau akun belum diverifikasi.');
+        }
+
+        // Generate OTP dan simpan ke database
+        $otp = rand(1000, 9999);
+        $user->otp_code = $otp;
+        $user->save();
+
+        // Simpan data ke session untuk step selanjutnya
+        session([
+            'reset_user_id' => $user->user_id,
+            'reset_kontak' => $user->kontak,
+        ]);
+
+        // Kirim OTP via WhatsApp
+        $this->sendWhatsApp($user->kontak, $otp);
+
+        return redirect()->route('password.otp')
+            ->with('success', 'Kode OTP telah dikirim ke WhatsApp kamu.');
+    }
+
+    public function showResetOtpForm()
+    {
+        if (!session('reset_user_id')) {
+            return redirect()->route('password.forgot')
+                ->with('error', 'Silahkan verifikasi username dan nomor WhatsApp terlebih dahulu.');
+        }
+
+        return view('auth.forgot-password-otp');
+    }
+
+    public function verifyResetOtp(Request $request)
+    {
+        $request->validate([
+            'otp_input' => 'required|numeric',
+        ]);
+
+        $user = User::find(session('reset_user_id'));
+
+        if (!$user || $user->otp_code != $request->otp_input) {
+            return back()->withErrors(['otp_error' => 'Kode OTP salah!']);
+        }
+
+        // OTP cocok, hapus kode OTP dan set flag reset_verified
+        $user->otp_code = null;
+        $user->save();
+
+        session(['reset_verified' => true]);
+
+        return redirect()->route('password.reset');
+    }
+
+    public function showResetPassword()
+    {
+        if (!session('reset_verified') || !session('reset_user_id')) {
+            return redirect()->route('password.forgot')
+                ->with('error', 'Silahkan verifikasi OTP terlebih dahulu.');
+        }
+
+        return view('auth.reset-password');
+    }
+
+    public function resetPassword(Request $request)
+    {
+        if (!session('reset_verified') || !session('reset_user_id')) {
+            return redirect()->route('password.forgot');
+        }
+
+        $request->validate([
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $user = User::find(session('reset_user_id'));
+
+        if (!$user) {
+            return redirect()->route('password.forgot')
+                ->with('error', 'User tidak ditemukan.');
+        }
+
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        // Bersihkan semua session reset
+        session()->forget(['reset_user_id', 'reset_kontak', 'reset_verified']);
+
+        return redirect()->route('login')
+            ->with('success', 'Password berhasil diubah! Silahkan login dengan password baru.');
+    }
 }
