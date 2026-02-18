@@ -77,10 +77,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/requests/create', [App\Http\Controllers\RequestController::class, 'create'])->name('requests.create');
     Route::post('/requests', [App\Http\Controllers\RequestController::class, 'store'])->name('requests.store');
 
-    // Seller routes
-    Route::middleware('role:seller')->prefix('seller')->name('seller.')->group(function () {
+    // Admin routes
+    Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [SellerController::class, 'dashboard'])->name('dashboard');
-
 
         // Products management
         Route::get('/products', [ProductController::class, 'index'])->name('products.index');
@@ -91,7 +90,7 @@ Route::middleware('auth')->group(function () {
         Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
 
         // Menus management
-        Route::get('/menus', [SellerController::class, 'menuIndex'])->name('menus.index');
+        Route::get('/menus', [MenuController::class, 'manage'])->name('menus.index');
         Route::get('/menus/create', [MenuController::class, 'create'])->name('menus.create');
         Route::post('/menus', [MenuController::class, 'store'])->name('menus.store');
         Route::get('/menus/{menu}/edit', [MenuController::class, 'edit'])->name('menus.edit');
@@ -99,8 +98,11 @@ Route::middleware('auth')->group(function () {
         Route::delete('/menus/{menu}', [MenuController::class, 'destroy'])->name('menus.destroy');
 
         // Orders management
-        Route::get('/orders', [OrderController::class, 'sellerIndex'])->name('orders.index');
+        Route::get('/orders', [OrderController::class, 'adminIndex'])->name('orders.index');
         Route::put('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
         Route::put('/order-details/{orderDetail}/shipping', [OrderController::class, 'updateShipping'])->name('orders.updateShipping');
+
+        // Requests management
+        Route::post('/requests/{cateringRequest}/accept', [App\Http\Controllers\RequestController::class, 'accept'])->name('requests.accept');
     });
 });

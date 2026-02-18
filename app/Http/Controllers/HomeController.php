@@ -4,12 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Models\Menu;
 use App\Models\Product;
+use App\Models\Review;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
     public function index()
     {
+        if (auth()->check() && auth()->user()->isAdmin()) {
+            return redirect()->route('admin.dashboard');
+        }
+
         $menus = Menu::with('product')
             ->where('tgl_tersedia', '>=', now()->toDateString())
             ->orderBy('tgl_tersedia')
@@ -20,6 +25,11 @@ class HomeController extends Controller
             ->take(8)
             ->get();
 
-        return view('home', compact('menus', 'products'));
+        $reviews = Review::with('user')
+            ->inRandomOrder()
+            ->take(4)
+            ->get();
+
+        return view('home', compact('menus', 'products', 'reviews'));
     }
 }

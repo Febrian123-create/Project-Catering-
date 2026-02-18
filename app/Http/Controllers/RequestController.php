@@ -11,11 +11,37 @@ class RequestController extends Controller
 {
     public function index()
     {
-        $requests = CateringRequest::where('user_id', Auth::id())
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
+        if (Auth::user()->isAdmin()) {
+            $requests = CateringRequest::with('user')
+                ->where('status', 'pending')
+                ->orderBy('created_at', 'desc')
+                ->paginate(15);
+        } else {
+            $requests = CateringRequest::where('user_id', Auth::id())
+                ->orderBy('created_at', 'desc')
+                ->paginate(10);
+        }
             
         return view('requests.index', compact('requests'));
+    }
+
+    public function accept(CateringRequest $cateringRequest)
+    {
+        if (!Auth::user()->isAdmin()) {
+            abort(403);
+        }
+
+        $cateringRequest->update(['status' => 'accepted']);
+
+        // Notify buyer
+        Notification::create([
+            'user_id' => $cateringRequest->user_id,
+            'title' => 'Request Menu Diterima ✅',
+            'message' => 'Request menu "' . $cateringRequest->nama_menu . '" telah diterima! Kami akan segera memprosesnya.',
+            'is_read' => false,
+        ]);
+
+        return redirect()->back()->with('success', 'Request Menu berhasil diterima!');
     }
 
     public function create()

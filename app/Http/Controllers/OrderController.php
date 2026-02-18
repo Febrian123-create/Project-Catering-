@@ -104,7 +104,7 @@ class OrderController extends Controller
 
     public function show(Order $order)
     {
-        if ($order->user_id !== Auth::id() && !Auth::user()->isSeller()) {
+        if ($order->user_id !== Auth::id() && !Auth::user()->isAdmin()) {
             abort(403);
         }
 
@@ -119,14 +119,14 @@ class OrderController extends Controller
         return view('orders.show', compact('order', 'snapToken'));
     }
 
-    // Seller methods
-    public function sellerIndex()
+    // Admin management methods
+    public function adminIndex()
     {
         $orders = Order::with('orderDetails.menu.product', 'user')
             ->orderBy('tgl_pesan', 'desc')
             ->paginate(15);
 
-        return view('seller.orders.index', compact('orders'));
+        return view('admin.orders.index', compact('orders'));
     }
 
     public function updateStatus(Request $request, Order $order)

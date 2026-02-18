@@ -185,34 +185,19 @@
                 <h2 class="fw-bold" style="font-family: 'Quicksand', sans-serif;">Reviews</h2>
             </div>
             <div class="row">
-                <div class="col-md-3">
-                    <div class="review-card">
-                        <h5 class="fw-bold mb-1">Alex</h5>
-                        <div class="text-warning mb-2">★★★★★</div>
-                        <p class="small mb-0">"The best dosirak in town! Truly authentic taste."</p>
+                @forelse($reviews as $review)
+                    <div class="col-md-3">
+                        <div class="review-card h-100">
+                            <h5 class="fw-bold mb-1">{{ $review->user->name ?? 'Guest' }}</h5>
+                            <div class="text-warning mb-2">{{ $review->stars }}</div>
+                            <p class="small mb-0">"{{ $review->isi_review }}"</p>
+                        </div>
                     </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="review-card">
-                        <h5 class="fw-bold mb-1">Mary</h5>
-                        <div class="text-warning mb-2">★★★★★</div>
-                        <p class="small mb-0">"Cute packaging and delicious food. Highly recommended!"</p>
+                @empty
+                    <div class="col-12 text-center">
+                        <p class="text-muted">No reviews yet.</p>
                     </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="review-card">
-                        <h5 class="fw-bold mb-1">Rick</h5>
-                        <div class="text-warning mb-2">★★★★★</div>
-                        <p class="small mb-0">"My weekly lunch solution. Healthy and tasty."</p>
-                    </div>
-                </div>
-                 <div class="col-md-3">
-                    <div class="review-card">
-                        <h5 class="fw-bold mb-1">Morty</h5>
-                        <div class="text-warning mb-2">★★★★★</div>
-                        <p class="small mb-0">"Aw jeez, this is really good!"</p>
-                    </div>
-                </div>
+                @endforelse
             </div>
         </div>
     </section>

@@ -36,7 +36,7 @@ class MenuController extends Controller
     public function create()
     {
         $products = Product::all();
-        return view('seller.menus.create', compact('products'));
+        return view('admin.menus.create', compact('products'));
     }
 
     public function store(Request $request)
@@ -50,14 +50,14 @@ class MenuController extends Controller
         $menu->menu_id = Menu::generateMenuId();
         $menu->save();
 
-        return redirect()->route('seller.menus.index')
+        return redirect()->route('admin.menus.index')
             ->with('success', 'Menu berhasil dibuat!');
     }
 
     public function edit(Menu $menu)
     {
         $products = Product::all();
-        return view('seller.menus.edit', compact('menu', 'products'));
+        return view('admin.menus.edit', compact('menu', 'products'));
     }
 
     public function update(Request $request, Menu $menu)
@@ -69,7 +69,7 @@ class MenuController extends Controller
 
         $menu->update($validated);
 
-        return redirect()->route('seller.menus.index')
+        return redirect()->route('admin.menus.index')
             ->with('success', 'Menu berhasil diupdate!');
     }
 
@@ -77,7 +77,16 @@ class MenuController extends Controller
     {
         $menu->delete();
 
-        return redirect()->route('seller.menus.index')
+        return redirect()->route('admin.menus.index')
             ->with('success', 'Menu berhasil dihapus!');
+    }
+
+    public function manage()
+    {
+        $menus = Menu::with('product')
+            ->orderBy('tgl_tersedia', 'desc')
+            ->paginate(10);
+
+        return view('admin.menus.index', compact('menus'));
     }
 }

@@ -11,19 +11,20 @@ class ProductController extends Controller
     public function index()
     {
         $products = Product::with('reviews')->paginate(12);
-        return view('seller.products.index', compact('products'));
+        return view('admin.products.index', compact('products'));
     }
 
     public function create()
     {
-        return view('seller.products.create');
+        return view('admin.products.create');
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
             'nama' => 'required|string|max:50',
-            'deskripsi' => 'nullable|string|max:120',
+            'kategori' => 'nullable|string|max:30',
+            'deskripsi' => 'nullable|string',
             'harga' => 'required|integer|min:0',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
@@ -36,7 +37,7 @@ class ProductController extends Controller
         $product->product_id = Product::generateProductId();
         $product->save();
 
-        return redirect()->route('seller.products.index')
+        return redirect()->route('admin.products.index')
             ->with('success', 'Produk berhasil ditambahkan!');
     }
 
@@ -48,14 +49,15 @@ class ProductController extends Controller
 
     public function edit(Product $product)
     {
-        return view('seller.products.edit', compact('product'));
+        return view('admin.products.edit', compact('product'));
     }
 
     public function update(Request $request, Product $product)
     {
         $validated = $request->validate([
             'nama' => 'required|string|max:50',
-            'deskripsi' => 'nullable|string|max:120',
+            'kategori' => 'nullable|string|max:30',
+            'deskripsi' => 'nullable|string',
             'harga' => 'required|integer|min:0',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
@@ -70,7 +72,7 @@ class ProductController extends Controller
 
         $product->update($validated);
 
-        return redirect()->route('seller.products.index')
+        return redirect()->route('admin.products.index')
             ->with('success', 'Produk berhasil diupdate!');
     }
 
@@ -82,7 +84,7 @@ class ProductController extends Controller
         
         $product->delete();
 
-        return redirect()->route('seller.products.index')
+        return redirect()->route('admin.products.index')
             ->with('success', 'Produk berhasil dihapus!');
     }
 }

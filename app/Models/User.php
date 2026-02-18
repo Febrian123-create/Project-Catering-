@@ -73,13 +73,13 @@ class User extends Authenticatable
     // Helper methods
     public function isBuyer(): bool
     {
-        return $this->role === 'buyer';
+        return strtolower($this->role) === 'buyer';
     }
 
     public function isSeller()
     {
-        // Allow Admin to access Seller features (Dashboard)
-        return strtolower($this->role) === 'seller' || strtolower($this->role) === 'admin';
+        // Treat 'admin' as 'seller' for dashboard access
+        return strtolower($this->role) === 'admin';
     }
 
     public function isAdmin()

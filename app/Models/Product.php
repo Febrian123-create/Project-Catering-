@@ -18,6 +18,7 @@ class Product extends Model
     protected $fillable = [
         'product_id',
         'nama',
+        'kategori',
         'harga',
         'deskripsi',
         'foto',
@@ -35,7 +36,14 @@ class Product extends Model
 
     public function reviews()
     {
-        return $this->hasMany(Review::class, 'product_id', 'product_id');
+        return $this->hasManyThrough(
+            Review::class,
+            Menu::class,
+            'product_id', // Foreign key on Menu table
+            'menu_id',    // Foreign key on Review table
+            'product_id', // Local key on Product table
+            'menu_id'     // Local key on Menu table
+        );
     }
 
     // Accessor for formatted price

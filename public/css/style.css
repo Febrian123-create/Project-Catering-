@@ -24,6 +24,7 @@
     --accent-green: var(--fh-green);
     --accent-blue: var(--fh-blue);
     --accent-purple: var(--fh-purple);
+    --shadow-offset: 6px;
 }
 
 * {
@@ -238,6 +239,94 @@ main.container.auth-page {
     min-height: 100px;
 }
 
+/* Brand UI Components */
+.brand-card {
+    background: white;
+    border-radius: 30px;
+    border: 2px solid var(--text-black);
+    box-shadow: var(--shadow-offset) var(--shadow-offset) 0px var(--accent-yellow);
+    overflow: hidden;
+}
+
+.brand-card-blue {
+    box-shadow: var(--shadow-offset) var(--shadow-offset) 0px var(--accent-blue);
+}
+
+.brand-card-green {
+    box-shadow: var(--shadow-offset) var(--shadow-offset) 0px var(--accent-green);
+}
+
+.brand-card-purple {
+    box-shadow: var(--shadow-offset) var(--shadow-offset) 0px var(--accent-purple);
+}
+
+.brand-btn {
+    border-radius: 15px;
+    font-weight: 800;
+    padding: 10px 25px;
+    transition: all 0.2s;
+    border: 2px solid var(--text-black);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.9rem;
+}
+
+.brand-btn-primary {
+    background: var(--fh-red);
+    color: white;
+    box-shadow: 4px 4px 0px var(--text-black);
+}
+
+.brand-btn-primary:hover {
+    background: var(--fh-red);
+    color: white;
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0px var(--text-black);
+}
+
+.brand-btn-primary:active {
+    transform: translate(2px, 2px);
+    box-shadow: 0px 0px 0px var(--text-black);
+}
+
+.brand-btn-warning {
+    background: var(--fh-yellow);
+    color: var(--text-black);
+    box-shadow: 4px 4px 0px var(--text-black);
+}
+
+.brand-btn-danger {
+    background: #ff8a8a;
+    color: white;
+    box-shadow: 4px 4px 0px var(--text-black);
+}
+
+.brand-table thead {
+    background: var(--fh-cream);
+}
+
+.brand-table th {
+    border-bottom: 2px solid var(--text-black);
+    color: var(--text-black);
+    font-weight: 800;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    padding: 15px;
+}
+
+.brand-table td {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.section-title {
+    font-weight: 900;
+    font-size: 2.5rem;
+    color: var(--text-black);
+    text-shadow: 3px 3px 0px var(--accent-yellow);
+    margin-bottom: 1.5rem;
+}
+
 .footer-text {
     text-align: center;
     color: var(--text-brown);
@@ -269,6 +358,76 @@ main.container.auth-page {
     margin-left: 20px;
     color: var(--primary-orange);
 }
+
+/* Decorative Stickers */
+.sticker-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.sticker {
+    position: absolute;
+    opacity: 0.1;
+    font-size: 5rem;
+    filter: grayscale(1);
+    animation: floating 6s ease-in-out infinite;
+}
+
+@keyframes floating {
+    0% {
+        transform: translateY(0px) rotate(0deg);
+    }
+
+    50% {
+        transform: translateY(-20px) rotate(10deg);
+    }
+
+    100% {
+        transform: translateY(0px) rotate(0deg);
+    }
+}
+
+.sticker-1 {
+    top: 10%;
+    left: 5%;
+    color: var(--accent-yellow);
+    animation-delay: 0s;
+}
+
+.sticker-2 {
+    top: 20%;
+    right: 5%;
+    color: var(--accent-blue);
+    animation-delay: 1s;
+}
+
+.sticker-3 {
+    bottom: 20%;
+    left: 8%;
+    color: var(--accent-green);
+    animation-delay: 2s;
+}
+
+.sticker-4 {
+    bottom: 10%;
+    right: 10%;
+    color: var(--accent-purple);
+    animation-delay: 3s;
+}
+
+.sticker-5 {
+    top: 50%;
+    left: 2%;
+    color: var(--fh-red);
+    animation-delay: 4.5s;
+}
+
 
 @media (max-width: 992px) {
     .navbar {
