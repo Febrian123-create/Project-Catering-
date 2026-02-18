@@ -33,9 +33,9 @@
         @forelse($menus as $index => $menu)
             <div class="col-md-6 col-lg-4">
                 <div class="brand-card {{ $card_styles[$index % 4] }} h-100">
-                    @if($menu->product->foto)
-                        <img src="{{ asset('storage/' . $menu->product->foto) }}" class="card-img-top border-bottom border-2 border-dark" 
-                            alt="{{ $menu->product->nama }}" style="height: 220px; object-fit: cover;">
+                    @if($menu->foto_display)
+                        <img src="{{ asset('storage/' . $menu->foto_display) }}" class="card-img-top border-bottom border-2 border-dark" 
+                            alt="{{ $menu->nama_display }}" style="height: 220px; object-fit: cover;">
                     @else
                         <div class="bg-secondary text-white d-flex align-items-center justify-content-center border-bottom border-2 border-dark" 
                             style="height: 220px;">
@@ -49,16 +49,21 @@
                                 <i class="bi bi-calendar2-heart me-1"></i>
                                 {{ $menu->tgl_tersedia->format('d M Y') }}
                             </span>
+                            @if($menu->isPaket())
+                                <span class="badge bg-primary text-white border border-dark px-3 py-2 rounded-pill fw-bold shadow-sm">
+                                    <i class="bi bi-collection me-1"></i>PAKET
+                                </span>
+                            @endif
                         </div>
                         
-                        <h4 class="fw-bold text-dark mb-2">{{ $menu->product->nama }}</h4>
-                        <p class="text-muted small fw-bold mb-4 line-clamp-2">{{ Str::limit($menu->product->deskripsi, 100) }}</p>
+                        <h4 class="fw-bold text-dark mb-2">{{ $menu->nama_display }}</h4>
+                        <p class="text-muted small fw-bold mb-4 line-clamp-2">{{ Str::limit($menu->deskripsi_display, 100) }}</p>
                         
                         <div class="d-flex justify-content-between align-items-center mt-auto">
                             <div>
                                 <small class="text-muted fw-bold text-uppercase">Harga</small>
                                 <div class="h4 fw-bold text-danger mb-0">
-                                    {{ $menu->product->formatted_harga }}
+                                    {{ $menu->formatted_harga }}
                                 </div>
                             </div>
                             <a href="{{ route('menus.show', $menu->menu_id) }}" class="brand-btn brand-btn-primary text-decoration-none">

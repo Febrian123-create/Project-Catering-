@@ -26,8 +26,9 @@
                         <thead>
                             <tr>
                                 <th>ID Menu</th>
+                                <th>Tipe</th>
                                 <th>Tanggal Tersedia</th>
-                                <th>Produk</th>
+                                <th>Nama</th>
                                 <th>Harga</th>
                                 <th class="text-center">Aksi</th>
                             </tr>
@@ -39,6 +40,17 @@
                                         <code class="fw-bold text-dark bg-light px-2 py-1 rounded border border-dark">#{{ $menu->menu_id }}</code>
                                     </td>
                                     <td>
+                                        @if($menu->isPaket())
+                                            <span class="badge bg-primary text-white border border-dark rounded-pill px-3 py-2 fw-bold">
+                                                <i class="bi bi-collection me-1"></i>Paket
+                                            </span>
+                                        @else
+                                            <span class="badge bg-light text-dark border border-dark rounded-pill px-3 py-2 fw-bold">
+                                                <i class="bi bi-box me-1"></i>Satuan
+                                            </span>
+                                        @endif
+                                    </td>
+                                    <td>
                                         <div class="d-flex align-items-center">
                                             <i class="bi bi-calendar3 me-2 text-primary"></i>
                                             <span class="fw-bold">{{ $menu->tgl_tersedia->format('l, d M Y') }}</span>
@@ -46,20 +58,25 @@
                                     </td>
                                     <td>
                                         <div class="d-flex align-items-center">
-                                            @if($menu->product->foto)
-                                                <img src="{{ asset('storage/' . $menu->product->foto) }}" 
+                                            @if($menu->foto_display)
+                                                <img src="{{ asset('storage/' . $menu->foto_display) }}" 
                                                     class="rounded-3 border border-2 border-dark me-3" width="50" height="50" style="object-fit: cover;">
                                             @else
                                                 <div class="bg-light rounded-3 border border-2 border-dark d-flex align-items-center justify-content-center text-muted me-3" style="width: 50px; height: 50px;">
                                                     <i class="bi bi-image"></i>
                                                 </div>
                                             @endif
-                                            <span class="fw-bold fs-6">{{ $menu->product->nama }}</span>
+                                            <div>
+                                                <span class="fw-bold fs-6">{{ $menu->nama_display }}</span>
+                                                @if($menu->isPaket())
+                                                    <br><small class="text-muted">{{ $menu->products->count() }} produk</small>
+                                                @endif
+                                            </div>
                                         </div>
                                     </td>
                                     <td>
                                         <span class="badge bg-white text-dark border border-dark rounded-pill px-3 py-2 fw-bold shadow-sm">
-                                            {{ $menu->product->formatted_harga }}
+                                            {{ $menu->formatted_harga }}
                                         </span>
                                     </td>
                                     <td class="text-center">

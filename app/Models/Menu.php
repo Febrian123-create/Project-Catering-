@@ -17,18 +17,30 @@ class Menu extends Model
 
     protected $fillable = [
         'menu_id',
+        'tipe',
+        'nama_paket',
+        'harga_paket',
+        'deskripsi_paket',
+        'foto_paket',
         'tgl_tersedia',
         'product_id',
     ];
 
     protected $casts = [
         'tgl_tersedia' => 'date',
+        'harga_paket' => 'integer',
     ];
 
     // Relationships
     public function product()
     {
         return $this->belongsTo(Product::class, 'product_id', 'product_id');
+    }
+
+    // Many-to-many relationship for paket menus
+    public function products()
+    {
+        return $this->belongsToMany(Product::class, 'menu_product', 'menu_id', 'product_id');
     }
 
     public function carts()
@@ -46,15 +58,53 @@ class Menu extends Model
         return $this->hasMany(Review::class, 'menu_id', 'menu_id');
     }
 
-    // Get price from product
+    // Helper methods
+    public function isPaket(): bool
+    {
+        return $this->tipe === 'paket';
+    }
+
+    public function isSatuan(): bool
+    {
+        return $this->tipe === 'satuan';
+    }
+
+    // Dynamic accessors based on tipe
+    public function getNamaDisplayAttribute(): string
+    {
+        if ($this->isPaket()) {
+            return $this->nama_paket ?? 'Paket Menu';
+        }
+        return $this->product ? $this->product->nama : '-';
+    }
+
     public function getHargaAttribute()
     {
+        if ($this->isPaket()) {
+            return $this->harga_paket ?? 0;
+        }
         return $this->product ? $this->product->harga : 0;
     }
 
     public function getFormattedHargaAttribute(): string
     {
         return 'Rp ' . number_format($this->harga, 0, ',', '.');
+    }
+
+    public function getDeskripsiDisplayAttribute(): string
+    {
+        if ($this->isPaket()) {
+            return $this->deskripsi_paket ?? '';
+        }
+        return $this->product ? ($this->product->deskripsi ?? '') : '';
+    }
+
+    public function getFotoDisplayAttribute(): ?string
+    {
+        if ($this->isPaket()) {
+            return $this->foto_paket;
+        }
+        return $this->product ? $this->product->foto : null;
     }
 
     // Check if menu is available

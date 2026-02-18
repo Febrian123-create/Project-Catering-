@@ -167,6 +167,35 @@ body.register-page {
     margin-bottom: 40px;
 }
 
+/* Forgot Password Link */
+.forgot-password-link {
+    text-align: right;
+    margin-top: -15px;
+    margin-bottom: 10px;
+}
+
+.forgot-password-link a {
+    color: #FF7361;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none !important;
+    transition: color 0.2s ease;
+}
+
+.forgot-password-link a:hover {
+    color: #D9534F;
+    text-decoration: underline !important;
+}
+
+/* Success Alert */
+.alert-success {
+    background: #d4edda;
+    color: #155724;
+    border-radius: 15px !important;
+    padding: 14px 22px;
+    font-weight: 600;
+}
+
 @media (max-width: 992px) {
     .signup-page-container {
         padding: 20px;
