@@ -65,8 +65,8 @@
             <div class="scroll-container ps-4">
                 @forelse($menus as $menu)
                     <div class="menu-card">
-                        @if($menu->product->foto)
-                            <img src="{{ asset('storage/' . $menu->product->foto) }}" class="menu-img" alt="{{ $menu->product->nama }}">
+                        @if($menu->foto_display)
+                            <img src="{{ asset('storage/' . $menu->foto_display) }}" class="menu-img" alt="{{ $menu->nama_display }}">
                         @else
                             <div class="menu-img bg-light d-flex align-items-center justify-content-center">
                                 <i class="bi bi-egg-fried fs-1 text-muted"></i>
@@ -74,7 +74,7 @@
                         @endif
                         <div class="p-3 text-center">
                             <small class="text-muted d-block mb-1">{{ $menu->tgl_tersedia->format('D, d M') }}</small>
-                            <h6 class="fw-bold text-truncate mb-2" style="color: var(--text-brown);">{{ $menu->product->nama }}</h6>
+                            <h6 class="fw-bold text-truncate mb-2" style="color: var(--text-brown);">{{ $menu->nama_display }}</h6>
                             <a href="{{ route('menus.show', $menu->menu_id) }}" class="btn btn-sm btn-outline-danger w-100 rounded-pill">
                                 Lihat
                             </a>

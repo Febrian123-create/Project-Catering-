@@ -11,18 +11,25 @@ class MenuController extends Controller
 {
     public function index(Request $request)
     {
+        $tab = $request->input('tab', 'harian');
         $query = Menu::with(['product', 'products']);
 
-        // Filter by date
-        if ($request->has('date')) {
-            $query->whereDate('tgl_tersedia', $request->date);
+        if ($tab === 'harian') {
+            // Harian: Show only single items (satuan)
+            $query->where('tipe', 'satuan');
+            $date = $request->input('date', now()->toDateString());
+            $query->whereDate('tgl_tersedia', $date);
         } else {
-            $query->where('tgl_tersedia', '>=', now()->toDateString());
+            // Mingguan: Show only packages (paket)
+            $query->where('tipe', 'paket');
+            $startDate = now()->toDateString();
+            $endDate = now()->addDays(7)->toDateString();
+            $query->whereBetween('tgl_tersedia', [$startDate, $endDate]);
         }
 
         $menus = $query->orderBy('tgl_tersedia')->paginate(12);
 
-        return view('menus.index', compact('menus'));
+        return view('menus.index', compact('menus', 'tab'));
     }
 
     public function show(Menu $menu)

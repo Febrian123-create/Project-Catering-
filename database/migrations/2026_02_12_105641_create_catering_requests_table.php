@@ -12,8 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('catering_requests', function (Blueprint $table) {
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_general_ci';
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->string('user_id', 12);
+            $table->foreign('user_id')->references('user_id')->on('user')->onDelete('cascade')->onUpdate('cascade');
             $table->string('subject');
             $table->text('message');
             $table->enum('status', ['pending', 'accepted', 'rejected'])->default('pending');

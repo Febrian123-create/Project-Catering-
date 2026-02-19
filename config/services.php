@@ -40,4 +40,8 @@ return [
         'is_production' => env('DOKU_IS_PRODUCTION', false),
     ],
 
+    'fonnte' => [
+        'token' => env('FONNTE_TOKEN'),
+    ],
+
 ];

@@ -3,12 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Services\WhatsAppService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
+    protected $whatsAppService;
+
+    public function __construct(WhatsAppService $whatsAppService)
+    {
+        $this->whatsAppService = $whatsAppService;
+    }
     public function showLogin()
     {
         return view('auth.login');
@@ -71,31 +79,12 @@ class AuthController extends Controller
         session(['pending_user_kontak' => $user->kontak]);
 
         // Aktifkan ini kalau Fonnte sudah hijau (Connected)
-         $this->sendWhatsApp($user->kontak, $otp);
+        $this->whatsAppService->sendOTP($user->kontak, $otp);
 
         return redirect()->route('otp.view')
             ->with('success', 'Akun berhasil dibuat. Silahkan verifikasi kode OTP Anda.');
     }
 
-    private function sendWhatsApp($target, $otp)
-    {
-        $curl = curl_init();
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => 'https://api.fonnte.com/send',
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => array(
-                'target' => $target,
-                'message' => "Kode OTP Bento kamu adalah: $otp. Jangan beritahu siapapun ya!",
-            ),
-            CURLOPT_HTTPHEADER => array(
-                "Authorization: " . env('FONNTE_TOKEN')
-            ),
-        ));
-        $response = curl_exec($curl);
-        curl_close($curl);
-        return $response;
-    }
 
     public function logout(Request $request)
     {
@@ -155,6 +144,7 @@ class AuthController extends Controller
             ->first();
 
         if (!$user) {
+            Log::warning("Forgot Password: User not found or not verified for username: {$request->username}, kontak: {$request->kontak}");
             return back()
                 ->withInput()
                 ->with('error', 'Username atau nomor WhatsApp tidak cocok, atau akun belum diverifikasi.');
@@ -171,8 +161,10 @@ class AuthController extends Controller
             'reset_kontak' => $user->kontak,
         ]);
 
+        Log::info("Forgot Password: OTP generated for user_id: {$user->user_id}, sending to: {$user->kontak}");
+
         // Kirim OTP via WhatsApp
-        $this->sendWhatsApp($user->kontak, $otp);
+        $this->whatsAppService->sendOTP($user->kontak, $otp);
 
         return redirect()->route('password.otp')
             ->with('success', 'Kode OTP telah dikirim ke WhatsApp kamu.');

@@ -118,6 +118,9 @@ Route::middleware('auth')->group(function () {
         Route::put('/order-details/{orderDetail}/shipping', [OrderController::class, 'updateShipping'])->name('orders.updateShipping');
 
         // Requests management
+        Route::get('/requests/{cateringRequest}/process', [App\Http\Controllers\RequestController::class, 'process'])->name('requests.process');
+        Route::post('/requests/{cateringRequest}/finalize', [App\Http\Controllers\RequestController::class, 'finalize'])->name('requests.finalize');
+        Route::post('/requests/{cateringRequest}/reject', [App\Http\Controllers\RequestController::class, 'reject'])->name('requests.reject');
         Route::post('/requests/{cateringRequest}/accept', [App\Http\Controllers\RequestController::class, 'accept'])->name('requests.accept');
     });
 });

@@ -79,12 +79,37 @@
                         </div>
 
                         @if(Auth::user()->isAdmin() && $req->status == 'pending')
-                            <form action="{{ route('admin.requests.accept', $req) }}" method="POST" class="mt-auto">
-                                @csrf
-                                <button type="submit" class="brand-btn brand-btn-primary w-100">
-                                    <i class="bi bi-check-lg me-2"></i>Accept Request
+                            <div class="mt-auto d-flex gap-2">
+                                <a href="{{ route('admin.requests.process', $req) }}" class="brand-btn brand-btn-primary flex-grow-1 text-center">
+                                    <i class="bi bi-gear-fill me-2"></i>Process
+                                </a>
+                                <button type="button" class="brand-btn bg-danger text-white border-dark" 
+                                        data-bs-toggle="modal" data-bs-target="#rejectModal{{ $req->id }}">
+                                    <i class="bi bi-x-lg"></i>
                                 </button>
-                            </form>
+                            </div>
+
+                            <!-- Reject Modal -->
+                            <div class="modal fade" id="rejectModal{{ $req->id }}" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content border border-4 border-dark rounded-4 shadow-lg">
+                                        <div class="modal-header border-bottom border-dark bg-danger bg-opacity-10">
+                                            <h5 class="modal-title fw-bold">Tolak Request Menu?</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body p-4">
+                                            <p class="fw-bold mb-0">Apakah Anda yakin ingin menolak request menu <strong>"{{ $req->nama_menu }}"</strong> oleh {{ $req->user->nama }}?</p>
+                                        </div>
+                                        <div class="modal-footer border-top-0 p-4">
+                                            <button type="button" class="brand-btn bg-light text-dark border-dark" data-bs-dismiss="modal">Batal</button>
+                                            <form action="{{ route('admin.requests.reject', $req) }}" method="POST">
+                                                @csrf
+                                                <button type="submit" class="brand-btn bg-danger text-white border-dark">Ya, Tolak Request</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         @endif
                     </div>
                 </div>

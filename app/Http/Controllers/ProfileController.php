@@ -6,9 +6,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Models\User;
+use App\Services\WhatsAppService;
 
 class ProfileController extends Controller
 {
+    protected $whatsAppService;
+
+    public function __construct(WhatsAppService $whatsAppService)
+    {
+        $this->whatsAppService = $whatsAppService;
+    }
     /**
      * Display the user's profile.
      */
@@ -89,7 +96,7 @@ class ProfileController extends Controller
             ]);
 
             // Send OTP via WhatsApp
-            $this->sendWhatsApp($request->kontak, $otp);
+            $this->whatsAppService->sendOTP($request->kontak, $otp);
 
             return redirect()->route('profile.otp.form')->with('success', 'OTP sent to your new number. Please verify.');
         }
@@ -136,25 +143,6 @@ class ProfileController extends Controller
         return back()->withErrors(['otp' => 'Invalid OTP code.']);
     }
 
-    private function sendWhatsApp($target, $otp)
-    {
-        $curl = curl_init();
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => 'https://api.fonnte.com/send',
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => array(
-                'target' => $target,
-                'message' => "Kode OTP Bento kamu adalah: $otp. Jangan beritahu siapapun ya!",
-            ),
-            CURLOPT_HTTPHEADER => array(
-                "Authorization: " . env('FONNTE_TOKEN')
-            ),
-        ));
-        $response = curl_exec($curl);
-        curl_close($curl);
-        return $response;
-    }
 
     public function editPassword()
     {
