@@ -23,6 +23,7 @@ class Order extends Model
         'tgl_pesan',
         'total_bayar',
         'status_pembayaran',
+        'invoice_number',
     ];
 
     protected $casts = [

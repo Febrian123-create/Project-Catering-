@@ -11,8 +11,15 @@ use App\Http\Controllers\SellerController;
 use App\Http\Controllers\PaymentController;
 use Illuminate\Support\Facades\Route;
 
-// Midtrans Notification (Webhook)
-Route::post('/payment/notification', [PaymentController::class, 'notification'])->name('midtrans.notification');
+// DOKU Notification (Webhook) — exclude from CSRF
+Route::post('/payment/doku-notification', [PaymentController::class, 'notification'])->name('doku.notification');
+
+// DOKU Payment Callbacks
+Route::get('/payment/callback', [PaymentController::class, 'callback'])->name('payment.callback');
+Route::get('/payment/callback-cancel', [PaymentController::class, 'callbackCancel'])->name('payment.callback.cancel');
+
+// AJAX: Check payment status
+Route::get('/payment/check-status/{orderId}', [PaymentController::class, 'checkStatus'])->name('payment.checkStatus');
 
 // Public routes
 // Route untuk nampilin halaman input OTP

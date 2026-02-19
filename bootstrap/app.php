@@ -16,7 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         $middleware->validateCsrfTokens(except: [
-            '/payment/notification',
+            '/payment/doku-notification',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
