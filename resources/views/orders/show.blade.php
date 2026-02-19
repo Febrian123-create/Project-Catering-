@@ -138,41 +138,81 @@
                 </div>
 
                 @if($order->status_pembayaran == 'pending')
-                    <div class="alert alert-warning border-0 rounded-4 p-3 small mb-4">
-                        <i class="bi bi-info-circle me-2"></i> Selesaikan pembayaran Anda secepatnya untuk memproses pesanan melalui Midtrans.
+                    <div class="alert alert-warning border-0 rounded-4 p-3 small mb-4" id="pending-alert">
+                        <i class="bi bi-info-circle me-2"></i> Selesaikan pembayaran Anda secepatnya untuk memproses pesanan melalui DOKU.
                     </div>
                     
-                    <button id="pay-button" class="btn btn-pay w-100 shadow-sm mb-3">
-                        <i class="bi bi-shield-lock me-2"></i> Bayar Sekarang
-                    </button>
+                    @if($paymentUrl)
+                        <button id="pay-button" class="btn btn-pay w-100 shadow-sm mb-3">
+                            <i class="bi bi-shield-lock me-2"></i> Bayar Sekarang
+                        </button>
 
-                    <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ config('services.midtrans.client_key') }}"></script>
-                    <script type="text/javascript">
-                        document.getElementById('pay-button').onclick = function(){
-                            const token = '{{ $snapToken }}';
-                            if (!token || token.includes('DUMMY')) {
-                                alert('Snap Token belum tersedia atau sedang dalam mode Testing.\nJika ini Sandbox, pastikan Server Key sudah benar.');
-                                return;
+                        <script type="text/javascript">
+                            document.getElementById('pay-button').onclick = function(){
+                                window.location.href = '{{ $paymentUrl }}';
+                            };
+                        </script>
+                    @else
+                        <div class="alert alert-danger border-0 rounded-4 p-3 small mb-4">
+                            <i class="bi bi-exclamation-triangle me-2"></i> Gagal memuat halaman pembayaran. Pastikan konfigurasi DOKU sudah benar.
+                        </div>
+                    @endif
+
+                    {{-- Manual check status button --}}
+                    <button id="check-status-btn" class="btn btn-outline-primary w-100 mb-3" onclick="checkPaymentStatus()">
+                        <i class="bi bi-arrow-repeat me-2"></i> Sudah Bayar? Cek Status
+                    </button>
+                    <div id="status-message" class="text-center small mb-3" style="display:none;"></div>
+
+                    <script>
+                        var checkUrl = '{{ route("payment.checkStatus", $order->order_id) }}';
+                        var isChecking = false;
+
+                        function checkPaymentStatus() {
+                            if (isChecking) return;
+                            isChecking = true;
+
+                            var btn = document.getElementById('check-status-btn');
+                            var msg = document.getElementById('status-message');
+                            btn.disabled = true;
+                            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Mengecek status...';
+                            msg.style.display = 'none';
+
+                            fetch(checkUrl)
+                                .then(function(r) { return r.json(); })
+                                .then(function(data) {
+                                    if (data.is_paid) {
+                                        msg.style.display = 'block';
+                                        msg.className = 'text-center small mb-3 text-success fw-bold';
+                                        msg.innerHTML = '<i class="bi bi-check-circle me-1"></i> Pembayaran berhasil! Memperbarui halaman...';
+                                        setTimeout(function() { window.location.reload(); }, 1500);
+                                    } else {
+                                        msg.style.display = 'block';
+                                        msg.className = 'text-center small mb-3 text-muted';
+                                        msg.innerHTML = '<i class="bi bi-clock me-1"></i> Pembayaran belum terdeteksi. Tunggu beberapa saat setelah bayar.';
+                                        btn.disabled = false;
+                                        btn.innerHTML = '<i class="bi bi-arrow-repeat me-2"></i> Sudah Bayar? Cek Status';
+                                        isChecking = false;
+                                    }
+                                })
+                                .catch(function() {
+                                    btn.disabled = false;
+                                    btn.innerHTML = '<i class="bi bi-arrow-repeat me-2"></i> Sudah Bayar? Cek Status';
+                                    isChecking = false;
+                                });
+                        }
+
+                        // Auto-polling every 10 seconds
+                        setInterval(function() {
+                            if (!isChecking) {
+                                fetch(checkUrl)
+                                    .then(function(r) { return r.json(); })
+                                    .then(function(data) {
+                                        if (data.is_paid) { window.location.reload(); }
+                                    })
+                                    .catch(function() {});
                             }
-                            
-                            window.snap.pay(token, {
-                                onSuccess: function(result){
-                                    alert("Pembayaran berhasil!"); 
-                                    window.location.reload();
-                                },
-                                onPending: function(result){
-                                    alert("Menunggu pembayaran!"); 
-                                    window.location.reload();
-                                },
-                                onError: function(result){
-                                    alert("Pembayaran gagal!");
-                                    console.log(result);
-                                },
-                                onClose: function(){
-                                    alert('Anda menutup popup tanpa menyelesaikan pembayaran');
-                                }
-                            });
-                        };
+                        }, 10000);
                     </script>
                 @else
                     <div class="text-center py-4 bg-white rounded-4 border-2 border-dashed border-success">
@@ -192,3 +232,4 @@
     </div>
 </div>
 @endsection
+

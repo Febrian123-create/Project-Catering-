@@ -40,6 +40,7 @@ class OrderController extends Controller
 
     public function store(Request $request)
     {
+        \Log::info('OrderController@store called');
         $validated = $request->validate([
             'alamat_pengiriman' => 'required|string|max:120',
             'notes' => 'nullable|string|max:100',
@@ -63,7 +64,7 @@ class OrderController extends Controller
             $order->order_id = Order::generateOrderId();
             $order->user_id = Auth::id();
             $order->alamat_pengiriman = $validated['alamat_pengiriman'];
-            $order->notes = $validated['notes'];
+            $order->notes = $validated['notes'] ?? '';
             $order->tgl_pesan = now();
             $order->total_bayar = $total;
             $order->status_pembayaran = 'pending';
@@ -74,9 +75,8 @@ class OrderController extends Controller
                 $detail->detail_id = OrderDetail::generateDetailId();
                 $detail->order_id = $order->order_id;
                 $detail->menu_id = $item->menu_id;
-                // OrderDetail table in DB has qty, tanggal_kirim, status_kirim
-                // But it does NOT have product_id, it has menu_id.
                 $detail->qty = $item->qty;
+                $detail->tanggal_kirim = $item->menu->tgl_tersedia ?? now()->toDateString();
                 $detail->status_kirim = 'pending';
                 $detail->save();
             }
@@ -98,6 +98,7 @@ class OrderController extends Controller
                 ->with('success', 'Pesanan berhasil dibuat!');
         } catch (\Exception $e) {
             DB::rollBack();
+            \Log::error('OrderController@store ERROR: ' . $e->getMessage() . ' | ' . $e->getFile() . ':' . $e->getLine());
             return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
     }
@@ -110,13 +111,13 @@ class OrderController extends Controller
 
         $order->load('orderDetails.menu.product', 'user');
 
-        $snapToken = null;
+        $paymentUrl = null;
         if ($order->status_pembayaran === 'pending') {
-            $midtrans = new \App\Services\MidtransService();
-            $snapToken = $midtrans->getSnapToken($order);
+            $dokuService = new \App\Services\DokuService();
+            $paymentUrl = $dokuService->getPaymentUrl($order);
         }
 
-        return view('orders.show', compact('order', 'snapToken'));
+        return view('orders.show', compact('order', 'paymentUrl'));
     }
 
     // Admin management methods
