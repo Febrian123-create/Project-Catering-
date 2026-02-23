@@ -23,35 +23,47 @@ class CartController extends Controller
 
     public function store(Request $request)
     {
+        $menuIds = $request->input('menu_ids');
+        
+        if ($menuIds && is_array($menuIds)) {
+            // Bulk add
+            foreach ($menuIds as $menuId) {
+                $this->addToCart($menuId, 1);
+            }
+            return redirect()->route('cart.index')->with('success', 'Seluruh paket mingguan berhasil ditambahkan ke keranjang!');
+        }
+
         $validated = $request->validate([
             'menu_id' => 'required|exists:menu,menu_id',
             'qty' => 'required|integer|min:1',
         ]);
 
-        // Check if already in cart
-        // Cart table has no PK, so we search by composite keys
-        $existing = Cart::where('user_id', Auth::id())
-            ->where('menu_id', $validated['menu_id'])
-            ->first();
-
-        if ($existing) {
-            // Update manual since no PK
-            Cart::where('user_id', Auth::id())
-                ->where('menu_id', $validated['menu_id'])
-                ->update(['qty' => $existing->qty + $validated['qty']]);
-        } else {
-            Cart::create([
-                'user_id' => Auth::id(),
-                'menu_id' => $validated['menu_id'],
-                'qty' => $validated['qty'],
-            ]);
-        }
+        $this->addToCart($validated['menu_id'], $validated['qty']);
 
         if ($request->input('action') === 'buy_now') {
             return redirect()->route('cart.index')->with('success', 'Berhasil ditambahkan, siap untuk checkout!');
         }
 
         return redirect()->back()->with('success', 'Berhasil ditambahkan ke keranjang!');
+    }
+
+    private function addToCart($menuId, $qty)
+    {
+        $existing = Cart::where('user_id', Auth::id())
+            ->where('menu_id', $menuId)
+            ->first();
+
+        if ($existing) {
+            Cart::where('user_id', Auth::id())
+                ->where('menu_id', $menuId)
+                ->update(['qty' => $existing->qty + $qty]);
+        } else {
+            Cart::create([
+                'user_id' => Auth::id(),
+                'menu_id' => $menuId,
+                'qty' => $qty,
+            ]);
+        }
     }
 
     public function update(Request $request, $menu_id)

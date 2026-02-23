@@ -42,9 +42,10 @@ class OrderController extends Controller
     {
         \Log::info('OrderController@store called');
         $validated = $request->validate([
-            'alamat_pengiriman' => 'required|string|max:120',
+            'metode_pengantaran' => 'required|in:antar_alamat,ambil_eureka',
+            'alamat_pengiriman' => 'required_if:metode_pengantaran,antar_alamat|nullable|string|max:255',
+            'jam_pengambilan' => 'required_if:metode_pengantaran,ambil_eureka|nullable|string|in:08.30-09.30,11.30-12.30',
             'notes' => 'nullable|string|max:100',
-            // 'tipe_pesan' removed as it's not in DB
         ]);
 
         $cartItems = Cart::with('menu.product')
@@ -63,7 +64,9 @@ class OrderController extends Controller
             $order = new Order();
             $order->order_id = Order::generateOrderId();
             $order->user_id = Auth::id();
-            $order->alamat_pengiriman = $validated['alamat_pengiriman'];
+            $order->metode_pengantaran = $validated['metode_pengantaran'];
+            $order->alamat_pengiriman = $validated['metode_pengantaran'] === 'antar_alamat' ? $validated['alamat_pengiriman'] : 'Ambil di Eureka (Gedung G)';
+            $order->jam_pengambilan = $validated['metode_pengantaran'] === 'ambil_eureka' ? $validated['jam_pengambilan'] : null;
             $order->notes = $validated['notes'] ?? '';
             $order->tgl_pesan = now();
             $order->total_bayar = $total;

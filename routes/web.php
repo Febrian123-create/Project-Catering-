@@ -6,6 +6,7 @@ use App\Http\Controllers\MenuController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\Admin\AdminOrderController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\SellerController;
 use App\Http\Controllers\PaymentController;
@@ -79,6 +80,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
 
     // Reviews
+    Route::get('/reviews', [ReviewController::class, 'index'])->name('reviews.index');
     Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
     Route::put('/reviews/{review}', [ReviewController::class, 'update'])->name('reviews.update');
     Route::delete('/reviews/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
@@ -113,8 +115,8 @@ Route::middleware('auth')->group(function () {
         Route::delete('/menus/{menu}', [MenuController::class, 'destroy'])->name('menus.destroy');
 
         // Orders management
-        Route::get('/orders', [OrderController::class, 'adminIndex'])->name('orders.index');
-        Route::put('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
+        Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
+        Route::put('/orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.updateStatus');
         Route::put('/order-details/{orderDetail}/shipping', [OrderController::class, 'updateShipping'])->name('orders.updateShipping');
 
         // Requests management
@@ -122,5 +124,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/requests/{cateringRequest}/finalize', [App\Http\Controllers\RequestController::class, 'finalize'])->name('requests.finalize');
         Route::post('/requests/{cateringRequest}/reject', [App\Http\Controllers\RequestController::class, 'reject'])->name('requests.reject');
         Route::post('/requests/{cateringRequest}/accept', [App\Http\Controllers\RequestController::class, 'accept'])->name('requests.accept');
+
+        // Reviews management
+        Route::get('/reviews', [ReviewController::class, 'adminIndex'])->name('reviews.index');
     });
 });

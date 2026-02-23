@@ -242,17 +242,44 @@ main.container.auth-page {
 /* Brand UI Components */
 .brand-card {
     background: white;
-    border-radius: 30px;
+    border-radius: 20px;
     border: 2px solid var(--text-black);
     box-shadow: var(--shadow-offset) var(--shadow-offset) 0px var(--accent-yellow);
-    overflow: hidden;
+    /* overflow: hidden; Removed to prevent clipping of hover stabilizer */
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    z-index: 1;
+}
+
+/* Ensure children respect the parent's border radius since overflow:hidden is gone */
+.brand-card>*:first-child {
+    border-top-left-radius: 18px;
+    border-top-right-radius: 18px;
+}
+
+.brand-card>*:last-child {
+    border-bottom-left-radius: 18px;
+    border-bottom-right-radius: 18px;
 }
 
 .brand-card:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: calc(var(--shadow-offset) + 2px) calc(var(--shadow-offset) + 2px) 0px var(--text-black);
+    transform: translate(-3px, -3px);
+    box-shadow: calc(var(--shadow-offset) + 3px) calc(var(--shadow-offset) + 3px) 0px var(--text-black);
+    z-index: 10;
+}
+
+/* Stabilizer pseudo-element to prevent "jitter" by extending the hover area */
+.brand-card:hover::after,
+.brand-btn:hover::after,
+.brand-modal-close:hover::after {
+    content: "";
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    z-index: -1;
 }
 
 .brand-card-blue {
@@ -268,14 +295,15 @@ main.container.auth-page {
 }
 
 .brand-btn {
-    border-radius: 15px;
+    border-radius: 12px;
     font-weight: 800;
     padding: 10px 25px;
-    transition: all 0.2s;
+    transition: all 0.15s;
     border: 2px solid var(--text-black);
     text-transform: uppercase;
     letter-spacing: 1px;
     font-size: 0.9rem;
+    position: relative;
 }
 
 .brand-btn-primary {
@@ -332,6 +360,65 @@ main.container.auth-page {
     color: var(--text-black);
     text-shadow: 3px 3px 0px var(--accent-yellow);
     margin-bottom: 1.5rem;
+}
+
+.shadow-text {
+    text-shadow: 2px 2px 0px var(--text-black);
+}
+
+.shadow-text-sm {
+    text-shadow: 1px 1px 0px var(--text-black);
+}
+
+.hover-lift {
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+}
+
+/* Unified lift behavior with brand-card */
+.hover-lift:hover {
+    transform: translate(-3px, -3px) translateZ(0);
+}
+
+.hover-lift:hover::after {
+    content: "";
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    z-index: -1;
+}
+
+.rounded-brand {
+    border-radius: 20px !important;
+}
+
+/* Pagination Styling */
+.brand-pagination .pagination {
+    gap: 10px;
+}
+
+.brand-pagination .page-link {
+    border: 2px solid var(--text-black);
+    color: var(--text-black);
+    font-weight: 800;
+    border-radius: 10px !important;
+    padding: 10px 18px;
+    box-shadow: 3px 3px 0px var(--text-black);
+    transition: all 0.2s;
+}
+
+.brand-pagination .page-item.active .page-link {
+    background-color: var(--fh-yellow);
+    box-shadow: 1px 1px 0px var(--text-black);
+    transform: translate(2px, 2px);
+}
+
+.brand-pagination .page-link:hover {
+    background-color: var(--bg-soft);
+    transform: translate(-1px, -1px);
+    box-shadow: 4px 4px 0px var(--text-black);
 }
 
 .footer-text {
@@ -542,15 +629,27 @@ main.container.auth-page {
 .brand-modal-content {
     background: var(--bg-white);
     border: 3px solid var(--text-black);
-    border-radius: 30px;
+    border-radius: 20px;
     box-shadow: 15px 15px 0px var(--text-black);
-    overflow: hidden;
+    /* overflow: hidden; Removed to prevent clipping of stabilizers */
+}
+
+.brand-modal-content>*:first-child {
+    border-top-left-radius: 17px;
+    border-top-right-radius: 17px;
+}
+
+.brand-modal-content>*:last-child {
+    border-bottom-left-radius: 17px;
+    border-bottom-right-radius: 17px;
 }
 
 .brand-modal-header {
     background: var(--fh-yellow);
     border-bottom: 3px solid var(--text-black);
     padding: 20px 30px;
+    margin: -1px -1px 0 -1px;
+    /* Align border with parent */
 }
 
 .brand-modal-title {

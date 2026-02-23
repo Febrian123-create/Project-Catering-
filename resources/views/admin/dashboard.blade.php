@@ -159,7 +159,12 @@
     {{-- Reviews Section --}}
     <section class="py-5" style="background-color: #fff9f0;">
         <div class="container text-center">
-            <h2 class="fw-bold mb-5" style="font-family: 'Quicksand', sans-serif;">Review Pelanggan (Random)</h2>
+            <div class="d-flex justify-content-between align-items-center mb-5">
+                <h2 class="fw-bold mb-0" style="font-family: 'Quicksand', sans-serif;">Review Pelanggan (Random)</h2>
+                <a href="{{ route('admin.reviews.index') }}" class="brand-btn bg-white text-dark py-2 px-4">
+                    Lihat Semua <i class="bi bi-arrow-right ms-2"></i>
+                </a>
+            </div>
             <div class="row">
                 @forelse($reviews as $review)
                     <div class="col-md-3">

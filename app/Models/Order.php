@@ -19,10 +19,13 @@ class Order extends Model
         'order_id',
         'user_id',
         'alamat_pengiriman',
+        'metode_pengantaran',
+        'jam_pengambilan',
         'notes',
         'tgl_pesan',
         'total_bayar',
         'status_pembayaran',
+        'status_pesanan',
         'invoice_number',
     ];
 
@@ -48,14 +51,25 @@ class Order extends Model
         return 'Rp ' . number_format($this->total_bayar, 0, ',', '.');
     }
 
-    // Status badges
+    // Status badges for payment
     public function getStatusBadgeAttribute(): string
     {
         return match($this->status_pembayaran) {
-            'pending' => '<span class="badge bg-warning">Pending</span>',
+            'pending' => '<span class="badge bg-warning">Menunggu Pembayaran</span>',
             'paid' => '<span class="badge bg-success">Lunas</span>',
             'cancelled' => '<span class="badge bg-danger">Dibatalkan</span>',
             default => '<span class="badge bg-secondary">Unknown</span>',
+        };
+    }
+
+    // Status badges for shipping/order processing
+    public function getStatusPesananBadgeAttribute(): string
+    {
+        return match($this->status_pesanan) {
+            'perlu dikirim' => '<span class="badge bg-info text-dark">Perlu Dikirim</span>',
+            'dalam pengiriman' => '<span class="badge bg-primary">Dalam Pengiriman</span>',
+            'terkirim' => '<span class="badge bg-success">Terkirim</span>',
+            default => '<span class="badge bg-secondary">Pending</span>',
         };
     }
 

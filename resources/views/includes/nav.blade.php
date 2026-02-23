@@ -21,12 +21,15 @@
                 @if(Auth::user()->isAdmin())
                     <a href="{{ route('admin.products.index') }}" class="{{ Request::is('admin/products*') ? 'active' : '' }}">produk</a>
                     <a href="{{ route('admin.menus.index') }}" class="{{ Request::is('admin/menus*') ? 'active' : '' }}">menu</a>
+                    <a href="{{ route('admin.orders.index') }}" class="{{ Request::is('admin/orders*') ? 'active' : '' }}">pesanan</a>
+                    <a href="{{ route('admin.reviews.index') }}" class="{{ Request::is('admin/reviews*') ? 'active' : '' }}">ulasan</a>
                     <a href="{{ route('requests.index') }}" class="{{ Request::is('requests*') ? 'active' : '' }}">request</a>
                     <a href="{{ route('notifications.index') }}" class="{{ Request::is('notifications*') ? 'active' : '' }}">notifikasi</a>
                 @else
                     <a href="{{ route('menus.index') }}" class="{{ Request::is('menus*') ? 'active' : '' }}">menus</a>
                     <a href="{{ route('cart.index') }}" class="{{ Request::is('cart*') ? 'active' : '' }}">cart</a>
                     <a href="{{ route('orders.index') }}" class="{{ Request::is('orders*') ? 'active' : '' }}">pesanan</a>
+                    <a href="{{ route('reviews.index') }}" class="{{ Request::is('reviews*') ? 'active' : '' }}">ulasan</a>
                     <a href="{{ route('requests.index') }}" class="{{ Request::is('requests*') ? 'active' : '' }}">request</a>
                     <a href="{{ route('notifications.index') }}" class="{{ Request::is('notifications*') ? 'active' : '' }}">notifikasi</a>
                 @endif

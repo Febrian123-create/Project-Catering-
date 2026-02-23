@@ -91,9 +91,15 @@
                                     {{ $menu->formatted_harga }}
                                 </div>
                             </div>
-                            <a href="{{ route('menus.show', $menu->menu_id) }}" class="brand-btn brand-btn-primary text-decoration-none" onclick="event.stopPropagation();">
-                                <i class="bi bi-cart-plus me-1"></i> Pesan
-                            </a>
+                            @if($tab !== 'mingguan')
+                                <a href="{{ route('menus.show', $menu->menu_id) }}" class="brand-btn brand-btn-primary text-decoration-none" onclick="event.stopPropagation();">
+                                    <i class="bi bi-cart-plus me-1"></i> Pesan
+                                </a>
+                            @else
+                                <a href="{{ route('menus.show', $menu->menu_id) }}" class="brand-btn brand-btn-primary bg-white text-dark text-decoration-none" onclick="event.stopPropagation();">
+                                    Detail
+                                </a>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -111,6 +117,24 @@
             </div>
         @endforelse
     </div>
+
+    @if($tab === 'mingguan' && $menus->count() > 0)
+        <div class="mt-5 py-5 border-top border-2 border-dark text-center">
+            <div class="brand-card d-inline-block px-5 py-4 bg-light shadow-lg">
+                <h3 class="fw-bold mb-3">Siap untuk Berlangganan Seminggu?</h3>
+                <p class="text-muted fw-bold mb-4">Klik tombol di bawah untuk memasukkan semua paket minggu ini ke keranjang Anda.</p>
+                <form action="{{ route('cart.store') }}" method="POST">
+                    @csrf
+                    @foreach($menus as $menu)
+                        <input type="hidden" name="menu_ids[]" value="{{ $menu->menu_id }}">
+                    @endforeach
+                    <button type="submit" class="brand-btn brand-btn-primary py-3 px-5 fs-4">
+                        <i class="bi bi-bag-check-fill me-2"></i> Pesan Seluruh Paket Mingguan
+                    </button>
+                </form>
+            </div>
+        </div>
+    @endif
 
     @if($menus->hasPages())
         <div class="mt-5 d-flex justify-content-center">
@@ -177,18 +201,24 @@
                                     </div>
                                     
                                     @auth
-                                        <div class="row g-2">
-                                            <div class="col-6">
-                                                <button type="submit" name="action" value="add_to_cart" class="brand-btn w-100 py-3 bg-white text-dark">
-                                                    <i class="bi bi-cart-plus me-1"></i> +Keranjang
-                                                </button>
+                                        @if($tab !== 'mingguan')
+                                            <div class="row g-2">
+                                                <div class="col-6">
+                                                    <button type="submit" name="action" value="add_to_cart" class="brand-btn w-100 py-3 bg-white text-dark">
+                                                        <i class="bi bi-cart-plus me-1"></i> +Keranjang
+                                                    </button>
+                                                </div>
+                                                <div class="col-6">
+                                                    <button type="submit" name="action" value="buy_now" class="brand-btn brand-btn-primary w-100 py-3">
+                                                        Pesan Sekarang
+                                                    </button>
+                                                </div>
                                             </div>
-                                            <div class="col-6">
-                                                <button type="submit" name="action" value="buy_now" class="brand-btn brand-btn-primary w-100 py-3">
-                                                    Pesan Sekarang
-                                                </button>
+                                        @else
+                                            <div class="alert alert-info border-2 border-dark rounded-4 fw-bold">
+                                                <i class="bi bi-info-circle-fill me-2"></i> Menu ini adalah bagian dari paket mingguan. Gunakan tombol di halaman utama untuk memesan seluruh paket hari ini hingga seminggu ke depan.
                                             </div>
-                                        </div>
+                                        @endif
                                     @else
                                         <a href="{{ route('login') }}" class="brand-btn brand-btn-primary text-center text-decoration-none py-3">
                                             <i class="bi bi-box-arrow-in-right me-1"></i> Login untuk Memesan

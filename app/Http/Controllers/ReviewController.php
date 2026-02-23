@@ -10,6 +10,15 @@ use Illuminate\Support\Facades\Auth;
 
 class ReviewController extends Controller
 {
+    public function index()
+    {
+        $reviews = Review::with('user', 'menu.product')
+            ->orderBy('tgl_review', 'desc')
+            ->paginate(12);
+
+        return view('reviews.index', compact('reviews'));
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -18,17 +27,18 @@ class ReviewController extends Controller
             'isi_review' => 'nullable|string|max:120',
         ]);
 
-        // Check if user has ordered this menu and status is delivered/paid?
-        // For simplicity, we just allow review if logged in (or maybe check order history)
-        // Ideally: Check if User has 'delivered' order containing this menu.
-        
-        $hasOrdered = OrderDetail::whereHas('order', function ($query) {
+        // Check if user has an order for this menu that is both PAID and TERKIRIM
+        $isDelivered = OrderDetail::whereHas('order', function ($query) {
             $query->where('user_id', Auth::id())
-                  ->where('status_pembayaran', 'paid'); // Or status_pembayaran?
-        })->where('menu_id', $validated['menu_id'])->exists();
+                  ->where('status_pembayaran', 'paid')
+                  ->where('status_pesanan', 'terkirim');
+        })->where('menu_id', $validated['menu_id'])
+          ->exists();
 
-        // But maybe user just wants to review without strict check for now as requested "simple structure"
-        // I will just save it.
+        if (!$isDelivered) {
+            return redirect()->back()
+                ->with('error', 'Anda hanya dapat memberikan ulasan setelah menu sampai (Status: Terkirim).');
+        }
 
         $review = new Review($validated);
         $review->review_id = Review::generateReviewId();
@@ -40,5 +50,22 @@ class ReviewController extends Controller
             ->with('success', 'Review berhasil ditambahkan!');
     }
 
-    // Update and Destroy remain similar but logic is specific to review_id owner
+    public function adminIndex()
+    {
+        $reviews = Review::with('user', 'menu.product')
+            ->orderBy('tgl_review', 'desc')
+            ->paginate(20);
+
+        return view('admin.reviews.index', compact('reviews'));
+    }
+
+    public function destroy(Review $review)
+    {
+        if (Auth::user()->isAdmin() || $review->user_id === Auth::id()) {
+            $review->delete();
+            return redirect()->back()->with('success', 'Review berhasil dihapus!');
+        }
+
+        abort(403);
+    }
 }

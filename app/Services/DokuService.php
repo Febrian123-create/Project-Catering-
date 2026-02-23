@@ -56,9 +56,9 @@ class DokuService
                 'line_items' => $order->orderDetails->map(function ($detail) {
                     return [
                         'id' => $detail->menu_id,
-                        'name' => substr($detail->menu->product->nama ?? 'Menu Item', 0, 255),
+                        'name' => substr($detail->menu->nama_display ?? 'Menu Item', 0, 255),
                         'quantity' => (int) $detail->qty,
-                        'price' => (int) ($detail->menu->product->harga ?? 0),
+                        'price' => (int) ($detail->menu->harga ?? 0),
                     ];
                 })->toArray(),
             ],

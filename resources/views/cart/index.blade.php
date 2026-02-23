@@ -35,12 +35,13 @@
                     </div>
 
                     @foreach($cartItems as $item)
-                        <div class="px-2 py-4 border-bottom border-1 border-dark border-opacity-10">
-                            <div class="row align-items-center g-3">
-                                <div class="col-12 col-md-5">
-                                    <h6 class="fw-bold text-dark mb-1">{{ $item->menu->product->nama }}</h6>
-                                    <p class="text-muted small fw-bold mb-0">{{ $item->menu->product->formatted_harga }} / porsi</p>
-                                </div>
+                        @if($item->menu)
+                            <div class="px-2 py-4 border-bottom border-1 border-dark border-opacity-10">
+                                <div class="row align-items-center g-3">
+                                    <div class="col-12 col-md-5">
+                                        <h6 class="fw-bold text-dark mb-1">{{ $item->menu->nama_display }}</h6>
+                                        <p class="text-muted small fw-bold mb-0">{{ $item->menu->formatted_harga }} / porsi</p>
+                                    </div>
                                 <div class="col-6 col-md-2 text-md-center">
                                     <span class="badge rounded-pill bg-light text-dark border border-dark px-3 py-2 fw-bold">
                                         <i class="bi bi-calendar-event me-1"></i>
@@ -71,7 +72,8 @@
                                 </div>
                             </div>
                         </div>
-                    @endforeach
+                    @endif
+                @endforeach
 
                     <div class="mt-4 pt-3 d-flex justify-content-between align-items-center">
                         <a href="{{ route('menus.index') }}" class="brand-btn brand-btn-warning text-decoration-none">
