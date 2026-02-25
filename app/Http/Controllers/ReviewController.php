@@ -27,17 +27,17 @@ class ReviewController extends Controller
             'isi_review' => 'nullable|string|max:120',
         ]);
 
-        // Check if user has an order for this menu that is both PAID and TERKIRIM
+        // Check if user has an order for this menu that is both PAID/Complete and TERKIRIM
         $isDelivered = OrderDetail::whereHas('order', function ($query) {
             $query->where('user_id', Auth::id())
-                  ->where('status_pembayaran', 'paid')
+                  ->whereIn('status_pembayaran', ['paid', 'Complete'])
                   ->where('status_pesanan', 'terkirim');
         })->where('menu_id', $validated['menu_id'])
           ->exists();
 
         if (!$isDelivered) {
             return redirect()->back()
-                ->with('error', 'Anda hanya dapat memberikan ulasan setelah menu sampai (Status: Terkirim).');
+                ->with('error', 'Anda hanya dapat memberikan ulasan setelah menu sampai (Status: Terkirim) dan pembayaran lunas.');
         }
 
         $review = new Review($validated);

@@ -18,12 +18,12 @@
                 <i class="bi bi-clock-history h3 mb-0 text-dark"></i>
             </div>
             <div>
-                <h2 class="section-title mb-1">Pesanan Saya</h2>
-                <p class="text-muted mb-0 fw-bold">Lacak dan lihat riwayat pesanan catering lezat Anda.</p>
+                <h2 class="section-title mb-1">Orderan Gue</h2>
+                <p class="text-muted mb-0 fw-bold">Lacak dan liat riwayat pesanan catering mumpung masih anget.</p>
             </div>
         </div>
         <a href="{{ route('menus.index') }}" class="brand-btn brand-btn-primary text-decoration-none shadow-sm">
-            <i class="bi bi-plus-lg me-2"></i>Pesan Baru
+            <i class="bi bi-plus-lg me-2"></i>Pesan Lagi!
         </a>
     </div>
 
@@ -87,11 +87,11 @@
             <div class="mb-4">
                 <i class="bi bi-receipt display-1 text-muted opacity-25"></i>
             </div>
-            <h3 class="fw-bold text-dark">Belum Ada Pesanan</h3>
-            <p class="text-muted fw-bold mb-4">Anda belum pernah melakukan pemesanan catering.</p>
+            <h3 class="fw-bold text-dark">Belum Ada Orderan Nih</h3>
+            <p class="text-muted fw-bold mb-4">Kamu belum pernah pesen DosiNyam. Cobain deh!</p>
             <div>
                 <a href="{{ route('menus.index') }}" class="brand-btn brand-btn-primary text-white text-decoration-none px-5 py-3">
-                    <i class="bi bi-cart-plus me-2"></i>Mulai Belanja Sekarang
+                    <i class="bi bi-cart-plus me-2"></i>Mulai hunting sekarang!
                 </a>
             </div>
         </div>

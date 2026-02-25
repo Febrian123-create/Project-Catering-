@@ -13,8 +13,8 @@
 
 <div class="container py-5">
     <div class="mb-5">
-        <h2 class="section-title mb-1">Menu Tersedia</h2>
-        <p class="text-muted mb-4 fw-bold">Pilih hidangan lezat untuk momen spesial Anda</p>
+        <h2 class="section-title mb-1">Menu-menu Asik</h2>
+        <p class="text-muted mb-4 fw-bold">Pilih hidangan gokil buat bikin hari kamu makin seru!</p>
 
         <!-- Tab Navigation -->
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-4">
@@ -109,8 +109,8 @@
                 <div class="mb-4">
                     <i class="bi bi-calendar-x display-1 text-muted opacity-25"></i>
                 </div>
-                <h4 class="fw-bold text-dark fs-3">Tidak Ada Menu Tersedia</h4>
-                <p class="text-muted mx-auto fw-bold" style="max-width: 400px;">Maaf, sepertinya tidak ada menu untuk tanggal ini. Silakan coba pilih tanggal lain!</p>
+                <h4 class="fw-bold text-dark fs-3">Belum Ada Menu Nih</h4>
+                <p class="text-muted mx-auto fw-bold" style="max-width: 400px;">Yah, sepertinya belum ada menu buat tanggal ini. Cek tanggal lain yuk!</p>
                 <a href="{{ route('menus.index') }}" class="brand-btn brand-btn-primary text-white text-decoration-none mt-3">
                     Lihat Semua Menu
                 </a>
@@ -129,7 +129,7 @@
                         <input type="hidden" name="menu_ids[]" value="{{ $menu->menu_id }}">
                     @endforeach
                     <button type="submit" class="brand-btn brand-btn-primary py-3 px-5 fs-4">
-                        <i class="bi bi-bag-check-fill me-2"></i> Pesan Seluruh Paket Mingguan
+                        <i class="bi bi-bag-check-fill me-2"></i> Pesan Paket
                     </button>
                 </form>
             </div>
@@ -175,12 +175,12 @@
                                 </span>
                             </div>
                             
-                            <h5 class="fw-bold text-dark mb-3">Deskripsi Hidangan</h5>
-                            <p class="text-muted fw-bold mb-4" id="modalMenuDescription">Deskripsi lengkap akan muncul di sini...</p>
+                            <h5 class="fw-bold text-dark mb-3">Deskripsi Masakan</h5>
+                            <p class="text-muted fw-bold mb-4" id="modalMenuDescription">Deskripsi lengkap bakal muncul di sini...</p>
                             
                             <div class="mt-auto pt-4 border-top border-2 border-dark">
                                 <div class="mb-4">
-                                    <label class="fw-bold text-dark mb-2 d-block">Jumlah Porsi</label>
+                                    <label class="fw-bold text-dark mb-2 d-block">Mau Berapa Porsi?</label>
                                     <div class="qty-selector">
                                         <button type="button" class="qty-btn" id="modalQtyMinus">
                                             <i class="bi bi-dash-lg"></i>
@@ -210,7 +210,7 @@
                                                 </div>
                                                 <div class="col-6">
                                                     <button type="submit" name="action" value="buy_now" class="brand-btn brand-btn-primary w-100 py-3">
-                                                        Pesan Sekarang
+                                                        Sikat!
                                                     </button>
                                                 </div>
                                             </div>

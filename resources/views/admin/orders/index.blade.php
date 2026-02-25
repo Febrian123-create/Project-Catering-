@@ -28,6 +28,28 @@
         </div>
     @endif
 
+    <div class="brand-card p-4 bg-white mb-4">
+        <form action="{{ route('admin.orders.index') }}" method="GET" class="row g-3">
+            <div class="col-md-4">
+                <label for="metode" class="form-label fw-bold">Metode Pengantaran</label>
+                <select name="metode" id="metode" class="form-select border-2 border-dark">
+                    <option value="">Semua Metode</option>
+                    <option value="antar_alamat" {{ request('metode') == 'antar_alamat' ? 'selected' : '' }}>Antar Alamat</option>
+                    <option value="ambil_eureka" {{ request('metode') == 'ambil_eureka' ? 'selected' : '' }}>Ambil di Eureka</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label for="tanggal" class="form-label fw-bold">Tanggal Pesan</label>
+                <input type="date" name="tanggal" id="tanggal" class="form-select border-2 border-dark" value="{{ request('tanggal') }}">
+            </div>
+            <div class="col-md-4 d-flex align-items-end">
+                <button type="submit" class="brand-btn brand-btn-primary w-100 py-2">
+                    <i class="bi bi-filter me-2"></i>Filter
+                </button>
+            </div>
+        </form>
+    </div>
+
     <div class="row g-4">
         @forelse($orders as $order)
             <div class="col-12">
@@ -57,9 +79,18 @@
                                     </div>
 
                                     <div class="mb-3">
-                                        <span class="text-muted small fw-bold text-uppercase d-block mb-1">Pelanggan</span>
-                                        <h5 class="fw-bold mb-0"><i class="bi bi-person-circle me-2"></i>{{ $order->user->nama ?? 'Pelanggan #' . $order->user_id }}</h5>
-                                        <p class="text-muted small mb-0">{{ $order->user->username ?? '' }}</p>
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <span class="text-muted small fw-bold text-uppercase d-block mb-1">Pelanggan</span>
+                                                <h5 class="fw-bold mb-0"><i class="bi bi-person-circle me-2"></i>{{ $order->user->nama ?? 'Pelanggan #' . $order->user_id }}</h5>
+                                                <p class="text-muted small mb-0">{{ $order->user->username ?? '' }}</p>
+                                            </div>
+                                            @if($order->user->kontak)
+                                            <a href="https://wa.me/{{ $order->user->wa_number }}" target="_blank" class="btn btn-success btn-sm rounded-pill px-3 fw-bold">
+                                                <i class="bi bi-whatsapp me-1"></i> Hubungi Pembeli
+                                            </a>
+                                            @endif
+                                        </div>
                                     </div>
                                     <div class="mb-3">
                                         <div class="row">
@@ -91,7 +122,7 @@
                                                 @method('PUT')
                                                 <input type="hidden" name="status_pesanan" value="perlu dikirim">
                                                 <button type="submit" class="brand-btn brand-btn-warning w-100 py-2 fs-6 {{ $order->status_pesanan == 'perlu dikirim' ? 'disabled opacity-50' : '' }}">
-                                                    <i class="bi bi-clock me-2"></i>Perlu Dikirim
+                                                    <i class="bi bi-clock me-2"></i>perlu Dikirim
                                                 </button>
                                             </form>
 
@@ -100,7 +131,7 @@
                                                 @method('PUT')
                                                 <input type="hidden" name="status_pesanan" value="dalam pengiriman">
                                                 <button type="submit" class="brand-btn brand-btn-primary w-100 py-2 fs-6 {{ $order->status_pesanan == 'dalam pengiriman' ? 'disabled opacity-50' : '' }}">
-                                                    <i class="bi bi-truck me-2"></i>Dalam Pengiriman
+                                                    <i class="bi bi-truck me-2"></i>dalam Pengiriman
                                                 </button>
                                             </form>
 
@@ -109,7 +140,7 @@
                                                 @method('PUT')
                                                 <input type="hidden" name="status_pesanan" value="terkirim">
                                                 <button type="submit" class="brand-btn brand-btn-success w-100 py-2 fs-6 {{ $order->status_pesanan == 'terkirim' ? 'disabled opacity-50' : '' }}">
-                                                    <i class="bi bi-check2-all me-2"></i>Terkirim
+                                                    <i class="bi bi-check2-all me-2"></i>terkirim
                                                 </button>
                                             </form>
                                         </div>

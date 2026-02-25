@@ -14,8 +14,8 @@
 <div class="container py-5 text-black">
     <nav aria-label="breadcrumb" class="mb-5">
         <ol class="breadcrumb brand-breadcrumb mb-0">
-            <li class="breadcrumb-item"><a href="{{ route('home') }}" class="text-decoration-none text-dark">Home</a></li>
-            <li class="breadcrumb-item"><a href="{{ route('orders.index') }}" class="text-decoration-none text-dark">Pesanan</a></li>
+            <li class="breadcrumb-item"><a href="{{ route('home') }}" class="text-decoration-none text-dark">Beranda</a></li>
+            <li class="breadcrumb-item"><a href="{{ route('orders.index') }}" class="text-decoration-none text-dark">Pesanan Saya</a></li>
             <li class="breadcrumb-item active fw-bold text-danger">Detail #{{ $order->order_id }}</li>
         </ol>
     </nav>
@@ -83,7 +83,7 @@
                     </div>
 
                     <div class="mt-5">
-                        <h4 class="fw-black text-dark mb-4" style="letter-spacing: -1px;"><i class="bi bi-journal-text me-2"></i>RINCIAN MENU</h4>
+                        <h4 class="fw-black text-dark mb-4" style="letter-spacing: -1px;"><i class="bi bi-journal-text me-2"></i>Kamu pesen apa aja?</h4>
                         <div class="row g-3">
                             @foreach($order->orderDetails as $detail)
                                 <div class="col-12">
@@ -117,7 +117,7 @@
                                                     <div class="modal-dialog modal-dialog-centered">
                                                         <div class="modal-content brand-modal-content">
                                                             <div class="brand-modal-header d-flex justify-content-between align-items-center">
-                                                                <h5 class="brand-modal-title mb-0">Beri Rating Menu</h5>
+                                                                <h5 class="brand-modal-title mb-0">Kasih rating menu, yuk!</h5>
                                                                 <button type="button" class="brand-modal-close" data-bs-dismiss="modal"><i class="bi bi-x-lg"></i></button>
                                                             </div>
                                                             <form action="{{ route('reviews.store') }}" method="POST">
@@ -149,22 +149,22 @@
                                                                     <h6 class="fw-bold text-muted mb-4 text-uppercase tracking-wider">{{ $detail->menu->nama_display }}</h6>
                                                                     
                                                                     <div class="mb-4">
-                                                                        <label class="fw-bold d-block mb-3 fs-5">Seberapa puas Anda?</label>
+                                                                        <label class="fw-bold d-block mb-3 fs-5">Gimana rasanya? Puas gak?</label>
                                                                         <select name="bintang" class="form-select brand-input text-center fs-5">
-                                                                            <option value="5">⭐⭐⭐⭐⭐ Sangat Enak!</option>
+                                                                            <option value="5">⭐⭐⭐⭐⭐ Enak banget!</option>
                                                                             <option value="4">⭐⭐⭐⭐ Enak</option>
                                                                             <option value="3">⭐⭐⭐ Lumayan</option>
-                                                                            <option value="2">⭐⭐ Kurang</option>
-                                                                            <option value="1">⭐ Buruk</option>
+                                                                            <option value="2">⭐⭐ Kureng ah</option>
+                                                                            <option value="1">⭐ Gak enak</option>
                                                                         </select>
                                                                     </div>
                                                                     <div class="mb-0 text-start">
-                                                                        <label class="fw-bold mb-2">Ceritakan Rasa Menu Ini</label>
+                                                                        <label class="fw-bold mb-2">Tulis <em>review</em>-nya di sini</label>
                                                                         <textarea name="isi_review" class="form-control brand-input" rows="3" placeholder="Contoh: Bumbunya meresap bangeeet!"></textarea>
                                                                     </div>
                                                                 </div>
                                                                 <div class="p-4 pt-0">
-                                                                    <button type="submit" class="brand-btn brand-btn-primary w-100 py-3 fs-5">Kirim Ulasan!</button>
+                                                                    <button type="submit" class="brand-btn brand-btn-primary w-100 py-3 fs-5">Kirim <em>review</em>-nya!</button>
                                                                 </div>
                                                             </form>
                                                         </div>
@@ -194,7 +194,7 @@
 
                     @if($order->status_pembayaran == 'pending')
                         <div class="alert alert-warning border-2 border-dark rounded-4 p-3 mb-4 fw-bold small text-start shadow-sm" style="background-color: #fff3cd;">
-                            <i class="bi bi-info-circle-fill me-2 fs-5"></i> Segera selesaikan pembayaran agar pesanan bisa diproses ke dapur!
+                            <i class="bi bi-info-circle-fill me-2 fs-5"></i> Yuk, buruan bayar biar bisa langsung kita masakin buat lo!
                         </div>
                         
                         @if($paymentUrl)
@@ -270,14 +270,14 @@
                     @else
                         <div class="py-4 bg-light rounded-4 border-2 border-dashed border-dark text-center my-4" style="background-color: var(--fh-green) !important; opacity: 0.8;">
                             <i class="bi bi-patch-check-fill text-success display-4 mb-3 d-block shadow-text-sm"></i>
-                            <h4 class="fw-black text-dark mb-1">TERBAYAR LUNAS</h4>
-                            <p class="text-muted fw-bold mb-0">Pesanan diproses dapur!</p>
+                            <h4 class="fw-black text-dark mb-1">SIP, UDAH LUNAS!</h4>
+                            <p class="text-muted fw-bold mb-0">Dapur kita langsung tancap gas buat lo!</p>
                         </div>
                     @endif
                 </div>
                 <div class="p-4 pt-0 border-top border-2 border-dark border-opacity-10 text-center mt-3">
                     <a href="{{ route('orders.index') }}" class="text-dark fw-bold text-decoration-none small hover-underline">
-                        <i class="bi bi-arrow-left me-2"></i> Kembali ke Riwayat Pesanan
+                        <i class="bi bi-arrow-left me-2"></i> Balik ke List Orderan
                     </a>
                 </div>
             </div>

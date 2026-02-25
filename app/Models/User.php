@@ -71,6 +71,19 @@ class User extends Authenticatable
     }
 
     // Helper methods
+    public function getWaNumberAttribute(): string
+    {
+        $number = preg_replace('/[^0-9]/', '', $this->kontak);
+        
+        if (str_starts_with($number, '0')) {
+            $number = '62' . substr($number, 1);
+        } elseif (str_starts_with($number, '8')) {
+            $number = '62' . $number;
+        }
+        
+        return $number;
+    }
+
     public function isBuyer(): bool
     {
         return strtolower($this->role) === 'buyer';
