@@ -35,7 +35,7 @@
 
             <div class="row g-5">
                 <!-- User Info Form -->
-                <div class="col-md-7">
+                <div class="col-md-7 order-2 order-md-1">
                     <form>
                         <div class="mb-4">
                             <label class="form-label text-dark fw-bold small text-uppercase">Username</label>
@@ -72,7 +72,7 @@
                 </div>
 
                 <!-- Profile Picture -->
-                <div class="col-md-5 d-flex flex-column align-items-center justify-content-center">
+                <div class="col-md-5 d-flex flex-column align-items-center justify-content-center order-1 order-md-2">
                     <div class="brand-card shadow-sm mb-4 d-flex align-items-center justify-content-center overflow-hidden" style="width: 250px; height: 250px; border-radius: 50% !important; border-width: 4px !important;">
                         @if($user->foto)
                             <img src="{{ asset('storage/' . $user->foto) }}" alt="Profile" class="w-100 h-100 object-fit-cover">
