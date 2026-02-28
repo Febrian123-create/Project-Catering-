@@ -8,9 +8,19 @@ use Illuminate\Http\Request;
 
 class AdminOrderController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $orders = Order::with('user')->orderBy('tgl_pesan', 'desc')->paginate(10);
+        $query = Order::with('user', 'orderDetails.menu');
+
+        if ($request->filled('metode')) {
+            $query->where('metode_pengantaran', $request->metode);
+        }
+
+        if ($request->filled('tanggal')) {
+            $query->whereDate('tgl_pesan', $request->tanggal);
+        }
+
+        $orders = $query->orderBy('tgl_pesan', 'desc')->paginate(10);
         return view('admin.orders.index', compact('orders'));
     }
 

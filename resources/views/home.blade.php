@@ -24,7 +24,7 @@
                         <path id="curve" d="M30,150 Q300,50 570,150" fill="transparent"/>
                         <text width="600">
                             <textPath xlink:href="#curve" startOffset="50%" text-anchor="middle" fill="#5c4033" style="font-size: 20px; font-weight: bold; letter-spacing: 1px;">
-                                We believe that every bite is a moment of happiness
+                                Tiap suapan jadi momen paling asik!
                             </textPath>
                         </text>
                     </svg>
@@ -40,13 +40,13 @@
             </div>
 
             <h1 class="display-4 fw-bold mb-3" style="color: var(--primary-orange); letter-spacing: -1px;">
-                Taste the Joy of <span style="color: var(--text-brown);">Dosinyam</span>
+                Nikmatin Serunya <span style="color: var(--text-brown);">Dosinyam</span>
             </h1>
             <p class="lead mb-4" style="color: var(--text-brown); max-width: 600px; margin: 0 auto;">
-                Authentic Korean packed meals made with love. Perfect for your daily lunch or special events!
+                Bekal rumahan yang dibikin pake hati. Cocok banget nemenin hari-hari kamu atau acara spesial kamu!
             </p>
             <a href="{{ route('menus.index') }}" class="btn-signin d-inline-block" style="max-width: 250px; text-decoration: none;">
-                Order Now
+                Pesan Sekarang!
             </a>
         </div>
     </section>
@@ -102,21 +102,21 @@
                 </div>
                 <div class="col-md-6">
                     <span class="badge bg-white text-dark border border-1 px-3 py-1 mb-3 rounded-pill">Loyalty Program</span>
-                    <h2 class="fw-bold mb-3" style="font-family: 'Quicksand', sans-serif;">Dear our guests!</h2>
+                    <h2 class="fw-bold mb-3" style="font-family: 'Quicksand', sans-serif;">Halo Sahabat Dosinyam!</h2>
                     <p class="mb-4" style="color: var(--text-brown);">
-                        We believe that each of you is not just a visitor, but a true friend! That is why we express our gratitude for your support and trust. We have created a special loyalty program that will make your time at our catering even more enjoyable and memorable.
+                        Buat DosiNyam, kamu itu bukan cuma pembeli, tapi bff sejati! Makanya, kita pengen kasih apresiasi lebih buat kamu yang udah percaya sama kami. Kami udah siapin loyalty program spesial yang bakal bikin tiap pesanan kamu jadi makin seru dan berkesan!
                     </p>
                     <div class="row g-3">
                         <div class="col-6">
                             <div class="p-3 bg-white rounded-3 shadow-sm h-100">
                                 <h6 class="fw-bold" style="color: var(--primary-orange);">STEP 1</h6>
-                                <p class="small text-muted mb-0">Order your delicious dosirak</p>
+                                <p class="small text-muted mb-0">Pesan paket mingguan DosiNyam</p>
                             </div>
                         </div>
                         <div class="col-6">
                             <div class="p-3 bg-white rounded-3 shadow-sm h-100">
                                 <h6 class="fw-bold" style="color: var(--primary-orange);">STEP 2</h6>
-                                <p class="small text-muted mb-0">Earn points & get rewards!</p>
+                                <p class="small text-muted mb-0">Pilih opsi pengantaran (jangan lupa isi alamat pengirimannya, ya!)</p>
                             </div>
                         </div>
                     </div>
@@ -162,15 +162,15 @@
             <div class="origin-story-box mt-5">
                 <div class="row align-items-center">
                     <div class="col-md-12">
-                        <span class="badge bg-warning text-dark rounded-pill mb-3">Origin Story</span>
+                        <span class="badge bg-warning text-dark rounded-pill mb-3">Kenapa namanya DosiNyam?</span>
                         <h2 class="dosi-text mb-3">DOSI + NYAM</h2>
                         <p class="fs-5" style="color: var(--text-brown);">
-                            <strong>"DOSI"</strong> comes from <em>Dosirak </em> / 도시락 which means "lunchbox" in Korean. We are here to bring the warmth of a home-cooked meal into your busy daily routine.<br>
-                            <strong>"NYAM"</strong> Nyam! is the sound of pure satisfaction every time you enjoy a delicious, comforting meal that hits the spot.
+                            <strong>"DOSI"</strong> dosi sendiri berasal dari kata <em>Dosirak</em>/도시락. Dalam bahasa Korea, artinya <em>"lunchbox"</em>. Kami hadir buat bawa kehangatan bekal rumah ke setiap aktivitas padatmu. Dari bahan pilihan dengan rasa yang otentik, semuanya dibungkus spesial buat kamu! <br>
+                            <strong>"NYAM"</strong> Nyam! adalah suara kepuasan setiap kali kamu menikmati masakan yang enak dan akrab di lidah.
                         </p>
                         <hr class="my-4" style="border-top: 2px dashed var(--primary-orange);">
                         <p class="mb-0">
-                            Combined, <strong>Dosinyam</strong> represent our commitment to providing you with a lunchbox experience that keeps you coming back for more!
+                            Kalau digabung, <strong>Dosinyam</strong> merepresentasikan komitmen kami untuk memberikan pelayanan yang terbaik dan memberikan pengalaman yang menyenangkan supaya kamu balik terus pesan ke DosinNyam!
                         </p>
                     </div>
                 </div>
@@ -182,20 +182,20 @@
     <section class="py-5" style="background-color: #fff9f0;">
         <div class="container">
             <div class="text-center mb-5">
-                <h2 class="fw-bold" style="font-family: 'Quicksand', sans-serif;">Reviews</h2>
+                <h2 class="fw-bold" style="font-family: 'Quicksand', sans-serif;">Kata mereka</h2>
             </div>
             <div class="row">
                 @forelse($reviews as $review)
                     <div class="col-md-3">
                         <div class="review-card h-100">
-                            <h5 class="fw-bold mb-1">{{ $review->user->name ?? 'Guest' }}</h5>
+                            <h5 class="fw-bold mb-1">{{ $review->user->nama ?? 'Guest' }}</h5>
                             <div class="text-warning mb-2">{{ $review->stars }}</div>
                             <p class="small mb-0">"{{ $review->isi_review }}"</p>
                         </div>
                     </div>
                 @empty
                     <div class="col-12 text-center">
-                        <p class="text-muted">No reviews yet.</p>
+                        <p class="text-muted">Belum ada <em>review</em> yang masuk, nih.</p>
                     </div>
                 @endforelse
             </div>

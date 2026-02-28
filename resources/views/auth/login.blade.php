@@ -33,19 +33,19 @@
                     @csrf
                     
                     <label class="form-label">Username</label>
-                    <input type="text" name="username" class="form-control" placeholder="Enter your username" value="{{ old('username') }}" required>
+                    <input type="text" name="username" class="form-control" placeholder="Masukin username lo" value="{{ old('username') }}" required>
 
                     <label class="form-label">Password</label>
-                    <input type="password" name="password" class="form-control" placeholder="Enter your password" required>
+                    <input type="password" name="password" class="form-control" placeholder="Ssttt... masukin password lo" required>
 
                     <div class="forgot-password-link">
-                        <a href="{{ route('password.forgot') }}">Forgot Password?</a>
+                        <a href="{{ route('password.forgot') }}">Lupa Password?</a>
                     </div>
 
-                    <button type="submit" class="btn-signup w-100">Sign In <i class="bi bi-box-arrow-in-right ms-2"></i></button>
+                    <button type="submit" class="btn-signup w-100">Sign in! <i class="bi bi-box-arrow-in-right ms-2"></i></button>
                 </form>
 
-                <p class="footer-text">Don't have an account? <a href="{{ route('register') }}"><strong>Sign Up</strong></a></p>
+                <p class="footer-text">Belum punya akun? <a href="{{ route('register') }}"><strong>Yuk bikin dulu akunnya!</strong></a></p>
             </div>
 
             <div class="illustration-section">

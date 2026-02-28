@@ -17,8 +17,8 @@
             <i class="bi bi-cart3 h3 mb-0 text-dark"></i>
         </div>
         <div>
-            <h2 class="section-title mb-1">Keranjang Belanja</h2>
-            <p class="text-muted mb-0 fw-bold">Periksa kembali pesanan lezat Anda sebelum checkout.</p>
+            <h2 class="section-title mb-1">Keranjang saya</h2>
+            <p class="text-muted mb-0 fw-bold">Cek lagi pesanan kamu sebelum checkout!</p>
         </div>
     </div>
 
@@ -77,14 +77,14 @@
 
                     <div class="mt-4 pt-3 d-flex justify-content-between align-items-center">
                         <a href="{{ route('menus.index') }}" class="brand-btn brand-btn-warning text-decoration-none">
-                            <i class="bi bi-arrow-left me-2"></i>Lanjut Belanja
+                            <i class="bi bi-arrow-left me-2"></i>Hunting Lagi
                         </a>
                         <form action="{{ route('cart.clear') }}" method="POST" 
                             onsubmit="return confirm('Kosongkan keranjang?')">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="brand-btn brand-btn-danger text-decoration-none text-white">
-                                <i class="bi bi-trash me-2"></i>Kosongkan
+                                <i class="bi bi-trash me-2"></i>Buang Semua
                             </button>
                         </form>
                     </div>
@@ -93,7 +93,7 @@
 
             <div class="col-lg-4">
                 <div class="brand-card brand-card-green p-4 sticky-top" style="top: 100px;">
-                    <h4 class="fw-bold text-dark mb-4 border-bottom border-2 border-dark pb-3">Ringkasan Pesanan</h4>
+                    <h4 class="fw-bold text-dark mb-4 border-bottom border-2 border-dark pb-3">Ringkasan Orderan</h4>
                     
                     <div class="d-flex justify-content-between mb-3 fw-bold text-dark">
                         <span>Total Porsi</span>
@@ -113,7 +113,7 @@
                     </div>
 
                     <a href="{{ route('orders.create') }}" class="brand-btn brand-btn-primary text-white w-100 text-center text-decoration-none py-3 mb-3">
-                        Pesan Sekarang <i class="bi bi-arrow-right ms-2"></i>
+                        Sikat! <i class="bi bi-arrow-right ms-2"></i>
                     </a>
                     
                     <p class="small text-muted text-center fw-bold mb-0">
@@ -127,11 +127,11 @@
             <div class="mb-4">
                 <i class="bi bi-cart-x display-1 text-muted opacity-25"></i>
             </div>
-            <h3 class="fw-bold text-dark">Keranjang Anda Kosong</h3>
-            <p class="text-muted fw-bold mb-4">Sepertinya Anda belum memilih menu lezat untuk hari ini.</p>
+            <h3 class="fw-bold text-dark">Keranjang kamu masih kosong</h3>
+            <p class="text-muted fw-bold mb-4">Kayanya kamu belum pilih menu buat hari ini. Pilih dulu, yuk, lapar nih!</p>
             <div>
                 <a href="{{ route('menus.index') }}" class="brand-btn brand-btn-primary text-white text-decoration-none px-5 py-3">
-                    <i class="bi bi-search me-2"></i>Jelajahi Menu
+                    <i class="bi bi-search me-2"></i>Cari menu untuk dipesan
                 </a>
             </div>
         </div>
