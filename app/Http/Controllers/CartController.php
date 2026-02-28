@@ -82,11 +82,13 @@ class CartController extends Controller
     {
         $existing = Cart::where('user_id', Auth::id())
             ->where('menu_id', $menuId)
+            ->whereNull('bundle_id')
             ->first();
 
         if ($existing) {
             Cart::where('user_id', Auth::id())
                 ->where('menu_id', $menuId)
+                ->whereNull('bundle_id')
                 ->update(['qty' => $existing->qty + $qty]);
         } else {
             Cart::create([
@@ -101,21 +103,36 @@ class CartController extends Controller
     {
         $validated = $request->validate([
             'qty' => 'required|integer|min:1',
+            'bundle_id' => 'nullable|string',
         ]);
 
-        Cart::where('user_id', Auth::id())
-            ->where('menu_id', $menu_id)
-            ->update(['qty' => $validated['qty']]);
+        $query = Cart::where('user_id', Auth::id())
+            ->where('menu_id', $menu_id);
+            
+        if ($request->filled('bundle_id')) {
+            $query->where('bundle_id', $request->bundle_id);
+        } else {
+            $query->whereNull('bundle_id');
+        }
+
+        $query->update(['qty' => $validated['qty']]);
 
         return redirect()->route('cart.index')
             ->with('success', 'Keranjang berhasil diupdate!');
     }
 
-    public function destroy($menu_id)
+    public function destroy(Request $request, $menu_id)
     {
-        Cart::where('user_id', Auth::id())
-            ->where('menu_id', $menu_id)
-            ->delete();
+        $query = Cart::where('user_id', Auth::id())
+            ->where('menu_id', $menu_id);
+            
+        if ($request->filled('bundle_id')) {
+            $query->where('bundle_id', $request->bundle_id);
+        } else {
+            $query->whereNull('bundle_id');
+        }
+
+        $query->delete();
 
         return redirect()->route('cart.index')
             ->with('success', 'Item berhasil dihapus dari keranjang!');

@@ -72,6 +72,7 @@
                                         <form action="{{ route('cart.update', $items[0]->menu_id) }}" method="POST" class="d-flex align-items-center gap-2">
                                             @csrf
                                             @method('PUT')
+                                            <input type="hidden" name="bundle_id" value="{{ $firstItem->bundle_id }}">
                                             <input type="number" name="qty" class="form-control border-2 border-dark text-center fw-bold rounded-pill h-auto py-1" 
                                                 value="{{ $items[0]->qty }}" min="1" style="max-width: 70px;"
                                                 onchange="this.form.submit()">
@@ -86,6 +87,7 @@
                                             onsubmit="return confirm('Hapus seluruh paket ini?')">
                                             @csrf
                                             @method('DELETE')
+                                            <input type="hidden" name="bundle_id" value="{{ $firstItem->bundle_id }}">
                                             <button type="submit" class="btn btn-link text-danger p-0">
                                                 <i class="bi bi-trash3-fill fs-5"></i>
                                             </button>
