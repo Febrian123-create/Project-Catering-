@@ -64,20 +64,20 @@
                 <div class="row mt-4 g-3">
                     @php
                         $packages = [
-                            ['name' => 'Nasi + Sayur + Daging', 'price' => '12k', 'icon' => 'bi-stars'],
-                            ['name' => 'Nasi + Daging + Daging', 'price' => '17k', 'icon' => 'bi-fire'],
-                            ['name' => 'Nasi + Sayur + Sayur', 'price' => '10k', 'icon' => 'bi-leaf'],
-                            ['name' => 'Nasi + Sayur + Telor', 'price' => '12k', 'icon' => 'bi-egg-fill'],
-                            ['name' => 'Nasi + Sayur', 'price' => '9k', 'icon' => 'bi-cup-straw'],
-                            ['name' => 'Nasi + Daging Utuh (2)', 'price' => '10k', 'icon' => 'bi-gem'],
+                            ['name' => 'Nasi + Sayur + Daging', 'price' => '12k', 'icon' => 'bi-lightning-charge-fill', 'color' => '#fbbf24'],
+                            ['name' => 'Nasi + Daging + Daging', 'price' => '17k', 'icon' => 'bi-fire', 'color' => '#f87171'],
+                            ['name' => 'Nasi + Sayur + Sayur', 'price' => '10k', 'icon' => 'bi-leaf-fill', 'color' => '#4ade80'],
+                            ['name' => 'Nasi + Sayur + Telor', 'price' => '12k', 'icon' => 'bi-egg-fill', 'color' => '#fcd34d'],
+                            ['name' => 'Nasi + Sayur', 'price' => '9k', 'icon' => 'bi-brightness-high-fill', 'color' => '#60a5fa'],
+                            ['name' => 'Nasi + Daging Utuh', 'price' => '10k', 'icon' => 'bi-gem', 'color' => '#a78bfa'],
                         ];
                     @endphp
                     @foreach($packages as $pkg)
                     <div class="col-6 col-md-4 col-lg-2">
-                        <div class="p-3 bg-white border border-2 border-dark rounded-4 text-center shadow-sm h-100 package-tip" title="{{ $pkg['name'] }}">
-                            <i class="bi {{ $pkg['icon'] }} fs-3 text-primary mb-2 d-block"></i>
-                            <div class="small fw-bold text-truncate">{{ $pkg['name'] }}</div>
-                            <div class="h5 fw-bold text-danger mb-0">{{ $pkg['price'] }}</div>
+                        <div class="p-3 bg-white border border-3 border-dark rounded-4 text-center shadow-neobrutal-sm h-100 package-tip" title="{{ $pkg['name'] }}">
+                            <i class="bi {{ $pkg['icon'] }} fs-3 mb-2 d-block" style="color: {{ $pkg['color'] }}"></i>
+                            <div class="small fw-800 text-truncate text-dark">{{ $pkg['name'] }}</div>
+                            <div class="h5 fw-900 text-danger mb-0">{{ $pkg['price'] }}</div>
                         </div>
                     </div>
                     @endforeach
@@ -119,24 +119,24 @@
                     <div id="step2Composer" class="d-none">
                         <hr class="border-2 border-dark mb-5">
                         <h4 class="fw-bold mb-4 text-center" style="font-family: 'Quicksand', sans-serif;">Step 2: Pilih Isi Paket</h4>
-                        <div id="itemSelectionContainer" class="row g-4 justify-content-center">
-                            <!-- Dynamic Content via JS -->
-                        </div>
+                        
+                        <form action="{{ route('cart.store') }}" method="POST" id="bundleForm">
+                            @csrf
+                            <input type="hidden" name="bundle_name" id="inputBundleName">
+                            <input type="hidden" name="bundle_price" id="inputBundlePrice">
+                            <input type="hidden" name="qty" value="1">
+                            
+                            <div id="itemSelectionContainer" class="row g-4 justify-content-center">
+                                <!-- Dynamic Content via JS -->
+                            </div>
 
-                        <div class="text-center mt-5">
-                            <form action="{{ route('cart.store') }}" method="POST" id="bundleForm">
-                                @csrf
-                                <input type="hidden" name="bundle_name" id="inputBundleName">
-                                <input type="hidden" name="bundle_price" id="inputBundlePrice">
-                                <input type="hidden" name="qty" value="1">
-                                <div id="selectedMenuInputs"></div>
-                                
+                            <div class="text-center mt-5">
                                 <button type="submit" class="brand-btn brand-btn-primary py-3 px-5 fs-4 mt-3" id="btnAddToCartBundle" disabled>
                                     <i class="bi bi-cart-plus me-2"></i>Masukkan Keranjang
                                 </button>
                                 <p class="text-muted small fw-bold mt-3" id="selectionWarning"><i class="bi bi-info-circle me-1"></i>Lengkapi pilihan menu kamu buat lanjut!</p>
-                            </form>
-                        </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -337,16 +337,22 @@
 
 @push('styles')
 <style>
-    .brand-card.border-dashed { border-style: dashed !important; border-width: 3px !important; }
-    .package-option-label:hover .package-option-card { border-color: #6366f1 !important; transform: translateY(-5px); background: #f5f3ff; }
-    .package-option-label input:checked + .package-option-card { border-color: #6366f1 !important; background: #6366f1; color: white; box-shadow: 0 8px 0 rgba(99, 102, 241, 0.3); }
-    .package-option-label input:checked + .package-option-card .text-danger { color: white !important; }
+    .brand-card-purple { background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); color: white; border: 3px solid #000; box-shadow: 8px 8px 0 #000; }
+    .brand-card.border-dashed { border-style: dashed !important; border-width: 4px !important; border-color: #000 !important; }
+    .package-option-label:hover .package-option-card { border-color: #000 !important; transform: translate(-4px, -4px); box-shadow: 8px 8px 0 #000; background: #fff; }
+    .package-option-label input:checked + .package-option-card { background: #000; color: #fff; transform: translate(4px, 4px); box-shadow: none; }
+    .package-option-label input:checked + .package-option-card .text-danger { color: #f87171 !important; }
     .transition-all { transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
     .cursor-pointer { cursor: pointer; }
-    .item-select-card { border: 2px solid #ddd; border-radius: 12px; transition: all 0.2s; }
-    .item-select-card.active { border-color: #000; border-width: 2px; }
-    .item-select-card select { border: none !important; box-shadow: none !important; font-weight: bold; cursor: pointer; }
-    .item-select-card:hover { border-color: #000; }
+    .item-select-card { background: #fff; border: 3px solid #000; border-radius: 16px; box-shadow: 4px 4px 0 #000; transition: all 0.2s; }
+    .item-select-card:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 #000; }
+    .item-select-card select { border: none !important; box-shadow: none !important; font-weight: 800; cursor: pointer; background: transparent; font-size: 1.1rem; }
+    .package-tip { transition: transform 0.2s; }
+    .package-tip:hover { transform: scale(1.05) rotate(2deg); z-index: 10; cursor: default; }
+    .shadow-neobrutal-sm { box-shadow: 4px 4px 0 #000; }
+    .fw-800 { font-weight: 800; }
+    .fw-900 { font-weight: 900; }
+    .bg-purple { background-color: #a855f7 !important; }
 </style>
 @endpush
 
@@ -387,9 +393,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function generateItemSelection(config) {
         itemContainer.innerHTML = '';
-        const selectedMenuInputs = document.getElementById('selectedMenuInputs');
-        selectedMenuInputs.innerHTML = '';
-
+        
         config.forEach((step, index) => {
             const col = document.createElement('div');
             col.className = 'col-md-5';
@@ -401,25 +405,18 @@ document.addEventListener('DOMContentLoaded', function() {
                                   availableMenus.find(m => m.product.nama.toLowerCase().includes(step.category.toLowerCase()));
                 
                 content = `
-                    <div class="item-select-card p-4 bg-light text-center border-3 shadow-sm" style="border-style: solid !important; border-color: #eee !important;">
+                    <div class="item-select-card p-4 bg-light text-center">
                         <h6 class="text-muted fw-bold mb-1">${step.label || step.category}</h6>
                         <h5 class="fw-bold mb-0">${fixedItem ? fixedItem.product.nama : step.category}</h5>
                         ${fixedItem ? `<input type="hidden" name="menu_ids[]" value="${fixedItem.menu_id}">` : ''}
                     </div>
                 `;
-                if (fixedItem) {
-                    const hidden = document.createElement('input');
-                    hidden.type = 'hidden';
-                    hidden.name = 'menu_ids[]';
-                    hidden.value = fixedItem.menu_id;
-                    selectedMenuInputs.appendChild(hidden);
-                }
             } else {
                 // Selectable menu
                 const filtered = availableMenus.filter(m => m.product.kategori === step.category);
                 
                 content = `
-                    <div class="item-select-card p-4 bg-white border-3 shadow-sm border-dark">
+                    <div class="item-select-card p-4 bg-white">
                         <label class="d-block text-muted small fw-bold mb-2">${step.label || step.category}</label>
                         <select class="form-select form-select-lg menu-selector" name="menu_ids[]" required>
                             <option value="" disabled selected>Pilih ${step.category}...</option>
