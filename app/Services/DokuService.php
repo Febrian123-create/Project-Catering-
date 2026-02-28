@@ -37,26 +37,26 @@ class DokuService
             return null;
         }
 
-        // Reuse existing invoice_number if order already has one
-        $invoiceNumber = $order->invoice_number ?: ($order->order_id . '-' . time());
+        // Always generate a fresh invoice_number to avoid stale rejected ones
+        $invoiceNumber = $order->order_id . '-' . time();
 
-        $requestId = (string) Str::uuid();
-        $requestTimestamp = gmdate('Y-m-d\TH:i:s\Z');
-        $requestTarget = '/checkout/v1/payment';
+        $requestId        = (string) Str::uuid();
+        $requestTimestamp = gmdate('Y-m-d\\TH:i:s\\Z');
+        $requestTarget    = '/checkout/v1/payment';
 
         $body = [
             'order' => [
-                'amount'          => (int) $order->total_bayar,
-                'invoice_number'  => $invoiceNumber,
-                'currency'        => 'IDR',
-                'callback_url'    => route('payment.callback', ['order_id' => $order->order_id]),
+                'amount'              => (int) $order->total_bayar,
+                'invoice_number'      => $invoiceNumber,
+                'currency'            => 'IDR',
+                'callback_url'        => route('payment.callback', ['order_id' => $order->order_id]),
                 'callback_url_cancel' => route('payment.callback.cancel', ['order_id' => $order->order_id]),
-                'language'        => 'ID',
-                'auto_redirect'   => true,
-                'line_items'      => [
+                'language'            => 'ID',
+                'auto_redirect'       => true,
+                'line_items'          => [
                     [
                         'id'       => $order->order_id,
-                        'name'     => 'Pesanan #' . $order->order_id,
+                        'name'     => 'Pesanan ' . $order->order_id,
                         'quantity' => 1,
                         'price'    => (int) $order->total_bayar,
                     ]
@@ -67,41 +67,40 @@ class DokuService
             ],
             'customer' => [
                 'id'      => (string) $order->user_id,
-                'name'    => $order->user->nama ?? 'Customer',
-                'phone'   => $order->user->kontak ?? '',
-                'address' => $order->alamat_pengiriman ?? '',
+                'name'    => $this->sanitizeString($order->user->nama ?? 'Customer'),
+                'phone'   => preg_replace('/[^0-9+]/', '', $order->user->kontak ?? ''),
+                'address' => $this->sanitizeString($order->alamat_pengiriman ?? ''),
                 'country' => 'ID',
             ],
         ];
 
-        $jsonBody = json_encode($body);
-        $digest = base64_encode(hash('sha256', $jsonBody, true));
+        $jsonBody  = json_encode($body);
+        $digest    = base64_encode(hash('sha256', $jsonBody, true));
         $signature = $this->generateSignature($this->clientId, $requestId, $requestTimestamp, $requestTarget, $digest);
 
         try {
             $response = Http::withHeaders([
-                'Client-Id' => $this->clientId,
-                'Request-Id' => $requestId,
+                'Client-Id'         => $this->clientId,
+                'Request-Id'        => $requestId,
                 'Request-Timestamp' => $requestTimestamp,
-                'Signature' => $signature,
-                'Content-Type' => 'application/json',
+                'Signature'         => $signature,
+                'Content-Type'      => 'application/json',
             ])->withBody($jsonBody, 'application/json')
               ->post($this->baseUrl . $requestTarget);
 
             Log::info('DOKU Response: ' . $response->status() . ' ' . $response->body());
 
             if ($response->successful()) {
-                $data = $response->json();
+                $data       = $response->json();
                 $paymentUrl = $data['response']['payment']['url'] ?? null;
 
                 if ($paymentUrl) {
-                    // Save invoice_number to order for status checking later
                     $order->update(['invoice_number' => $invoiceNumber]);
                     Log::info('DOKU Payment URL generated, invoice: ' . $invoiceNumber);
                     return $paymentUrl;
                 }
 
-                Log::error('DOKU response missing payment URL');
+                Log::error('DOKU response missing payment URL: ' . $response->body());
                 return null;
             }
 
@@ -111,6 +110,17 @@ class DokuService
             Log::error('DOKU Exception: ' . $e->getMessage());
             return null;
         }
+    }
+
+    /**
+     * Strip characters not allowed by DOKU: keep only a-z A-Z 0-9 and . - / + , = _ : ' @ % space
+     */
+    protected function sanitizeString(string $value): string
+    {
+        // Remove non-allowed characters
+        $sanitized = preg_replace("/[^a-zA-Z0-9 .\\-\\/+,=_:'@%]/u", ' ', $value);
+        // Collapse multiple spaces and trim
+        return trim(preg_replace('/\s+/', ' ', $sanitized));
     }
 
     /**
