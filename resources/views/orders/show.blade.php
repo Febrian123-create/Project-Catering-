@@ -84,6 +84,28 @@
 
                     <div class="mt-5">
                         <h4 class="fw-black text-dark mb-4" style="letter-spacing: -1px;"><i class="bi bi-journal-text me-2"></i>Kamu pesen apa aja?</h4>
+
+                        {{-- Session flash messages shown OUTSIDE modal loop --}}
+                        @if(session('success'))
+                            <div class="alert alert-success border-2 border-dark rounded-4 mb-4 fw-bold">
+                                <i class="bi bi-check-circle-fill me-2"></i>{{ session('success') }}
+                            </div>
+                        @endif
+                        @if(session('error'))
+                            <div class="alert alert-danger border-2 border-dark rounded-4 mb-4 fw-bold">
+                                <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ session('error') }}
+                            </div>
+                        @endif
+                        @if($errors->any())
+                            <div class="alert alert-danger border-2 border-dark rounded-4 mb-4 fw-bold text-start">
+                                <ul class="mb-0">
+                                    @foreach($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+
                         <div class="row g-3">
                             @foreach($order->orderDetails as $detail)
                                 <div class="col-12">
@@ -112,7 +134,7 @@
                                                 @endif
                                                 
                                                 @if($order->status_pesanan === 'terkirim')
-                                                <!-- Brandized Modal Review -->
+                                                <!-- Review Modal -->
                                                 <div class="modal fade" id="reviewModal{{ $detail->menu_id }}" tabindex="-1">
                                                     <div class="modal-dialog modal-dialog-centered">
                                                         <div class="modal-content brand-modal-content">
@@ -122,29 +144,8 @@
                                                             </div>
                                                             <form action="{{ route('reviews.store') }}" method="POST">
                                                                 @csrf
+                                                                <input type="hidden" name="target_menu_id" value="{{ $detail->menu_id }}">
                                                                 <div class="brand-modal-body text-center">
-                                                                    @if(session('success'))
-                                                                        <div class="alert alert-success border-2 border-dark rounded-4 mb-4 fw-bold">
-                                                                            {{ session('success') }}
-                                                                        </div>
-                                                                    @endif
-
-                                                                    @if(session('error'))
-                                                                        <div class="alert alert-danger border-2 border-dark rounded-4 mb-4 fw-bold">
-                                                                            {{ session('error') }}
-                                                                        </div>
-                                                                    @endif
-
-                                                                    @if($errors->any())
-                                                                        <div class="alert alert-danger border-2 border-dark rounded-4 mb-4 fw-bold text-start">
-                                                                            <ul class="mb-0">
-                                                                                @foreach($errors->all() as $error)
-                                                                                    <li>{{ $error }}</li>
-                                                                                @endforeach
-                                                                            </ul>
-                                                                        </div>
-                                                                    @endif
-
                                                                     <input type="hidden" name="menu_id" value="{{ $detail->menu_id }}">
                                                                     <h6 class="fw-bold text-muted mb-4 text-uppercase tracking-wider">{{ $detail->menu->nama_display }}</h6>
                                                                     
@@ -177,6 +178,16 @@
                                 </div>
                             @endforeach
                         </div>
+
+                        {{-- Re-open the correct modal if there were validation errors --}}
+                        @if($errors->any() && old('target_menu_id'))
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                var modalEl = document.getElementById('reviewModal{{ old("target_menu_id") }}');
+                                if (modalEl) { new bootstrap.Modal(modalEl).show(); }
+                            });
+                        </script>
+                        @endif
                     </div>
                 </div>
             </div>
