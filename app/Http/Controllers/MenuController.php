@@ -28,8 +28,16 @@ class MenuController extends Controller
         }
 
         $menus = $query->orderBy('tgl_tersedia')->paginate(12);
+        
+        $allHarianMenus = [];
+        if ($tab === 'harian') {
+            $allHarianMenus = Menu::with('product')
+                ->where('tipe', 'satuan')
+                ->whereDate('tgl_tersedia', $request->input('date', now()->toDateString()))
+                ->get();
+        }
 
-        return view('menus.index', compact('menus', 'tab'));
+        return view('menus.index', compact('menus', 'tab', 'allHarianMenus'));
     }
 
     public function show(Menu $menu)

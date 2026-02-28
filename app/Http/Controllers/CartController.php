@@ -15,6 +15,10 @@ class CartController extends Controller
             ->get();
 
         $total = $cartItems->sum(function ($item) {
+            // If it's a bundle item, use bundle_price if set, otherwise 0 for subsequent items in the same bundle
+            if ($item->bundle_id) {
+                return $item->bundle_price * $item->qty;
+            }
             return $item->subtotal;
         });
 
@@ -23,10 +27,37 @@ class CartController extends Controller
 
     public function store(Request $request)
     {
+        // Handle Package/Bundle Addition
+        if ($request->has('bundle_name')) {
+            $validated = $request->validate([
+                'bundle_name' => 'required|string',
+                'bundle_price' => 'required|integer',
+                'menu_ids' => 'required|array|min:1',
+                'menu_ids.*' => 'exists:menu,menu_id',
+                'qty' => 'required|integer|min:1',
+            ]);
+
+            $bundleId = \Illuminate\Support\Str::uuid()->toString();
+            
+            foreach ($validated['menu_ids'] as $index => $menuId) {
+                Cart::create([
+                    'user_id' => Auth::id(),
+                    'menu_id' => $menuId,
+                    'qty' => $validated['qty'],
+                    'bundle_id' => $bundleId,
+                    'bundle_name' => $validated['bundle_name'],
+                    // Store the price only on the first item of the bundle
+                    'bundle_price' => ($index === 0) ? $validated['bundle_price'] : 0,
+                ]);
+            }
+
+            return redirect()->route('cart.index')->with('success', 'Paket ' . $validated['bundle_name'] . ' berhasil ditambahkan!');
+        }
+
         $menuIds = $request->input('menu_ids');
         
         if ($menuIds && is_array($menuIds)) {
-            // Bulk add
+            // Bulk add (existing logic for weekly packages)
             foreach ($menuIds as $menuId) {
                 $this->addToCart($menuId, 1);
             }

@@ -81,6 +81,9 @@ class OrderController extends Controller
                 $detail->qty = $item->qty;
                 $detail->tanggal_kirim = $item->menu->tgl_tersedia ?? now()->toDateString();
                 $detail->status_kirim = 'pending';
+                $detail->bundle_id = $item->bundle_id;
+                $detail->bundle_name = $item->bundle_name;
+                $detail->bundle_price = $item->bundle_price;
                 $detail->save();
             }
 

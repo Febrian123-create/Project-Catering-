@@ -22,6 +22,9 @@ class OrderDetail extends Model
         'qty',
         'status_kirim',
         'tanggal_kirim',
+        'bundle_id',
+        'bundle_name',
+        'bundle_price',
     ];
 
     protected $casts = [
@@ -40,9 +43,12 @@ class OrderDetail extends Model
         return $this->belongsTo(Menu::class, 'menu_id', 'menu_id');
     }
 
-    // Get subtotal (price from menu's product)
+    // Get subtotal (price from menu's product or bundle price)
     public function getSubtotalAttribute(): int
     {
+        if ($this->bundle_id) {
+            return $this->bundle_price * $this->qty;
+        }
         return $this->menu ? $this->menu->harga * $this->qty : 0;
     }
 

@@ -17,6 +17,9 @@ class Cart extends Model
         'user_id',
         'menu_id',
         'qty',
+        'bundle_id',
+        'bundle_name',
+        'bundle_price',
     ];
 
     protected $casts = [
@@ -37,6 +40,9 @@ class Cart extends Model
     // Get subtotal
     public function getSubtotalAttribute(): int
     {
+        if ($this->bundle_id) {
+            return $this->bundle_price * $this->qty;
+        }
         return $this->menu ? $this->menu->harga * $this->qty : 0;
     }
 }

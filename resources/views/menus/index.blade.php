@@ -43,6 +43,107 @@
         </div>
     </div>
 
+    @if($tab === 'harian')
+    <!-- Daily Menu Packages Section -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="brand-card brand-card-purple p-4 mb-4 shadow-lg border-3">
+                <div class="row align-items-center">
+                    <div class="col-lg-8">
+                        <h3 class="fw-bold mb-2" style="font-family: 'Quicksand', sans-serif;"><i class="bi bi-box-seam me-2"></i>Paket Hemat Harian</h3>
+                        <p class="fw-bold text-muted mb-0">Gabungin menu favorit kamu biar makin hemat! Pilih paketnya, tentuin isinya, langsung sikat!</p>
+                    </div>
+                    <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+                        <button class="brand-btn brand-btn-primary py-3 px-4 fs-5 w-100" type="button" data-bs-toggle="collapse" data-bs-target="#packageComposer" aria-expanded="false">
+                            <i class="bi bi-magic me-2"></i>Pilih Paket Sekarang
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Package Pricelist -->
+                <div class="row mt-4 g-3">
+                    @php
+                        $packages = [
+                            ['name' => 'Nasi + Sayur + Daging', 'price' => '12k', 'icon' => 'bi-stars'],
+                            ['name' => 'Nasi + Daging + Daging', 'price' => '17k', 'icon' => 'bi-fire'],
+                            ['name' => 'Nasi + Sayur + Sayur', 'price' => '10k', 'icon' => 'bi-leaf'],
+                            ['name' => 'Nasi + Sayur + Telor', 'price' => '12k', 'icon' => 'bi-egg-fill'],
+                            ['name' => 'Nasi + Sayur', 'price' => '9k', 'icon' => 'bi-cup-straw'],
+                            ['name' => 'Nasi + Daging Utuh (2)', 'price' => '10k', 'icon' => 'bi-gem'],
+                        ];
+                    @endphp
+                    @foreach($packages as $pkg)
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="p-3 bg-white border border-2 border-dark rounded-4 text-center shadow-sm h-100 package-tip" title="{{ $pkg['name'] }}">
+                            <i class="bi {{ $pkg['icon'] }} fs-3 text-primary mb-2 d-block"></i>
+                            <div class="small fw-bold text-truncate">{{ $pkg['name'] }}</div>
+                            <div class="h5 fw-bold text-danger mb-0">{{ $pkg['price'] }}</div>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+
+            <!-- Package Composer (Collapsible) -->
+            <div class="collapse" id="packageComposer">
+                <div class="brand-card bg-white p-4 border-2 border-dark mb-5 shadow-lg" style="border-style: dashed !important;">
+                    <div id="step1">
+                        <h4 class="fw-bold mb-4 text-center" style="font-family: 'Quicksand', sans-serif;">Step 1: Pilih Jenis Paket</h4>
+                        <div class="row g-3 justify-content-center mb-4">
+                            @php
+                                $full_packages = [
+                                    ['id' => 'nsd', 'name' => 'Nasi + Sayur + Daging', 'price' => 12000, 'items' => [['type' => 'fixed', 'category' => 'Nasi'], ['type' => 'select', 'category' => 'Sayur'], ['type' => 'select', 'category' => 'Daging']]],
+                                    ['id' => 'ndd', 'name' => 'Nasi + Daging + Daging', 'price' => 17000, 'items' => [['type' => 'fixed', 'category' => 'Nasi'], ['type' => 'select', 'category' => 'Daging', 'label' => 'Daging 1'], ['type' => 'select', 'category' => 'Daging', 'label' => 'Daging 2']]],
+                                    ['id' => 'nss', 'name' => 'Nasi + Sayur + Sayur', 'price' => 10000, 'items' => [['type' => 'fixed', 'category' => 'Nasi'], ['type' => 'select', 'category' => 'Sayur', 'label' => 'Sayur 1'], ['type' => 'select', 'category' => 'Sayur', 'label' => 'Sayur 2']]],
+                                    ['id' => 'nst', 'name' => 'Nasi + Sayur + Telor Rebus', 'price' => 12000, 'items' => [['type' => 'fixed', 'category' => 'Nasi'], ['type' => 'select', 'category' => 'Sayur'], ['type' => 'fixed', 'category' => 'Telor Rebus']]],
+                                    ['id' => 'ns', 'name' => 'Nasi + Sayur', 'price' => 9000, 'items' => [['type' => 'fixed', 'category' => 'Nasi'], ['type' => 'select', 'category' => 'Sayur']]],
+                                    ['id' => 'ndu', 'name' => 'Nasi + Daging Utuh (2)', 'price' => 10000, 'items' => [['type' => 'fixed', 'category' => 'Nasi'], ['type' => 'select', 'category' => 'Daging', 'label' => 'Daging Utuh (2)']]],
+                                ];
+                            @endphp
+                            
+                            @foreach($full_packages as $fp)
+                            <div class="col-md-4">
+                                <label class="package-option-label w-100 cursor-pointer">
+                                    <input type="radio" name="package_selection" value="{{ $fp['id'] }}" class="d-none" 
+                                           data-price="{{ $fp['price'] }}" data-name="{{ $fp['name'] }}" data-config="{{ json_encode($fp['items']) }}">
+                                    <div class="package-option-card p-4 text-center border border-3 border-dark rounded-4 h-100 transition-all">
+                                        <h5 class="fw-bold mb-2">{{ $fp['name'] }}</h5>
+                                        <div class="h4 fw-bold text-danger mb-0">Rp {{ number_format($fp['price'], 0, ',', '.') }}</div>
+                                    </div>
+                                </label>
+                            </div>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    <div id="step2Composer" class="d-none">
+                        <hr class="border-2 border-dark mb-5">
+                        <h4 class="fw-bold mb-4 text-center" style="font-family: 'Quicksand', sans-serif;">Step 2: Pilih Isi Paket</h4>
+                        <div id="itemSelectionContainer" class="row g-4 justify-content-center">
+                            <!-- Dynamic Content via JS -->
+                        </div>
+
+                        <div class="text-center mt-5">
+                            <form action="{{ route('cart.store') }}" method="POST" id="bundleForm">
+                                @csrf
+                                <input type="hidden" name="bundle_name" id="inputBundleName">
+                                <input type="hidden" name="bundle_price" id="inputBundlePrice">
+                                <input type="hidden" name="qty" value="1">
+                                <div id="selectedMenuInputs"></div>
+                                
+                                <button type="submit" class="brand-btn brand-btn-primary py-3 px-5 fs-4 mt-3" id="btnAddToCartBundle" disabled>
+                                    <i class="bi bi-cart-plus me-2"></i>Masukkan Keranjang
+                                </button>
+                                <p class="text-muted small fw-bold mt-3" id="selectionWarning"><i class="bi bi-info-circle me-1"></i>Lengkapi pilihan menu kamu buat lanjut!</p>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
+
     <div class="row g-4">
         @php
             $card_styles = ['brand-card-blue', 'brand-card-green', 'brand-card-purple', ''];
@@ -234,16 +335,134 @@
     </div>
 </div>
 
+@push('styles')
+<style>
+    .brand-card.border-dashed { border-style: dashed !important; border-width: 3px !important; }
+    .package-option-label:hover .package-option-card { border-color: #6366f1 !important; transform: translateY(-5px); background: #f5f3ff; }
+    .package-option-label input:checked + .package-option-card { border-color: #6366f1 !important; background: #6366f1; color: white; box-shadow: 0 8px 0 rgba(99, 102, 241, 0.3); }
+    .package-option-label input:checked + .package-option-card .text-danger { color: white !important; }
+    .transition-all { transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    .cursor-pointer { cursor: pointer; }
+    .item-select-card { border: 2px solid #ddd; border-radius: 12px; transition: all 0.2s; }
+    .item-select-card.active { border-color: #000; border-width: 2px; }
+    .item-select-card select { border: none !important; box-shadow: none !important; font-weight: bold; cursor: pointer; }
+    .item-select-card:hover { border-color: #000; }
+</style>
+@endpush
+
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Current available menus for composer
+    const availableMenus = @json($allHarianMenus);
+    
+    // Package Composition Logic
+    const packageRadios = document.querySelectorAll('input[name="package_selection"]');
+    const step2 = document.getElementById('step2Composer');
+    const itemContainer = document.getElementById('itemSelectionContainer');
+    const bundleForm = document.getElementById('bundleForm');
+    const btnSubmit = document.getElementById('btnAddToCartBundle');
+    const warning = document.getElementById('selectionWarning');
+
+    packageRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            const config = JSON.parse(this.dataset.config);
+            const price = this.dataset.price;
+            const name = this.dataset.name;
+            
+            // Show Step 2
+            step2.classList.remove('d-none');
+            step2.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            
+            // Generate Selection UI
+            generateItemSelection(config);
+            
+            // Update hidden inputs
+            document.getElementById('inputBundleName').value = name;
+            document.getElementById('inputBundlePrice').value = price;
+            
+            validateSelection();
+        });
+    });
+
+    function generateItemSelection(config) {
+        itemContainer.innerHTML = '';
+        const selectedMenuInputs = document.getElementById('selectedMenuInputs');
+        selectedMenuInputs.innerHTML = '';
+
+        config.forEach((step, index) => {
+            const col = document.createElement('div');
+            col.className = 'col-md-5';
+            
+            let content = '';
+            if (step.type === 'fixed') {
+                // Find fixed item menu_id if applicable (e.g. Nasi)
+                const fixedItem = availableMenus.find(m => m.product.kategori === step.category) || 
+                                  availableMenus.find(m => m.product.nama.toLowerCase().includes(step.category.toLowerCase()));
+                
+                content = `
+                    <div class="item-select-card p-4 bg-light text-center border-3 shadow-sm" style="border-style: solid !important; border-color: #eee !important;">
+                        <h6 class="text-muted fw-bold mb-1">${step.label || step.category}</h6>
+                        <h5 class="fw-bold mb-0">${fixedItem ? fixedItem.product.nama : step.category}</h5>
+                        ${fixedItem ? `<input type="hidden" name="menu_ids[]" value="${fixedItem.menu_id}">` : ''}
+                    </div>
+                `;
+                if (fixedItem) {
+                    const hidden = document.createElement('input');
+                    hidden.type = 'hidden';
+                    hidden.name = 'menu_ids[]';
+                    hidden.value = fixedItem.menu_id;
+                    selectedMenuInputs.appendChild(hidden);
+                }
+            } else {
+                // Selectable menu
+                const filtered = availableMenus.filter(m => m.product.kategori === step.category);
+                
+                content = `
+                    <div class="item-select-card p-4 bg-white border-3 shadow-sm border-dark">
+                        <label class="d-block text-muted small fw-bold mb-2">${step.label || step.category}</label>
+                        <select class="form-select form-select-lg menu-selector" name="menu_ids[]" required>
+                            <option value="" disabled selected>Pilih ${step.category}...</option>
+                            ${filtered.map(m => `<option value="${m.menu_id}">${m.product.nama}</option>`).join('')}
+                        </select>
+                    </div>
+                `;
+            }
+            
+            col.innerHTML = content;
+            itemContainer.appendChild(col);
+        });
+
+        // re-bind validation
+        document.querySelectorAll('.menu-selector').forEach(select => {
+            select.addEventListener('change', validateSelection);
+        });
+    }
+
+    function validateSelection() {
+        const selects = document.querySelectorAll('.menu-selector');
+        let allValid = true;
+        selects.forEach(s => { if(!s.value) allValid = false; });
+        
+        btnSubmit.disabled = !allValid;
+        if(allValid) {
+            warning.innerHTML = '<i class="bi bi-check-circle-fill me-1 text-success"></i> Mantap! Pilihan kamu sudah lengkap. Sikat!';
+            warning.classList.remove('text-muted');
+            warning.classList.add('text-success');
+        } else {
+            warning.innerHTML = '<i class="bi bi-info-circle me-1"></i> Lengkapi pilihan menu kamu buat lanjut!';
+            warning.classList.add('text-muted');
+            warning.classList.remove('text-success');
+        }
+    }
+
+    // Existing Modal Qty Logic...
     const modal = new bootstrap.Modal(document.getElementById('menuDetailModal'));
     const triggers = document.querySelectorAll('.menu-detail-trigger');
     const qtyInput = document.getElementById('modalQtyInput');
     const plusBtn = document.getElementById('modalQtyPlus');
     const minusBtn = document.getElementById('modalQtyMinus');
 
-    // Qty Logic
     plusBtn.addEventListener('click', () => {
         qtyInput.value = parseInt(qtyInput.value) + 1;
     });
@@ -257,14 +476,11 @@ document.addEventListener('DOMContentLoaded', function() {
     triggers.forEach(trigger => {
         trigger.addEventListener('click', function() {
             const data = this.dataset;
-            
             document.getElementById('modalMenuId').value = data.id;
             document.getElementById('modalMenuName').textContent = data.nama;
             document.getElementById('modalMenuDescription').textContent = data.deskripsi;
             document.getElementById('modalMenuPrice').textContent = data.harga;
             document.getElementById('modalMenuDate').innerHTML = `<i class="bi bi-calendar2-heart me-1"></i> ${data.tanggal}`;
-            
-            // Reset Qty
             qtyInput.value = 1;
             
             const photoImg = document.getElementById('modalMenuPhoto');
@@ -280,7 +496,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 placeholder.classList.remove('d-none');
                 placeholder.classList.add('d-flex');
             }
-            
             modal.show();
         });
     });
