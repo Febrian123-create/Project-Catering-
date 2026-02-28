@@ -123,8 +123,8 @@
                                             </div>
                                             <div class="col-md-2 text-end">
                                                 @if($order->status_pesanan === 'terkirim')
-                                                    <button type="button" class="brand-btn brand-btn-warning btn-sm w-100 py-2 fs-6" 
-                                                        data-bs-toggle="modal" data-bs-target="#reviewModal{{ $detail->menu_id }}">
+                                                    <button type="button" class="brand-btn brand-btn-warning btn-sm w-100 py-2 fs-6 review-btn"
+                                                        data-modal-target="reviewModal{{ $detail->menu_id }}">
                                                         Review
                                                     </button>
                                                 @else
@@ -135,7 +135,7 @@
                                                 
                                                 @if($order->status_pesanan === 'terkirim')
                                                 <!-- Review Modal -->
-                                                <div class="modal fade" id="reviewModal{{ $detail->menu_id }}" tabindex="-1">
+                                                <div class="modal fade" id="reviewModal{{ $detail->menu_id }}" aria-hidden="true">
                                                     <div class="modal-dialog modal-dialog-centered">
                                                         <div class="modal-content brand-modal-content">
                                                             <div class="brand-modal-header d-flex justify-content-between align-items-center">
@@ -179,15 +179,25 @@
                             @endforeach
                         </div>
 
-                        {{-- Re-open the correct modal if there were validation errors --}}
-                        @if($errors->any() && old('target_menu_id'))
+                        {{-- JS to open modals only via explicit button click --}}
                         <script>
                             document.addEventListener('DOMContentLoaded', function() {
-                                var modalEl = document.getElementById('reviewModal{{ old("target_menu_id") }}');
-                                if (modalEl) { new bootstrap.Modal(modalEl).show(); }
+                                // Wire up review buttons via JS only (no data-bs-toggle auto-trigger)
+                                document.querySelectorAll('.review-btn').forEach(function(btn) {
+                                    btn.addEventListener('click', function() {
+                                        var targetId = this.getAttribute('data-modal-target');
+                                        var modalEl = document.getElementById(targetId);
+                                        if (modalEl) { new bootstrap.Modal(modalEl).show(); }
+                                    });
+                                });
+
+                                @if($errors->any() && old('target_menu_id'))
+                                // Re-open the correct modal if there were validation errors
+                                var errModalEl = document.getElementById('reviewModal{{ old("target_menu_id") }}');
+                                if (errModalEl) { new bootstrap.Modal(errModalEl).show(); }
+                                @endif
                             });
                         </script>
-                        @endif
                     </div>
                 </div>
             </div>
