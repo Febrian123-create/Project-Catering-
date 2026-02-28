@@ -129,54 +129,7 @@
         </div>
     </section>
 
-    {{-- Cloud Separator Bottom --}}
-    <div class="cloud-separator-bottom"></div>
 
-    {{-- Origin Story Section --}}
-    <section class="py-5">
-        <div class="container text-center">
-            <h1 class="display-3 fw-bold mb-5" style="color: #fff; -webkit-text-stroke: 2px var(--text-brown); font-family: 'Quicksand', sans-serif;">GALLERY</h1>
-            
-            {{-- Gallery Grid --}}
-            <div class="gallery-grid mb-5">
-               @foreach($products->take(5) as $product)
-                 <div class="gallery-item">
-                    @if($product->foto)
-                         <img src="{{ asset('storage/' . $product->foto) }}" alt="{{ $product->nama }}">
-                    @else
-                         <div class="w-100 h-100 bg-light d-flex align-items-center justify-content-center">
-                             <i class="bi bi-image text-muted fs-1"></i>
-                         </div>
-                    @endif
-                 </div>
-               @endforeach
-               {{-- Fill remaining slots if few products --}}
-               @for($i = 0; $i < max(0, 5 - $products->count()); $i++)
-                   <div class="gallery-item">
-                       <img src="https://placehold.co/300x300/ffefd5/fa6255?text=Yummy" alt="Placeholder">
-                   </div>
-               @endfor
-            </div>
-
-            {{-- Origin Story Box --}}
-            <div class="origin-story-box mt-5">
-                <div class="row align-items-center">
-                    <div class="col-md-12">
-                        <span class="badge bg-warning text-dark rounded-pill mb-3">Kenapa namanya DosiNyam?</span>
-                        <h2 class="dosi-text mb-3">DOSI + NYAM</h2>
-                        <p class="fs-5" style="color: var(--text-brown);">
-                            <strong>"DOSI"</strong> dosi sendiri berasal dari kata <em>Dosirak</em>/도시락. Dalam bahasa Korea, artinya <em>"lunchbox"</em>. Kami hadir buat bawa kehangatan bekal rumah ke setiap aktivitas padatmu. Dari bahan pilihan dengan rasa yang otentik, semuanya dibungkus spesial buat kamu! <br>
-                            <strong>"NYAM"</strong> Nyam! adalah suara kepuasan setiap kali kamu menikmati masakan yang enak dan akrab di lidah.
-                        </p>
-                        <hr class="my-4" style="border-top: 2px dashed var(--primary-orange);">
-                        <p class="mb-0">
-                            Kalau digabung, <strong>Dosinyam</strong> merepresentasikan komitmen kami untuk memberikan pelayanan yang terbaik dan memberikan pengalaman yang menyenangkan supaya kamu balik terus pesan ke DosinNyam!
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
 
     {{-- Reviews Section --}}
     <section class="py-5" style="background-color: #fff9f0;">
