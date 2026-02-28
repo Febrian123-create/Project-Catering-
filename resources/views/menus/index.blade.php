@@ -51,7 +51,7 @@
                 <div class="row align-items-center">
                     <div class="col-lg-8">
                         <h3 class="fw-bold mb-2" style="font-family: 'Quicksand', sans-serif;"><i class="bi bi-box-seam me-2"></i>Paket Hemat Harian</h3>
-                        <p class="fw-bold text-muted mb-0">Gabungin menu favorit kamu biar makin hemat! Pilih paketnya, tentuin isinya, langsung sikat!</p>
+                        <p class="fw-bold opacity-75 mb-0">Gabungin menu favorit kamu biar makin hemat! Pilih paketnya, tentuin isinya, langsung sikat!</p>
                     </div>
                     <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
                         <button class="brand-btn brand-btn-primary py-3 px-4 fs-5 w-100" type="button" data-bs-toggle="collapse" data-bs-target="#packageComposer" aria-expanded="false">
@@ -338,7 +338,7 @@
 
 @push('styles')
 <style>
-    .brand-card-purple { background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); color: white; border: 3px solid #000; box-shadow: 8px 8px 0 #000; }
+    .brand-card-purple { background-color: var(--fh-purple) !important; color: #121212; border: 3px solid #000; box-shadow: 8px 8px 0 #000; }
     .brand-card.border-dashed { border-style: dashed !important; border-width: 4px !important; border-color: #000 !important; }
     .package-option-label:hover .package-option-card { border-color: #000 !important; transform: translate(-4px, -4px); box-shadow: 8px 8px 0 #000; background: #fff; }
     .package-option-label input:checked + .package-option-card { background: #000; color: #fff; transform: translate(4px, 4px); box-shadow: none; }

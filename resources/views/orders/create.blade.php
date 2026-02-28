@@ -62,15 +62,26 @@
                         {{-- Section: Pickup Time --}}
                         <div id="section_pickup" class="mb-4 d-none">
                             <label class="fw-bold text-dark mb-2">Jam Pengambilan <span class="text-danger">*</span></label>
-                            <select name="jam_pengambilan" class="form-select brand-input brand-select @error('jam_pengambilan') is-invalid @enderror">
+                            <select name="jam_pengambilan" id="pickupTimeSelect" class="form-select brand-input brand-select @error('jam_pengambilan') is-invalid @enderror">
                                 <option value="" selected disabled>Pilih Jam Pengambilan</option>
-                                <option value="08.30-09.30" {{ old('jam_pengambilan') == '08.30-09.30' ? 'selected' : '' }}>08.30 - 09.30 WIB</option>
-                                <option value="11.30-12.30" {{ old('jam_pengambilan') == '11.30-12.30' ? 'selected' : '' }}>11.30 - 12.30 WIB</option>
+                                @php
+                                    // 2 = Tuesday in PHP (0=Sunday, 1=Monday, 2=Tuesday...)
+                                    $isSelasa = (int) now()->format('N') === 2;
+                                @endphp
+                                <option value="08.00-09.15" {{ old('jam_pengambilan') == '08.00-09.15' ? 'selected' : '' }}>08.00 - 09.15 WIB</option>
+                                @if(!$isSelasa)
+                                <option value="11.00-12.30" {{ old('jam_pengambilan') == '11.00-12.30' ? 'selected' : '' }}>11.00 - 12.30 WIB</option>
+                                @endif
                             </select>
                             @error('jam_pengambilan')
                                 <div class="invalid-feedback fw-bold">{{ $message }}</div>
                             @enderror
-                            <div class="mt-2 small fw-bold text-muted">* Lokasi pengambilan: Kantin Eureka (Gedung G Lt. 1)</div>
+                            <div class="mt-2 small fw-bold text-muted">
+                                <i class="bi bi-geo-alt-fill me-1"></i> Lokasi: Kantin Eureka (Gedung G Lt. 1)
+                                @if($isSelasa)
+                                <span class="badge bg-warning text-dark border border-dark ms-2">Hari ini (Selasa): hanya sesi pagi</span>
+                                @endif
+                            </div>
                         </div>
 
                         <div class="mb-0">
