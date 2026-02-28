@@ -27,26 +27,26 @@ class CartController extends Controller
 
     public function store(Request $request)
     {
-        // Handle Package/Bundle Addition
-        if ($request->has('bundle_name')) {
+        // Handle Package/Bundle Addition (via Package Composer)
+        if ($request->input('is_bundle') == '1') {
             $validated = $request->validate([
-                'bundle_name' => 'required|string',
-                'bundle_price' => 'required|integer',
-                'menu_ids' => 'required|array|min:1',
-                'menu_ids.*' => 'exists:menu,menu_id',
-                'qty' => 'required|integer|min:1',
+                'bundle_name'   => 'required|string',
+                'bundle_price'  => 'required|numeric|min:0',
+                'menu_ids'      => 'required|array|min:1',
+                'menu_ids.*'    => 'exists:menu,menu_id',
+                'qty'           => 'required|integer|min:1',
             ]);
 
             $bundleId = \Illuminate\Support\Str::uuid()->toString();
-            
+
             foreach ($validated['menu_ids'] as $index => $menuId) {
                 Cart::create([
-                    'user_id' => Auth::id(),
-                    'menu_id' => $menuId,
-                    'qty' => $validated['qty'],
-                    'bundle_id' => $bundleId,
-                    'bundle_name' => $validated['bundle_name'],
-                    // Store the price only on the first item of the bundle
+                    'user_id'      => Auth::id(),
+                    'menu_id'      => $menuId,
+                    'qty'          => $validated['qty'],
+                    'bundle_id'    => $bundleId,
+                    'bundle_name'  => $validated['bundle_name'],
+                    // Only the first item carries the bundle price
                     'bundle_price' => ($index === 0) ? $validated['bundle_price'] : 0,
                 ]);
             }
@@ -54,10 +54,9 @@ class CartController extends Controller
             return redirect()->route('cart.index')->with('success', 'Paket ' . $validated['bundle_name'] . ' berhasil ditambahkan!');
         }
 
+        // Handle Weekly Package bulk-add (uses menu_ids[] without is_bundle flag)
         $menuIds = $request->input('menu_ids');
-        
-        if ($menuIds && is_array($menuIds)) {
-            // Bulk add (existing logic for weekly packages)
+        if ($menuIds && is_array($menuIds) && !$request->has('is_bundle')) {
             foreach ($menuIds as $menuId) {
                 $this->addToCart($menuId, 1);
             }

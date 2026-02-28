@@ -122,6 +122,7 @@
                         
                         <form action="{{ route('cart.store') }}" method="POST" id="bundleForm">
                             @csrf
+                            <input type="hidden" name="is_bundle" value="1">
                             <input type="hidden" name="bundle_name" id="inputBundleName">
                             <input type="hidden" name="bundle_price" id="inputBundlePrice">
                             <input type="hidden" name="qty" value="1">
