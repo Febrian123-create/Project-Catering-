@@ -27,7 +27,7 @@ class HomeController extends Controller
 
         $reviews = Review::with('user')
             ->inRandomOrder()
-            ->take(4)
+            ->take(5)
             ->get();
 
         return view('home', compact('menus', 'products', 'reviews'));
