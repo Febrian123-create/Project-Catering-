@@ -65,7 +65,7 @@ class AdminOrderController extends Controller
                 'Status Pembayaran',
                 'Status Pesanan',
                 'Total (Rp)',
-            ]);
+            ], ';');
 
             $query->chunk(200, function ($orders) use ($handle) {
                 foreach ($orders as $order) {
@@ -86,7 +86,7 @@ class AdminOrderController extends Controller
                         ucfirst($order->status_pembayaran),
                         $order->status_pesanan ?? 'pending',
                         $order->total_bayar,
-                    ]);
+                    ], ';');
                 }
             });
 
