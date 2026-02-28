@@ -117,6 +117,7 @@ Route::middleware('auth')->group(function () {
 
         // Orders management
         Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
+        Route::get('/orders/export', [AdminOrderController::class, 'export'])->name('orders.export');
         Route::put('/orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.updateStatus');
         Route::put('/order-details/{orderDetail}/shipping', [OrderController::class, 'updateShipping'])->name('orders.updateShipping');
 

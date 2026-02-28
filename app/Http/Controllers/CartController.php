@@ -15,6 +15,10 @@ class CartController extends Controller
             ->get();
 
         $total = $cartItems->sum(function ($item) {
+            // If it's a bundle item, use bundle_price if set, otherwise 0 for subsequent items in the same bundle
+            if ($item->bundle_id) {
+                return $item->bundle_price * $item->qty;
+            }
             return $item->subtotal;
         });
 
@@ -23,10 +27,36 @@ class CartController extends Controller
 
     public function store(Request $request)
     {
+        // Handle Package/Bundle Addition (via Package Composer)
+        if ($request->input('is_bundle') == '1') {
+            $validated = $request->validate([
+                'bundle_name'   => 'required|string',
+                'bundle_price'  => 'required|numeric|min:0',
+                'menu_ids'      => 'required|array|min:1',
+                'menu_ids.*'    => 'exists:menu,menu_id',
+                'qty'           => 'required|integer|min:1',
+            ]);
+
+            $bundleId = \Illuminate\Support\Str::uuid()->toString();
+
+            foreach ($validated['menu_ids'] as $index => $menuId) {
+                Cart::create([
+                    'user_id'      => Auth::id(),
+                    'menu_id'      => $menuId,
+                    'qty'          => $validated['qty'],
+                    'bundle_id'    => $bundleId,
+                    'bundle_name'  => $validated['bundle_name'],
+                    // Only the first item carries the bundle price
+                    'bundle_price' => ($index === 0) ? $validated['bundle_price'] : 0,
+                ]);
+            }
+
+            return redirect()->route('cart.index')->with('success', 'Paket ' . $validated['bundle_name'] . ' berhasil ditambahkan!');
+        }
+
+        // Handle Weekly Package bulk-add (uses menu_ids[] without is_bundle flag)
         $menuIds = $request->input('menu_ids');
-        
-        if ($menuIds && is_array($menuIds)) {
-            // Bulk add
+        if ($menuIds && is_array($menuIds) && !$request->has('is_bundle')) {
             foreach ($menuIds as $menuId) {
                 $this->addToCart($menuId, 1);
             }
@@ -51,11 +81,13 @@ class CartController extends Controller
     {
         $existing = Cart::where('user_id', Auth::id())
             ->where('menu_id', $menuId)
+            ->whereNull('bundle_id')
             ->first();
 
         if ($existing) {
             Cart::where('user_id', Auth::id())
                 ->where('menu_id', $menuId)
+                ->whereNull('bundle_id')
                 ->update(['qty' => $existing->qty + $qty]);
         } else {
             Cart::create([
@@ -70,21 +102,36 @@ class CartController extends Controller
     {
         $validated = $request->validate([
             'qty' => 'required|integer|min:1',
+            'bundle_id' => 'nullable|string',
         ]);
 
-        Cart::where('user_id', Auth::id())
-            ->where('menu_id', $menu_id)
-            ->update(['qty' => $validated['qty']]);
+        $query = Cart::where('user_id', Auth::id())
+            ->where('menu_id', $menu_id);
+            
+        if ($request->filled('bundle_id')) {
+            $query->where('bundle_id', $request->bundle_id);
+        } else {
+            $query->whereNull('bundle_id');
+        }
+
+        $query->update(['qty' => $validated['qty']]);
 
         return redirect()->route('cart.index')
             ->with('success', 'Keranjang berhasil diupdate!');
     }
 
-    public function destroy($menu_id)
+    public function destroy(Request $request, $menu_id)
     {
-        Cart::where('user_id', Auth::id())
-            ->where('menu_id', $menu_id)
-            ->delete();
+        $query = Cart::where('user_id', Auth::id())
+            ->where('menu_id', $menu_id);
+            
+        if ($request->filled('bundle_id')) {
+            $query->where('bundle_id', $request->bundle_id);
+        } else {
+            $query->whereNull('bundle_id');
+        }
+
+        $query->delete();
 
         return redirect()->route('cart.index')
             ->with('success', 'Item berhasil dihapus dari keranjang!');

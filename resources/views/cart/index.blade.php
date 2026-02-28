@@ -34,46 +34,111 @@
                         <div style="width: 50px;"></div>
                     </div>
 
-                    @foreach($cartItems as $item)
-                        @if($item->menu)
-                            <div class="px-2 py-4 border-bottom border-1 border-dark border-opacity-10">
-                                <div class="row align-items-center g-3">
-                                    <div class="col-12 col-md-5">
-                                        <h6 class="fw-bold text-dark mb-1">{{ $item->menu->nama_display }}</h6>
-                                        <p class="text-muted small fw-bold mb-0">{{ $item->menu->formatted_harga }} / porsi</p>
+                    @php
+                        $groupedItems = $cartItems->groupBy(function($item) {
+                            return $item->bundle_id ?: 'single_' . $item->menu_id;
+                        });
+                    @endphp
+
+                    @foreach($groupedItems as $groupId => $items)
+                        @php $firstItem = $items->first(); @endphp
+                        @if($firstItem->bundle_id)
+                            {{-- Bundle Display --}}
+                            <div class="px-2 py-4 border-bottom border-1 border-dark border-opacity-10 bg-light-purple rounded-4 mb-3 mx-2 mt-3">
+                                <div class="d-flex justify-content-between align-items-center mb-3 px-3">
+                                    <div>
+                                        <span class="badge bg-purple text-white border border-dark px-3 py-1 rounded-pill fw-bold small mb-1">PAKET</span>
+                                        <h5 class="fw-bold text-dark mb-0">{{ $firstItem->bundle_name }}</h5>
                                     </div>
-                                <div class="col-6 col-md-2 text-md-center">
-                                    <span class="badge rounded-pill bg-light text-dark border border-dark px-3 py-2 fw-bold">
-                                        <i class="bi bi-calendar-event me-1"></i>
-                                        {{ $item->menu->tgl_tersedia->format('d M') }}
-                                    </span>
+                                    <div class="text-end">
+                                        <span class="badge rounded-pill bg-white text-dark border border-dark px-3 py-2 fw-bold">
+                                            <i class="bi bi-calendar-event me-1"></i>
+                                            {{ $firstItem->menu->tgl_tersedia->format('d M') }}
+                                        </span>
+                                    </div>
                                 </div>
-                                <div class="col-6 col-md-2">
-                                    <form action="{{ route('cart.update', $item->menu_id) }}" method="POST" class="d-flex justify-content-center">
-                                        @csrf
-                                        @method('PUT')
-                                        <input type="number" name="qty" class="form-control border-2 border-dark text-center fw-bold rounded-pill" 
-                                            value="{{ $item->qty }}" min="1" style="max-width: 80px;"
-                                            onchange="this.form.submit()">
-                                    </form>
+                                
+                                <div class="px-3">
+                                    @foreach($items as $item)
+                                        <div class="d-flex justify-content-between align-items-center mb-2 small fw-bold text-muted">
+                                            <div><i class="bi bi-check2-circle me-2 text-primary"></i>{{ $item->menu->nama_display }}</div>
+                                            <div>{{ $item->qty }} porsi</div>
+                                        </div>
+                                    @endforeach
                                 </div>
-                                <div class="col-6 col-md-2 text-md-end">
-                                    <span class="fw-bold text-danger fs-5">Rp {{ number_format($item->subtotal, 0, ',', '.') }}</span>
-                                </div>
-                                <div class="col-6 col-md-1 text-end">
-                                    <form action="{{ route('cart.destroy', $item->menu_id) }}" method="POST" 
-                                        onsubmit="return confirm('Hapus item ini?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-link text-danger p-0">
-                                            <i class="bi bi-trash3-fill fs-5"></i>
-                                        </button>
-                                    </form>
+
+                                <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top border-dark border-opacity-10 px-3">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <form action="{{ route('cart.update', $items[0]->menu_id) }}" method="POST" class="d-flex align-items-center gap-2">
+                                            @csrf
+                                            @method('PUT')
+                                            <input type="hidden" name="bundle_id" value="{{ $firstItem->bundle_id }}">
+                                            <input type="number" name="qty" class="form-control border-2 border-dark text-center fw-bold rounded-pill h-auto py-1" 
+                                                value="{{ $items[0]->qty }}" min="1" style="max-width: 70px;"
+                                                onchange="this.form.submit()">
+                                            <small class="fw-bold">Porsi (Set)</small>
+                                        </form>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-4">
+                                        <div class="text-end">
+                                            <span class="fw-bold text-danger fs-5">Rp {{ number_format($items->sum('subtotal'), 0, ',', '.') }}</span>
+                                        </div>
+                                        <form action="{{ route('cart.destroy', $items[0]->menu_id) }}" method="POST" 
+                                            onsubmit="return confirm('Hapus seluruh paket ini?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <input type="hidden" name="bundle_id" value="{{ $firstItem->bundle_id }}">
+                                            <button type="submit" class="btn btn-link text-danger p-0">
+                                                <i class="bi bi-trash3-fill fs-5"></i>
+                                            </button>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    @endif
-                @endforeach
+                        @else
+                            {{-- Single Item Display --}}
+                            @foreach($items as $item)
+                                @if($item->menu)
+                                    <div class="px-2 py-4 border-bottom border-1 border-dark border-opacity-10">
+                                        <div class="row align-items-center g-3">
+                                            <div class="col-12 col-md-5">
+                                                <h6 class="fw-bold text-dark mb-1">{{ $item->menu->nama_display }}</h6>
+                                                <p class="text-muted small fw-bold mb-0">{{ $item->menu->formatted_harga }} / porsi</p>
+                                            </div>
+                                            <div class="col-6 col-md-2 text-md-center">
+                                                <span class="badge rounded-pill bg-light text-dark border border-dark px-3 py-2 fw-bold">
+                                                    <i class="bi bi-calendar-event me-1"></i>
+                                                    {{ $item->menu->tgl_tersedia->format('d M') }}
+                                                </span>
+                                            </div>
+                                            <div class="col-6 col-md-2">
+                                                <form action="{{ route('cart.update', $item->menu_id) }}" method="POST" class="d-flex justify-content-center">
+                                                    @csrf
+                                                    @method('PUT')
+                                                    <input type="number" name="qty" class="form-control border-2 border-dark text-center fw-bold rounded-pill" 
+                                                        value="{{ $item->qty }}" min="1" style="max-width: 80px;"
+                                                        onchange="this.form.submit()">
+                                                </form>
+                                            </div>
+                                            <div class="col-6 col-md-2 text-md-end">
+                                                <span class="fw-bold text-danger fs-5">Rp {{ number_format($item->subtotal, 0, ',', '.') }}</span>
+                                            </div>
+                                            <div class="col-6 col-md-1 text-end">
+                                                <form action="{{ route('cart.destroy', $item->menu_id) }}" method="POST" 
+                                                    onsubmit="return confirm('Hapus item ini?')">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-link text-danger p-0">
+                                                        <i class="bi bi-trash3-fill fs-5"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                            @endforeach
+                        @endif
+                    @endforeach
 
                     <div class="mt-4 pt-3 d-flex justify-content-between align-items-center">
                         <a href="{{ route('menus.index') }}" class="brand-btn brand-btn-warning text-decoration-none">

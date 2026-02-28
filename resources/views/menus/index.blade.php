@@ -43,13 +43,171 @@
         </div>
     </div>
 
+    {{-- Info Cards: Perbedaan Menu Harian vs Mingguan --}}
+    <div class="row g-4 mb-5">
+        {{-- Card Mingguan --}}
+        <div class="col-md-6">
+            <div class="brand-card p-4 h-100" style="background: var(--fh-blue); border: 3px solid #000; box-shadow: 6px 6px 0 #000;">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <span style="font-size: 2rem;">📅</span>
+                    <h5 class="fw-black mb-0 text-dark text-uppercase">Menu Mingguan</h5>
+                </div>
+                <p class="fw-bold text-dark mb-4" style="line-height: 1.6;">
+                    Ini pilihan buat kamu yang mau langsung pesan bekal tanpa ribet milih menu tiap harinya!
+                    Sekali pesan, bekalmu sudah pasti aman untuk <span class="text-danger fw-black">seminggu</span>.
+                </p>
+                <div class="d-flex align-items-start gap-3 mb-3 p-3 bg-white rounded-4 border border-2 border-dark">
+                    <span style="font-size: 1.3rem; flex-shrink:0;">🗓️</span>
+                    <p class="mb-0 fw-bold small text-dark">
+                        Kamu bisa lihat menu baru untuk seminggu ke depan setiap <span class="text-danger fw-black">Jumat Sore</span>
+                    </p>
+                </div>
+                <div class="d-flex align-items-start gap-3 p-3 bg-white rounded-4 border border-2 border-dark">
+                    <span style="font-size: 1.3rem; flex-shrink:0;">⏰</span>
+                    <p class="mb-0 fw-bold small text-dark">
+                        Batas ordernya maksimal di Hari <span class="text-danger fw-black">Minggu jam 12.00 Siang</span>, jangan sampai kelewat ya!
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        {{-- Card Harian --}}
+        <div class="col-md-6">
+            <div class="brand-card p-4 h-100" style="background: var(--fh-yellow); border: 3px solid #000; box-shadow: 6px 6px 0 #000;">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <span style="font-size: 2rem;">🍱</span>
+                    <h5 class="fw-black mb-0 text-dark text-uppercase">Menu Harian</h5>
+                </div>
+                <p class="fw-bold text-dark mb-4" style="line-height: 1.6;">
+                    Pilihan buat kamu yang mobilitasnya tinggi atau pengen pesan bekal
+                    <span class="text-danger fw-black">sesuai mood</span> aja. Bebas pilih mau makan enak di hari apa!
+                </p>
+                <div class="d-flex align-items-start gap-3 mb-3 p-3 bg-white rounded-4 border border-2 border-dark">
+                    <span style="font-size: 1.3rem; flex-shrink:0;">🗓️</span>
+                    <p class="mb-0 fw-bold small text-dark">
+                        Kamu bisa pantau menu yang tersedia di <span class="text-danger fw-black">H-2 sebelum hari pengiriman</span>
+                    </p>
+                </div>
+                <div class="d-flex align-items-start gap-3 p-3 bg-white rounded-4 border border-2 border-dark">
+                    <span style="font-size: 1.3rem; flex-shrink:0;">⏰</span>
+                    <p class="mb-0 fw-bold small text-dark">
+                        Batas ordernya paling lambat di <span class="text-danger fw-black">H-1 jam 12.00 Siang</span>, jangan sampai keduluan yang lain!
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if($tab === 'harian')
+    <!-- Daily Menu Packages Section -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="brand-card bg-white p-4 mb-4 shadow-lg border-3">
+
+                <div class="row align-items-center">
+                    <div class="col-lg-8">
+                        <h3 class="fw-bold mb-2" style="font-family: 'Quicksand', sans-serif;"><i class="bi bi-box-seam me-2"></i>Paket Hemat Harian</h3>
+                        <p class="fw-bold opacity-75 mb-0">Gabungin menu favorit kamu biar makin hemat! Pilih paketnya, tentuin isinya, langsung sikat!</p>
+                    </div>
+                    <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+                        <button class="brand-btn brand-btn-primary py-3 px-4 fs-5 w-100" type="button" data-bs-toggle="collapse" data-bs-target="#packageComposer" aria-expanded="false">
+                            <i class="bi bi-magic me-2"></i>Pilih Paket Sekarang
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Package Pricelist -->
+                <div class="row mt-4 g-3">
+                    @php
+                        $packages = [
+                            ['name' => 'Nasi + Sayur + Daging', 'price' => '12k', 'icon' => 'bi-lightning-charge-fill', 'color' => '#fbbf24'],
+                            ['name' => 'Nasi + Daging + Daging', 'price' => '17k', 'icon' => 'bi-fire', 'color' => '#f87171'],
+                            ['name' => 'Nasi + Sayur + Sayur', 'price' => '10k', 'icon' => 'bi-leaf-fill', 'color' => '#4ade80'],
+                            ['name' => 'Nasi + Sayur + Telor', 'price' => '12k', 'icon' => 'bi-egg-fill', 'color' => '#fcd34d'],
+                            ['name' => 'Nasi + Sayur', 'price' => '9k', 'icon' => 'bi-brightness-high-fill', 'color' => '#60a5fa'],
+                            ['name' => 'Nasi + Daging Utuh', 'price' => '10k', 'icon' => 'bi-gem', 'color' => '#a78bfa'],
+                        ];
+                    @endphp
+                    @foreach($packages as $pkg)
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="p-3 bg-white border border-3 border-dark rounded-4 text-center shadow-neobrutal-sm h-100 package-tip" title="{{ $pkg['name'] }}">
+                            <i class="bi {{ $pkg['icon'] }} fs-3 mb-2 d-block" style="color: {{ $pkg['color'] }}"></i>
+                            <div class="small fw-800 text-truncate text-dark">{{ $pkg['name'] }}</div>
+                            <div class="h5 fw-900 text-danger mb-0">{{ $pkg['price'] }}</div>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+
+            <!-- Package Composer (Collapsible) -->
+            <div class="collapse" id="packageComposer">
+                <div class="brand-card bg-white p-4 border-2 border-dark mb-5 shadow-lg" style="border-style: dashed !important;">
+                    <div id="step1">
+                        <h4 class="fw-bold mb-4 text-center" style="font-family: 'Quicksand', sans-serif;">Step 1: Pilih Jenis Paket</h4>
+                        <div class="row g-3 justify-content-center mb-4">
+                            @php
+                                $full_packages = [
+                                    ['id' => 'nsd', 'name' => 'Nasi + Sayur + Daging', 'price' => 12000, 'items' => [['type' => 'fixed', 'category' => 'Nasi'], ['type' => 'select', 'category' => 'Sayur'], ['type' => 'select', 'category' => 'Daging']]],
+                                    ['id' => 'ndd', 'name' => 'Nasi + Daging + Daging', 'price' => 17000, 'items' => [['type' => 'fixed', 'category' => 'Nasi'], ['type' => 'select', 'category' => 'Daging', 'label' => 'Daging 1'], ['type' => 'select', 'category' => 'Daging', 'label' => 'Daging 2']]],
+                                    ['id' => 'nss', 'name' => 'Nasi + Sayur + Sayur', 'price' => 10000, 'items' => [['type' => 'fixed', 'category' => 'Nasi'], ['type' => 'select', 'category' => 'Sayur', 'label' => 'Sayur 1'], ['type' => 'select', 'category' => 'Sayur', 'label' => 'Sayur 2']]],
+                                    ['id' => 'nst', 'name' => 'Nasi + Sayur + Telor Rebus', 'price' => 12000, 'items' => [['type' => 'fixed', 'category' => 'Nasi'], ['type' => 'select', 'category' => 'Sayur'], ['type' => 'fixed', 'category' => 'Telor Rebus']]],
+                                    ['id' => 'ns', 'name' => 'Nasi + Sayur', 'price' => 9000, 'items' => [['type' => 'fixed', 'category' => 'Nasi'], ['type' => 'select', 'category' => 'Sayur']]],
+                                    ['id' => 'ndu', 'name' => 'Nasi + Daging Utuh (2)', 'price' => 10000, 'items' => [['type' => 'fixed', 'category' => 'Nasi'], ['type' => 'select', 'category' => 'Daging', 'label' => 'Daging Utuh (2)']]],
+                                ];
+                            @endphp
+                            
+                            @foreach($full_packages as $fp)
+                            <div class="col-md-4">
+                                <label class="package-option-label w-100 cursor-pointer">
+                                    <input type="radio" name="package_selection" value="{{ $fp['id'] }}" class="d-none" 
+                                           data-price="{{ $fp['price'] }}" data-name="{{ $fp['name'] }}" data-config="{{ json_encode($fp['items']) }}">
+                                    <div class="package-option-card p-4 text-center border border-3 border-dark rounded-4 h-100 transition-all">
+                                        <h5 class="fw-bold mb-2">{{ $fp['name'] }}</h5>
+                                        <div class="h4 fw-bold text-danger mb-0">Rp {{ number_format($fp['price'], 0, ',', '.') }}</div>
+                                    </div>
+                                </label>
+                            </div>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    <div id="step2Composer" class="d-none">
+                        <hr class="border-2 border-dark mb-5">
+                        <h4 class="fw-bold mb-4 text-center" style="font-family: 'Quicksand', sans-serif;">Step 2: Pilih Isi Paket</h4>
+                        
+                        <form action="{{ route('cart.store') }}" method="POST" id="bundleForm">
+                            @csrf
+                            <input type="hidden" name="is_bundle" value="1">
+                            <input type="hidden" name="bundle_name" id="inputBundleName">
+                            <input type="hidden" name="bundle_price" id="inputBundlePrice">
+                            <input type="hidden" name="qty" value="1">
+                            
+                            <div id="itemSelectionContainer" class="row g-4 justify-content-center">
+                                <!-- Dynamic Content via JS -->
+                            </div>
+
+                            <div class="text-center mt-5">
+                                <button type="submit" class="brand-btn brand-btn-primary py-3 px-5 fs-4 mt-3" id="btnAddToCartBundle" disabled>
+                                    <i class="bi bi-cart-plus me-2"></i>Masukkan Keranjang
+                                </button>
+                                <p class="text-muted small fw-bold mt-3" id="selectionWarning"><i class="bi bi-info-circle me-1"></i>Lengkapi pilihan menu kamu buat lanjut!</p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
+
     <div class="row g-4">
         @php
             $card_styles = ['brand-card-blue', 'brand-card-green', 'brand-card-purple', ''];
         @endphp
         @forelse($menus as $index => $menu)
             <div class="col-md-6 col-lg-4">
-                <div class="brand-card {{ $card_styles[$index % 4] }} h-100 menu-detail-trigger"
+                <div class="brand-card bg-white h-100 menu-detail-trigger"
                     data-id="{{ $menu->menu_id }}"
                     data-nama="{{ $menu->nama_display }}"
                     data-deskripsi="{{ $menu->deskripsi_display }}"
@@ -234,16 +392,131 @@
     </div>
 </div>
 
+@push('styles')
+<style>
+    .brand-card-purple { background-color: var(--fh-purple) !important; color: #121212; border: 3px solid #000; box-shadow: 8px 8px 0 #000; }
+    .brand-card.border-dashed { border-style: dashed !important; border-width: 4px !important; border-color: #000 !important; }
+    .package-option-label:hover .package-option-card { border-color: #000 !important; transform: translate(-4px, -4px); box-shadow: 8px 8px 0 #000; background: #fff; }
+    .package-option-label input:checked + .package-option-card { background: #000; color: #fff; transform: translate(4px, 4px); box-shadow: none; }
+    .package-option-label input:checked + .package-option-card .text-danger { color: #f87171 !important; }
+    .transition-all { transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    .cursor-pointer { cursor: pointer; }
+    .item-select-card { background: #fff; border: 3px solid #000; border-radius: 16px; box-shadow: 4px 4px 0 #000; transition: all 0.2s; }
+    .item-select-card:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 #000; }
+    .item-select-card select { border: none !important; box-shadow: none !important; font-weight: 800; cursor: pointer; background: transparent; font-size: 1.1rem; }
+    .package-tip { transition: transform 0.2s; }
+    .package-tip:hover { transform: scale(1.05) rotate(2deg); z-index: 10; cursor: default; }
+    .shadow-neobrutal-sm { box-shadow: 4px 4px 0 #000; }
+    .fw-800 { font-weight: 800; }
+    .fw-900 { font-weight: 900; }
+    .bg-purple { background-color: #a855f7 !important; }
+</style>
+@endpush
+
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Current available menus for composer
+    const availableMenus = @json($allHarianMenus);
+    
+    // Package Composition Logic
+    const packageRadios = document.querySelectorAll('input[name="package_selection"]');
+    const step2 = document.getElementById('step2Composer');
+    const itemContainer = document.getElementById('itemSelectionContainer');
+    const bundleForm = document.getElementById('bundleForm');
+    const btnSubmit = document.getElementById('btnAddToCartBundle');
+    const warning = document.getElementById('selectionWarning');
+
+    packageRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            const config = JSON.parse(this.dataset.config);
+            const price = this.dataset.price;
+            const name = this.dataset.name;
+            
+            // Show Step 2
+            step2.classList.remove('d-none');
+            step2.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            
+            // Generate Selection UI
+            generateItemSelection(config);
+            
+            // Update hidden inputs
+            document.getElementById('inputBundleName').value = name;
+            document.getElementById('inputBundlePrice').value = price;
+            
+            validateSelection();
+        });
+    });
+
+    function generateItemSelection(config) {
+        itemContainer.innerHTML = '';
+        
+        config.forEach((step, index) => {
+            const col = document.createElement('div');
+            col.className = 'col-md-5';
+            
+            let content = '';
+            if (step.type === 'fixed') {
+                // Find fixed item menu_id if applicable (e.g. Nasi)
+                const fixedItem = availableMenus.find(m => m.product.kategori === step.category) || 
+                                  availableMenus.find(m => m.product.nama.toLowerCase().includes(step.category.toLowerCase()));
+                
+                content = `
+                    <div class="item-select-card p-4 bg-light text-center">
+                        <h6 class="text-muted fw-bold mb-1">${step.label || step.category}</h6>
+                        <h5 class="fw-bold mb-0">${fixedItem ? fixedItem.product.nama : step.category}</h5>
+                        ${fixedItem ? `<input type="hidden" name="menu_ids[]" value="${fixedItem.menu_id}">` : ''}
+                    </div>
+                `;
+            } else {
+                // Selectable menu
+                const filtered = availableMenus.filter(m => m.product.kategori === step.category);
+                
+                content = `
+                    <div class="item-select-card p-4 bg-white">
+                        <label class="d-block text-muted small fw-bold mb-2">${step.label || step.category}</label>
+                        <select class="form-select form-select-lg menu-selector" name="menu_ids[]" required>
+                            <option value="" disabled selected>Pilih ${step.category}...</option>
+                            ${filtered.map(m => `<option value="${m.menu_id}">${m.product.nama}</option>`).join('')}
+                        </select>
+                    </div>
+                `;
+            }
+            
+            col.innerHTML = content;
+            itemContainer.appendChild(col);
+        });
+
+        // re-bind validation
+        document.querySelectorAll('.menu-selector').forEach(select => {
+            select.addEventListener('change', validateSelection);
+        });
+    }
+
+    function validateSelection() {
+        const selects = document.querySelectorAll('.menu-selector');
+        let allValid = true;
+        selects.forEach(s => { if(!s.value) allValid = false; });
+        
+        btnSubmit.disabled = !allValid;
+        if(allValid) {
+            warning.innerHTML = '<i class="bi bi-check-circle-fill me-1 text-success"></i> Mantap! Pilihan kamu sudah lengkap. Sikat!';
+            warning.classList.remove('text-muted');
+            warning.classList.add('text-success');
+        } else {
+            warning.innerHTML = '<i class="bi bi-info-circle me-1"></i> Lengkapi pilihan menu kamu buat lanjut!';
+            warning.classList.add('text-muted');
+            warning.classList.remove('text-success');
+        }
+    }
+
+    // Existing Modal Qty Logic...
     const modal = new bootstrap.Modal(document.getElementById('menuDetailModal'));
     const triggers = document.querySelectorAll('.menu-detail-trigger');
     const qtyInput = document.getElementById('modalQtyInput');
     const plusBtn = document.getElementById('modalQtyPlus');
     const minusBtn = document.getElementById('modalQtyMinus');
 
-    // Qty Logic
     plusBtn.addEventListener('click', () => {
         qtyInput.value = parseInt(qtyInput.value) + 1;
     });
@@ -257,14 +530,11 @@ document.addEventListener('DOMContentLoaded', function() {
     triggers.forEach(trigger => {
         trigger.addEventListener('click', function() {
             const data = this.dataset;
-            
             document.getElementById('modalMenuId').value = data.id;
             document.getElementById('modalMenuName').textContent = data.nama;
             document.getElementById('modalMenuDescription').textContent = data.deskripsi;
             document.getElementById('modalMenuPrice').textContent = data.harga;
             document.getElementById('modalMenuDate').innerHTML = `<i class="bi bi-calendar2-heart me-1"></i> ${data.tanggal}`;
-            
-            // Reset Qty
             qtyInput.value = 1;
             
             const photoImg = document.getElementById('modalMenuPhoto');
@@ -280,7 +550,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 placeholder.classList.remove('d-none');
                 placeholder.classList.add('d-flex');
             }
-            
             modal.show();
         });
     });

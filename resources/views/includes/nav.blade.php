@@ -29,7 +29,6 @@
                     <a href="{{ route('menus.index') }}" class="{{ Request::is('menus*') ? 'active' : '' }}">Menu</a>
                     <a href="{{ route('cart.index') }}" class="{{ Request::is('cart*') ? 'active' : '' }}">Keranjang</a>
                     <a href="{{ route('orders.index') }}" class="{{ Request::is('orders*') ? 'active' : '' }}">Pesananku</a>
-                    <a href="{{ route('reviews.index') }}" class="{{ Request::is('reviews*') ? 'active' : '' }}">Ulasan</a>
                     <a href="{{ route('requests.index') }}" class="{{ Request::is('requests*') ? 'active' : '' }}">Request-an</a>
                     <a href="{{ route('notifications.index') }}" class="{{ Request::is('notifications*') ? 'active' : '' }}">Notifikasi!</a>
                 @endif

@@ -84,6 +84,28 @@
 
                     <div class="mt-5">
                         <h4 class="fw-black text-dark mb-4" style="letter-spacing: -1px;"><i class="bi bi-journal-text me-2"></i>Kamu pesen apa aja?</h4>
+
+                        {{-- Session flash messages shown OUTSIDE modal loop --}}
+                        @if(session('success'))
+                            <div class="alert alert-success border-2 border-dark rounded-4 mb-4 fw-bold">
+                                <i class="bi bi-check-circle-fill me-2"></i>{{ session('success') }}
+                            </div>
+                        @endif
+                        @if(session('error'))
+                            <div class="alert alert-danger border-2 border-dark rounded-4 mb-4 fw-bold">
+                                <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ session('error') }}
+                            </div>
+                        @endif
+                        @if($errors->any())
+                            <div class="alert alert-danger border-2 border-dark rounded-4 mb-4 fw-bold text-start">
+                                <ul class="mb-0">
+                                    @foreach($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+
                         <div class="row g-3">
                             @foreach($order->orderDetails as $detail)
                                 <div class="col-12">
@@ -101,8 +123,8 @@
                                             </div>
                                             <div class="col-md-2 text-end">
                                                 @if($order->status_pesanan === 'terkirim')
-                                                    <button type="button" class="brand-btn brand-btn-warning btn-sm w-100 py-2 fs-6" 
-                                                        data-bs-toggle="modal" data-bs-target="#reviewModal{{ $detail->menu_id }}">
+                                                    <button type="button" class="brand-btn brand-btn-warning btn-sm w-100 py-2 fs-6 review-btn"
+                                                        data-modal-target="reviewModal{{ $detail->menu_id }}">
                                                         Review
                                                     </button>
                                                 @else
@@ -116,6 +138,26 @@
                                 </div>
                             @endforeach
                         </div>
+
+                        {{-- JS to open modals only via explicit button click --}}
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                // Wire up review buttons via JS only (no data-bs-toggle auto-trigger)
+                                document.querySelectorAll('.review-btn').forEach(function(btn) {
+                                    btn.addEventListener('click', function() {
+                                        var targetId = this.getAttribute('data-modal-target');
+                                        var modalEl = document.getElementById(targetId);
+                                        if (modalEl) { new bootstrap.Modal(modalEl).show(); }
+                                    });
+                                });
+
+                                @if($errors->any() && old('target_menu_id'))
+                                // Re-open the correct modal if there were validation errors
+                                var errModalEl = document.getElementById('reviewModal{{ old("target_menu_id") }}');
+                                if (errModalEl) { new bootstrap.Modal(errModalEl).show(); }
+                                @endif
+                            });
+                        </script>
                     </div>
                 </div>
             </div>
@@ -238,6 +280,7 @@
                     @csrf
                     <div class="brand-modal-body text-center">
                         <input type="hidden" name="menu_id" value="{{ $detail->menu_id }}">
+                        <input type="hidden" name="target_menu_id" value="{{ $detail->menu_id }}">
                         
                         <div class="text-center mb-4">
                             <h6 class="fw-black text-muted text-uppercase tracking-wider mb-1">{{ $detail->menu->nama_display }}</h6>
