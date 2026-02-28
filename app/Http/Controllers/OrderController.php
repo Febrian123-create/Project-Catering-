@@ -44,7 +44,7 @@ class OrderController extends Controller
         $validated = $request->validate([
             'metode_pengantaran' => 'required|in:antar_alamat,ambil_eureka',
             'alamat_pengiriman' => 'required_if:metode_pengantaran,antar_alamat|nullable|string|max:255',
-            'jam_pengambilan' => 'required_if:metode_pengantaran,ambil_eureka|nullable|string|in:08.30-09.30,11.30-12.30',
+            'jam_pengambilan'  => 'required_if:metode_pengantaran,ambil_eureka|nullable|string|in:08.00-09.15,11.00-12.30',
             'notes' => 'nullable|string|max:100',
         ]);
 

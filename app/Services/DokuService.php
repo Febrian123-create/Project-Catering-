@@ -46,29 +46,29 @@ class DokuService
 
         $body = [
             'order' => [
-                'amount' => (int) $order->total_bayar,
-                'invoice_number' => $invoiceNumber,
-                'currency' => 'IDR',
-                'callback_url' => route('payment.callback', ['order_id' => $order->order_id]),
+                'amount'          => (int) $order->total_bayar,
+                'invoice_number'  => $invoiceNumber,
+                'currency'        => 'IDR',
+                'callback_url'    => route('payment.callback', ['order_id' => $order->order_id]),
                 'callback_url_cancel' => route('payment.callback.cancel', ['order_id' => $order->order_id]),
-                'language' => 'ID',
-                'auto_redirect' => true,
-                'line_items' => $order->orderDetails->map(function ($detail) {
-                    return [
-                        'id' => $detail->menu_id,
-                        'name' => substr($detail->menu->nama_display ?? 'Menu Item', 0, 255),
-                        'quantity' => (int) $detail->qty,
-                        'price' => (int) ($detail->menu->harga ?? 0),
-                    ];
-                })->toArray(),
+                'language'        => 'ID',
+                'auto_redirect'   => true,
+                'line_items'      => [
+                    [
+                        'id'       => $order->order_id,
+                        'name'     => 'Pesanan #' . $order->order_id,
+                        'quantity' => 1,
+                        'price'    => (int) $order->total_bayar,
+                    ]
+                ],
             ],
             'payment' => [
                 'payment_due_date' => 60,
             ],
             'customer' => [
-                'id' => (string) $order->user_id,
-                'name' => $order->user->nama ?? 'Customer',
-                'phone' => $order->user->kontak ?? '',
+                'id'      => (string) $order->user_id,
+                'name'    => $order->user->nama ?? 'Customer',
+                'phone'   => $order->user->kontak ?? '',
                 'address' => $order->alamat_pengiriman ?? '',
                 'country' => 'ID',
             ],
