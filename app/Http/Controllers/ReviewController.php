@@ -16,7 +16,7 @@ class ReviewController extends Controller
             ->orderBy('tgl_review', 'desc')
             ->paginate(12);
 
-        return view('reviews.index', compact('reviews'));
+        return view('ulasan.index', compact('reviews'));
     }
 
     public function store(Request $request)
