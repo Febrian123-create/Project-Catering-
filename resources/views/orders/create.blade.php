@@ -78,6 +78,8 @@
                             @enderror
                             <div class="mt-2 small fw-bold text-muted">
                                 <i class="bi bi-geo-alt-fill me-1"></i> Lokasi: Kantin Eureka (Gedung G Lt. 1)
+                                <br>
+                                <i class="bi bi-clock-fill me-1"></i> Kalau kamu tidak ambil di jam yang sudah dipilih, mohon ambil pesanan di tempat penitipan barang basement gedung G, ya!
                                 @if($isSelasa)
                                 <span class="badge bg-warning text-dark border border-dark ms-2">Hari ini (Selasa): hanya sesi pagi</span>
                                 @endif
