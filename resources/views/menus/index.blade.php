@@ -102,7 +102,8 @@
     <!-- Daily Menu Packages Section -->
     <div class="row mb-5">
         <div class="col-12">
-            <div class="brand-card brand-card-purple p-4 mb-4 shadow-lg border-3">
+            <div class="brand-card bg-white p-4 mb-4 shadow-lg border-3">
+
                 <div class="row align-items-center">
                     <div class="col-lg-8">
                         <h3 class="fw-bold mb-2" style="font-family: 'Quicksand', sans-serif;"><i class="bi bi-box-seam me-2"></i>Paket Hemat Harian</h3>
