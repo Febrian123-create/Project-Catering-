@@ -207,7 +207,7 @@
         @endphp
         @forelse($menus as $index => $menu)
             <div class="col-md-6 col-lg-4">
-                <div class="brand-card {{ $card_styles[$index % 4] }} h-100 menu-detail-trigger"
+                <div class="brand-card bg-white h-100 menu-detail-trigger"
                     data-id="{{ $menu->menu_id }}"
                     data-nama="{{ $menu->nama_display }}"
                     data-deskripsi="{{ $menu->deskripsi_display }}"
