@@ -110,67 +110,6 @@
                                                         <i class="bi bi-lock-fill me-1"></i>Belum Terkirim
                                                     </span>
                                                 @endif
-                                                
-                                                @if($order->status_pesanan === 'terkirim')
-                                                <!-- Brandized Modal Review -->
-                                                <div class="modal fade" id="reviewModal{{ $detail->menu_id }}" tabindex="-1">
-                                                    <div class="modal-dialog modal-dialog-centered">
-                                                        <div class="modal-content brand-modal-content">
-                                                            <div class="brand-modal-header d-flex justify-content-between align-items-center">
-                                                                <h5 class="brand-modal-title mb-0">Kasih rating menu, yuk!</h5>
-                                                                <button type="button" class="brand-modal-close" data-bs-dismiss="modal"><i class="bi bi-x-lg"></i></button>
-                                                            </div>
-                                                            <form action="{{ route('reviews.store') }}" method="POST">
-                                                                @csrf
-                                                                <div class="brand-modal-body text-center">
-                                                                    @if(session('success'))
-                                                                        <div class="alert alert-success border-2 border-dark rounded-4 mb-4 fw-bold">
-                                                                            {{ session('success') }}
-                                                                        </div>
-                                                                    @endif
-
-                                                                    @if(session('error'))
-                                                                        <div class="alert alert-danger border-2 border-dark rounded-4 mb-4 fw-bold">
-                                                                            {{ session('error') }}
-                                                                        </div>
-                                                                    @endif
-
-                                                                    @if($errors->any())
-                                                                        <div class="alert alert-danger border-2 border-dark rounded-4 mb-4 fw-bold text-start">
-                                                                            <ul class="mb-0">
-                                                                                @foreach($errors->all() as $error)
-                                                                                    <li>{{ $error }}</li>
-                                                                                @endforeach
-                                                                            </ul>
-                                                                        </div>
-                                                                    @endif
-
-                                                                    <input type="hidden" name="menu_id" value="{{ $detail->menu_id }}">
-                                                                    <h6 class="fw-bold text-muted mb-4 text-uppercase tracking-wider">{{ $detail->menu->nama_display }}</h6>
-                                                                    
-                                                                    <div class="mb-4">
-                                                                        <label class="fw-bold d-block mb-3 fs-5">Gimana rasanya? Puas gak?</label>
-                                                                        <select name="bintang" class="form-select brand-input text-center fs-5">
-                                                                            <option value="5">⭐⭐⭐⭐⭐ Enak banget!</option>
-                                                                            <option value="4">⭐⭐⭐⭐ Enak</option>
-                                                                            <option value="3">⭐⭐⭐ Lumayan</option>
-                                                                            <option value="2">⭐⭐ Kureng ah</option>
-                                                                            <option value="1">⭐ Gak enak</option>
-                                                                        </select>
-                                                                    </div>
-                                                                    <div class="mb-0 text-start">
-                                                                        <label class="fw-bold mb-2">Tulis <em>review</em>-nya di sini</label>
-                                                                        <textarea name="isi_review" class="form-control brand-input" rows="3" placeholder="Contoh: Bumbunya meresap bangeeet!"></textarea>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="p-4 pt-0">
-                                                                    <button type="submit" class="brand-btn brand-btn-primary w-100 py-3 fs-5">Kirim <em>review</em>-nya!</button>
-                                                                </div>
-                                                            </form>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                @endif
                                             </div>
                                         </div>
                                     </div>
@@ -284,6 +223,53 @@
         </div>
     </div>
 </div>
+
+@if($order->status_pesanan === 'terkirim')
+    @foreach($order->orderDetails as $detail)
+    <!-- Modal Review Moved to Bottom for Fix -->
+    <div class="modal fade" id="reviewModal{{ $detail->menu_id }}" tabindex="-1" aria-hidden="true" style="z-index: 9999;">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content brand-modal-content text-start">
+                <div class="brand-modal-header d-flex justify-content-between align-items-center">
+                    <h5 class="brand-modal-title mb-0">Kasih rating menu, yuk!</h5>
+                    <button type="button" class="brand-modal-close" data-bs-dismiss="modal"><i class="bi bi-x-lg"></i></button>
+                </div>
+                <form action="{{ route('reviews.store') }}" method="POST">
+                    @csrf
+                    <div class="brand-modal-body text-center">
+                        <input type="hidden" name="menu_id" value="{{ $detail->menu_id }}">
+                        
+                        <div class="text-center mb-4">
+                            <h6 class="fw-black text-muted text-uppercase tracking-wider mb-1">{{ $detail->menu->nama_display }}</h6>
+                            <p class="small text-muted fw-bold">Pesanannya sudah sampai!</p>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="fw-bold d-block mb-3 fs-5">Gimana rasanya? Puas gak?</label>
+                            <select name="bintang" class="form-select brand-input text-center fs-5" required>
+                                <option value="5">⭐⭐⭐⭐⭐ Enak banget!</option>
+                                <option value="4">⭐⭐⭐⭐ Enak</option>
+                                <option value="3" selected>⭐⭐⭐ Lumayan</option>
+                                <option value="2">⭐⭐ Kureng ah</option>
+                                <option value="1">⭐ Gak enak</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-0 text-start">
+                            <label class="fw-bold mb-2">Tulis <em>review</em> jujurmu di sini</label>
+                            <textarea name="isi_review" class="form-control brand-input" rows="4" maxlength="255" placeholder="Contoh: Bumbunya meresap bangeeet, porsinya juga pas!"></textarea>
+                            <div class="form-text fw-bold text-muted small mt-2">Maksimal 255 karakter ya!</div>
+                        </div>
+                    </div>
+                    <div class="p-4 pt-0">
+                        <button type="submit" class="brand-btn brand-btn-primary w-100 py-3 fs-5">KIRIM REVIEW SEKARANG!</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    @endforeach
+@endif
 
 @endsection
 

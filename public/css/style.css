@@ -731,3 +731,28 @@ main.container.auth-page {
     font-size: 1.2rem;
     background: var(--bg-soft);
 }
+
+/* Brand Input Fields */
+.brand-input {
+    background: #fff !important;
+    border: 3px solid var(--text-black) !important;
+    border-radius: 15px !important;
+    padding: 12px 20px !important;
+    font-weight: 700;
+    transition: all 0.2s;
+    box-shadow: 4px 4px 0px var(--text-black);
+    color: var(--text-black);
+}
+
+.brand-input:focus {
+    outline: none;
+    background: var(--fh-cream) !important;
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0px var(--text-black);
+    border-color: var(--text-black) !important;
+}
+
+textarea.brand-input {
+    min-height: 120px;
+    resize: vertical;
+}
