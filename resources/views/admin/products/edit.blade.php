@@ -28,8 +28,10 @@
                             <label class="form-label fw-bold text-dark">Kategori</label>
                             <select name="kategori" class="form-select rounded-4 border-2 border-dark p-3 @error('kategori') is-invalid @enderror">
                                 <option value="">Pilih Kategori (Opsional)</option>
+                                <option value="Nasi" {{ old('kategori', $product->kategori) == 'Nasi' ? 'selected' : '' }}>Nasi</option>
                                 <option value="Sayur" {{ old('kategori', $product->kategori) == 'Sayur' ? 'selected' : '' }}>Sayur</option>
                                 <option value="Daging" {{ old('kategori', $product->kategori) == 'Daging' ? 'selected' : '' }}>Daging</option>
+                                <option value="Adds On" {{ old('kategori', $product->kategori) == 'Adds On' ? 'selected' : '' }}>Adds On</option>
                             </select>
                             @error('kategori')
                                 <div class="invalid-feedback fw-bold">{{ $message }}</div>
