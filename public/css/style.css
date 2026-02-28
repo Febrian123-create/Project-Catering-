@@ -94,35 +94,71 @@ main.container.auth-page {
 }
 
 .navbar-main {
-    padding: 30px 80px;
+    padding: 16px 80px;
     background-color: transparent;
 }
 
-.navbar-main .nav-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    max-width: 1400px;
-    margin: 0 auto;
+.navbar-main .brand {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: var(--primary-orange);
+    text-decoration: none;
+    letter-spacing: -0.5px;
 }
 
-.navbar-main .nav-links {
-    display: flex;
-    gap: 35px;
-}
-
-.navbar-main .nav-links a {
+.navbar-main .nav-link {
     text-decoration: none;
     color: var(--primary-orange);
     font-weight: 600;
     transition: 0.3s;
     opacity: 0.7;
+    padding: 0.25rem 0.5rem;
 }
 
-.navbar-main .nav-links a:hover,
-.navbar-main .nav-links a.active {
+.navbar-main .nav-link:hover,
+.navbar-main .nav-link.active {
     opacity: 1;
     font-weight: 800;
+    color: var(--primary-orange);
+}
+
+.navbar-main .navbar-toggler {
+    border: 2.5px solid var(--text-black) !important;
+    border-radius: 8px !important;
+    padding: 6px 10px;
+}
+
+.navbar-main .navbar-toggler:focus {
+    box-shadow: none;
+}
+
+.navbar-main .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(18, 18, 18, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2.5' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+@media (max-width: 767px) {
+    .navbar-main {
+        padding: 14px 20px;
+    }
+
+    .navbar-main .navbar-collapse {
+        background: var(--fh-yellow);
+        border: 3px solid var(--text-black);
+        border-radius: 12px;
+        margin-top: 12px;
+        padding: 0.75rem 1.25rem;
+        box-shadow: 4px 4px 0 var(--text-black);
+    }
+
+    .navbar-main .nav-link {
+        padding: 0.6rem 0;
+        border-bottom: 1.5px solid rgba(0, 0, 0, 0.1);
+        opacity: 1;
+    }
+
+    .navbar-main .navbar-nav .nav-link:last-child {
+        border-bottom: none;
+    }
 }
 
 

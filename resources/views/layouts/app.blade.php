@@ -13,7 +13,7 @@
     <!-- Custom CSS -->
     {{-- Panggil font dan CSS milikmu --}}
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}?v=103">
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}?v=110">
     @stack('styles')
 </head>
 <body>
