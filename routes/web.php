@@ -35,6 +35,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/menus', [MenuController::class, 'index'])->name('menus.index');
 Route::get('/menus/{menu}', [MenuController::class, 'show'])->name('menus.show');
 Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
+Route::get('/tentang-kami', fn() => view('about'))->name('about');
 
 // Auth routes (guest only)
 Route::middleware('guest')->group(function () {
