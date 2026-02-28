@@ -43,6 +43,61 @@
         </div>
     </div>
 
+    {{-- Info Cards: Perbedaan Menu Harian vs Mingguan --}}
+    <div class="row g-4 mb-5">
+        {{-- Card Mingguan --}}
+        <div class="col-md-6">
+            <div class="brand-card p-4 h-100" style="background: var(--fh-blue); border: 3px solid #000; box-shadow: 6px 6px 0 #000;">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <span style="font-size: 2rem;">📅</span>
+                    <h5 class="fw-black mb-0 text-dark text-uppercase">Menu Mingguan</h5>
+                </div>
+                <p class="fw-bold text-dark mb-4" style="line-height: 1.6;">
+                    Ini pilihan buat kamu yang mau langsung pesan bekal tanpa ribet milih menu tiap harinya!
+                    Sekali pesan, bekalmu sudah pasti aman untuk <span class="text-danger fw-black">seminggu</span>.
+                </p>
+                <div class="d-flex align-items-start gap-3 mb-3 p-3 bg-white rounded-4 border border-2 border-dark">
+                    <span style="font-size: 1.3rem; flex-shrink:0;">🗓️</span>
+                    <p class="mb-0 fw-bold small text-dark">
+                        Kamu bisa lihat menu baru untuk seminggu ke depan setiap <span class="text-danger fw-black">Jumat Sore</span>
+                    </p>
+                </div>
+                <div class="d-flex align-items-start gap-3 p-3 bg-white rounded-4 border border-2 border-dark">
+                    <span style="font-size: 1.3rem; flex-shrink:0;">⏰</span>
+                    <p class="mb-0 fw-bold small text-dark">
+                        Batas ordernya maksimal di Hari <span class="text-danger fw-black">Minggu jam 12.00 Siang</span>, jangan sampai kelewat ya!
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        {{-- Card Harian --}}
+        <div class="col-md-6">
+            <div class="brand-card p-4 h-100" style="background: var(--fh-yellow); border: 3px solid #000; box-shadow: 6px 6px 0 #000;">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <span style="font-size: 2rem;">🍱</span>
+                    <h5 class="fw-black mb-0 text-dark text-uppercase">Menu Harian</h5>
+                </div>
+                <p class="fw-bold text-dark mb-4" style="line-height: 1.6;">
+                    Pilihan buat kamu yang mobilitasnya tinggi atau pengen pesan bekal
+                    <span class="text-danger fw-black">sesuai mood</span> aja. Bebas pilih mau makan enak di hari apa!
+                </p>
+                <div class="d-flex align-items-start gap-3 mb-3 p-3 bg-white rounded-4 border border-2 border-dark">
+                    <span style="font-size: 1.3rem; flex-shrink:0;">🗓️</span>
+                    <p class="mb-0 fw-bold small text-dark">
+                        Kamu bisa pantau menu yang tersedia di <span class="text-danger fw-black">H-2 sebelum hari pengiriman</span>
+                    </p>
+                </div>
+                <div class="d-flex align-items-start gap-3 p-3 bg-white rounded-4 border border-2 border-dark">
+                    <span style="font-size: 1.3rem; flex-shrink:0;">⏰</span>
+                    <p class="mb-0 fw-bold small text-dark">
+                        Batas ordernya paling lambat di <span class="text-danger fw-black">H-1 jam 12.00 Siang</span>, jangan sampai keduluan yang lain!
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     @if($tab === 'harian')
     <!-- Daily Menu Packages Section -->
     <div class="row mb-5">
