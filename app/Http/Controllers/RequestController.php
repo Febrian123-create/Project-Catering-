@@ -83,7 +83,7 @@ class RequestController extends Controller
         $request->validate([
             'harga' => 'required|numeric|min:0',
             'kategori' => 'required|string|in:Sayur,Daging',
-            'foto' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'foto' => 'required|image|mimes:jpeg,png,jpg,gif|max:10240',
             'tgl_tersedia' => 'required|date|after_or_equal:today',
         ]);
 

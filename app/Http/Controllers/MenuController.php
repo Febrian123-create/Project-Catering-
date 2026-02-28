@@ -70,7 +70,7 @@ class MenuController extends Controller
                 'nama_paket' => 'required|string|max:80',
                 'product_ids' => 'required|array|min:2',
                 'product_ids.*' => 'exists:product,product_id',
-                'foto_paket' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+                'foto_paket' => 'required|image|mimes:jpeg,png,jpg|max:10240',
             ]);
 
             // Get selected products
@@ -147,7 +147,7 @@ class MenuController extends Controller
                 'nama_paket' => 'required|string|max:80',
                 'product_ids' => 'required|array|min:2',
                 'product_ids.*' => 'exists:product,product_id',
-                'foto_paket' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+                'foto_paket' => 'nullable|image|mimes:jpeg,png,jpg|max:10240',
             ]);
 
             $selectedProducts = Product::whereIn('product_id', $validated['product_ids'])->get();
