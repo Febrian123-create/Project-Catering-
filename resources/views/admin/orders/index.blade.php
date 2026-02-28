@@ -17,8 +17,14 @@
             <h1 class="fw-black text-dark mb-0 shadow-text">PESANAN MASUK</h1>
             <p class="text-muted fw-bold mt-2">Pantau dan kelola pengiriman pesanan pelanggan.</p>
         </div>
-        <div class="brand-card p-3 bg-white">
-            <h5 class="fw-bold mb-0">{{ $orders->total() }} Total Pesanan</h5>
+        <div class="d-flex gap-3 align-items-center">
+            <div class="brand-card p-3 bg-white">
+                <h5 class="fw-bold mb-0">{{ $orders->total() }} Total Pesanan</h5>
+            </div>
+            <a href="{{ route('admin.orders.export', array_filter(['metode' => request('metode'), 'tanggal' => request('tanggal')])) }}"
+               class="brand-btn brand-btn-primary py-3 px-4 fw-bold text-decoration-none">
+                <i class="bi bi-download me-2"></i>Export CSV
+            </a>
         </div>
     </div>
 
