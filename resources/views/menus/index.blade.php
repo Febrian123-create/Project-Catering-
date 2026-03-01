@@ -297,7 +297,7 @@
     @if($tab === 'mingguan' && $menus->count() > 0)
         <div class="mt-5 py-5 border-top border-2 border-dark text-center">
             <div class="brand-card d-inline-block px-5 py-4 bg-light shadow-lg">
-                <h3 class="fw-bold mb-3"><span class="text-danger">Paket Hemat Seminggu:</span> Rp 65.000!</h3>
+                <h3 class="fw-bold mb-3"><span class="text-danger">Paket Hemat Seminggu:</span> Rp 60.000!</h3>
                 <p class="text-muted fw-bold mb-4">Klik tombol di bawah untuk memasukkan semua paket minggu ini ke keranjang Anda.</p>
                 <form action="{{ route('cart.store') }}" method="POST">
                     @csrf
@@ -306,7 +306,7 @@
                         <input type="hidden" name="menu_ids[]" value="{{ $menu->menu_id }}">
                     @endforeach
                     <button type="submit" class="brand-btn brand-btn-primary py-3 px-5 fs-4">
-                        <i class="bi bi-bag-check-fill me-2"></i> Pesan Paket (Rp 65.000)
+                        <i class="bi bi-bag-check-fill me-2"></i> Pesan Paket (Rp 60.000)
                     </button>
                 </form>
             </div>

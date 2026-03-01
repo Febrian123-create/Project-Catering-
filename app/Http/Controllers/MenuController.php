@@ -15,8 +15,8 @@ class MenuController extends Controller
         $query = Menu::with(['product', 'products']);
 
         if ($tab === 'harian') {
-            // Harian: Show only single items (satuan)
-            $query->where('tipe', 'satuan');
+            // Harian: Show single items (satuan) AND daily packages (paket_harian)
+            $query->whereIn('tipe', ['satuan', 'paket_harian']);
             $date = $request->input('date', now()->toDateString());
             $query->whereDate('tgl_tersedia', $date);
         } else {
@@ -32,7 +32,7 @@ class MenuController extends Controller
         $allHarianMenus = [];
         if ($tab === 'harian') {
             $allHarianMenus = Menu::with('product')
-                ->where('tipe', 'satuan')
+                ->whereIn('tipe', ['satuan', 'paket_harian'])
                 ->whereDate('tgl_tersedia', $request->input('date', now()->toDateString()))
                 ->get();
         }
@@ -100,7 +100,7 @@ class MenuController extends Controller
 
                 $menu = new Menu();
                 $menu->menu_id = Menu::generateMenuId();
-                $menu->tipe = 'paket'; // internally store as paket
+                $menu->tipe = 'paket'; // internally store as paket for the weekly bundle
                 $menu->nama_paket = $dayData['nama_paket'];
                 $menu->harga_paket = $totalHarga;
                 $menu->deskripsi_paket = $mergedDeskripsi;
@@ -109,8 +109,23 @@ class MenuController extends Controller
                 $menu->product_id = null;
                 $menu->save();
 
-                // Attach products to junction table
+                // Attach products to weekly package
                 $menu->products()->attach($dayData['product_ids']);
+
+                // Create Daily Clone (harga flat 12k)
+                $dailyMenu = new Menu();
+                $dailyMenu->menu_id = Menu::generateMenuId();
+                $dailyMenu->tipe = 'paket_harian'; // special type for daily tab
+                $dailyMenu->nama_paket = $dayData['nama_paket'] . ' (Harian)';
+                $dailyMenu->harga_paket = 12000;
+                $dailyMenu->deskripsi_paket = $mergedDeskripsi;
+                $dailyMenu->foto_paket = $fotoPath; // share the same exact photo file
+                $dailyMenu->tgl_tersedia = $dayData['tanggal'];
+                $dailyMenu->product_id = null;
+                $dailyMenu->save();
+
+                // Attach products to daily clone
+                $dailyMenu->products()->attach($dayData['product_ids']);
             }
         } else {
             // Paket

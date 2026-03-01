@@ -67,7 +67,7 @@ class CartController extends Controller
         if ($menuIds && is_array($menuIds) && $request->has('is_weekly_package')) {
             $bundleId = \Illuminate\Support\Str::uuid()->toString();
             $bundleName = 'Paket Mingguan';
-            $bundlePrice = 65000;
+            $bundlePrice = 60000;
             
             // Validate all menus are eligible
             foreach ($menuIds as $menuId) {
@@ -87,7 +87,7 @@ class CartController extends Controller
                     'bundle_price' => ($index === 0) ? $bundlePrice : 0, // Only first item carries the price
                 ]);
             }
-            return redirect()->route('cart.index')->with('success', 'Paket hemat mingguan (Rp 65.000) berhasil ditambahkan ke keranjang!');
+            return redirect()->route('cart.index')->with('success', 'Paket hemat mingguan (Rp 60.000) berhasil ditambahkan ke keranjang!');
         }
 
         $validated = $request->validate([
