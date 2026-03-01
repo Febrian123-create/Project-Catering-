@@ -62,13 +62,32 @@ class CartController extends Controller
             return redirect()->route('cart.index')->with('success', 'Paket ' . $validated['bundle_name'] . ' berhasil ditambahkan!');
         }
 
-        // Handle Weekly Package bulk-add (uses menu_ids[] without is_bundle flag)
+        // Handle Weekly Package bulk-add (uses menu_ids[] and is_weekly_package flag)
         $menuIds = $request->input('menu_ids');
-        if ($menuIds && is_array($menuIds) && !$request->has('is_bundle')) {
+        if ($menuIds && is_array($menuIds) && $request->has('is_weekly_package')) {
+            $bundleId = \Illuminate\Support\Str::uuid()->toString();
+            $bundleName = 'Paket Mingguan';
+            $bundlePrice = 65000;
+            
+            // Validate all menus are eligible
             foreach ($menuIds as $menuId) {
-                $this->addToCart($menuId, 1);
+                $menu = \App\Models\Menu::find($menuId);
+                if ($menu && $menu->tgl_tersedia->startOfDay()->lte(now()->startOfDay())) {
+                    return redirect()->back()->with('error', 'Salah satu menu mingguan sudah lewat atau hari ini, tidak dapat dipesan lagi.');
+                }
             }
-            return redirect()->route('cart.index')->with('success', 'Seluruh paket mingguan berhasil ditambahkan ke keranjang!');
+
+            foreach ($menuIds as $index => $menuId) {
+                Cart::create([
+                    'user_id'      => Auth::id(),
+                    'menu_id'      => $menuId,
+                    'qty'          => 1, // Weekly package defaults to 1 bundle initially
+                    'bundle_id'    => $bundleId,
+                    'bundle_name'  => $bundleName,
+                    'bundle_price' => ($index === 0) ? $bundlePrice : 0, // Only first item carries the price
+                ]);
+            }
+            return redirect()->route('cart.index')->with('success', 'Paket hemat mingguan (Rp 65.000) berhasil ditambahkan ke keranjang!');
         }
 
         $validated = $request->validate([
