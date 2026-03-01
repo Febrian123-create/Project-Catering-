@@ -42,17 +42,42 @@
                                         <i class="bi bi-collection me-1"></i> Paket
                                     </label>
                                 </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input border-2 border-dark" type="radio" name="tipe" id="tipeMingguanBatch" value="mingguan_batch"
+                                        {{ old('tipe') === 'mingguan_batch' ? 'checked' : '' }} onchange="toggleTipe()">
+                                    <label class="form-check-label fw-bold text-success" for="tipeMingguanBatch">
+                                        <i class="bi bi-calendar-week me-1"></i> Paket Mingguan (Batch)
+                                    </label>
+                                </div>
                             </div>
                         </div>
 
-                        {{-- Tanggal --}}
-                        <div class="mb-4">
+                        {{-- Tanggal (For Satuan & Paket) --}}
+                        <div class="mb-4" id="singleDateGroup">
                             <label class="form-label fw-bold text-dark">Tanggal Tersedia</label>
-                            <input type="date" name="tgl_tersedia" class="form-control rounded-4 border-2 border-dark p-3 @error('tgl_tersedia') is-invalid @enderror" 
-                                value="{{ old('tgl_tersedia') }}" min="{{ date('Y-m-d') }}" required>
+                            <input type="date" name="tgl_tersedia" id="tgl_tersedia" class="form-control rounded-4 border-2 border-dark p-3" 
+                                value="{{ old('tgl_tersedia') }}" min="{{ date('Y-m-d') }}">
                             @error('tgl_tersedia')
-                                <div class="invalid-feedback fw-bold">{{ $message }}</div>
+                                <div class="text-danger fw-bold mt-2 small">{{ $message }}</div>
                             @enderror
+                        </div>
+
+                        {{-- Tanggal Range (For Mingguan Batch) --}}
+                        <div class="mb-4" id="batchDateGroup" style="display: none;">
+                            <label class="form-label fw-bold text-dark mb-3">Rentang Tanggal (Min 2 Hari)</label>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label text-muted small fw-bold">Dari Tanggal</label>
+                                    <input type="date" name="batch_start_date" id="batch_start_date" class="form-control rounded-4 border-2 border-dark p-3" 
+                                        min="{{ date('Y-m-d') }}" onchange="generateBatchForms()">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label text-muted small fw-bold">Sampai Tanggal</label>
+                                    <input type="date" name="batch_end_date" id="batch_end_date" class="form-control rounded-4 border-2 border-dark p-3" 
+                                        min="{{ date('Y-m-d') }}" onchange="generateBatchForms()">
+                                </div>
+                            </div>
+                            <div class="form-text mt-2 ps-2">Sistem akan membuatkan form input untuk setiap hari dalam rentang ini.</div>
                         </div>
 
                         {{-- SATUAN SECTION --}}
@@ -124,14 +149,24 @@
 
                             <div class="mb-5">
                                 <label class="form-label fw-bold text-dark">Foto Paket <span class="text-danger">(upload baru)</span></label>
-                                <input type="file" name="foto_paket" class="form-control rounded-4 border-2 border-dark p-3 @error('foto_paket') is-invalid @enderror" 
+                                <input type="file" name="foto_paket" id="foto_paket" class="form-control rounded-4 border-2 border-dark p-3" 
                                     accept="image/jpeg,image/png,image/jpg">
                                 @error('foto_paket')
-                                    <div class="invalid-feedback fw-bold">{{ $message }}</div>
+                                    <div class="text-danger fw-bold mt-2 small">{{ $message }}</div>
                                 @enderror
                                 <div class="form-text mt-2 ps-2">Upload foto baru untuk menu paket (JPG/PNG, max 2MB).</div>
                                 <div id="fotoPreview" class="mt-3" style="display: none;">
                                     <img id="fotoPreviewImg" class="rounded-4 border border-2 border-dark" style="max-width: 100%; max-height: 200px; object-fit: cover;">
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- BATCH MINGGUAN SECTION --}}
+                        <div id="batchMingguanSection" style="display: none;">
+                            <div id="batchFormsContainer">
+                                <div class="text-center py-5 text-muted border border-2 border-dark rounded-4 bg-light bg-opacity-50 border-dashed">
+                                    <i class="bi bi-calendar2-range display-4 d-block mb-3 opacity-50"></i>
+                                    <p class="fw-bold mb-0">Silakan pilih Rentang Tanggal di atas untuk memunculkan form pengisian.</p>
                                 </div>
                             </div>
                         </div>
@@ -152,10 +187,37 @@
 </div>
 
 <script>
+// For Batch logic to pass product list to JS
+const availableProducts = @json($products);
+
 function toggleTipe() {
-    const tipe = document.querySelector('input[name="tipe"]:checked').value;
+    const tipe = document.querySelector('input[name="tipe"]:checked')?.value || 'satuan';
+    
+    // UI section toggles
     document.getElementById('satuanSection').style.display = tipe === 'satuan' ? 'block' : 'none';
     document.getElementById('paketSection').style.display = tipe === 'paket' ? 'block' : 'none';
+    document.getElementById('batchMingguanSection').style.display = tipe === 'mingguan_batch' ? 'block' : 'none';
+    
+    // Date group toggles
+    if (tipe === 'mingguan_batch') {
+        document.getElementById('singleDateGroup').style.display = 'none';
+        document.getElementById('batchDateGroup').style.display = 'block';
+        
+        // Remove required from single date
+        document.getElementById('tgl_tersedia').removeAttribute('required');
+        document.getElementById('batch_start_date').setAttribute('required', 'required');
+        document.getElementById('batch_end_date').setAttribute('required', 'required');
+        
+        // Generate if dates already exist
+        generateBatchForms();
+    } else {
+        document.getElementById('singleDateGroup').style.display = 'block';
+        document.getElementById('batchDateGroup').style.display = 'none';
+        
+        document.getElementById('tgl_tersedia').setAttribute('required', 'required');
+        document.getElementById('batch_start_date').removeAttribute('required');
+        document.getElementById('batch_end_date').removeAttribute('required');
+    }
 }
 
 function updatePaketInfo() {
@@ -193,5 +255,109 @@ document.addEventListener('DOMContentLoaded', function() {
     toggleTipe();
     updatePaketInfo();
 });
+
+// Batch mingguan form generation
+function generateBatchForms() {
+    const startDateVal = document.getElementById('batch_start_date').value;
+    const endDateVal = document.getElementById('batch_end_date').value;
+    const container = document.getElementById('batchFormsContainer');
+    
+    // Only generate if both dates are valid and start <= end
+    if (!startDateVal || !endDateVal || new Date(startDateVal) > new Date(endDateVal)) {
+        container.innerHTML = `
+            <div class="text-center py-5 text-muted border border-2 border-dark rounded-4 bg-light bg-opacity-50 border-dashed">
+                <i class="bi bi-calendar2-range display-4 d-block mb-3 opacity-50"></i>
+                <p class="fw-bold mb-0">Silakan pilih Rentang Tanggal yang valid untuk memunculkan form.</p>
+            </div>
+        `;
+        return;
+    }
+    
+    const start = new Date(startDateVal);
+    const end = new Date(endDateVal);
+    
+    // Don't allow more than 14 days to prevent abuse/performance issues
+    const diffTime = Math.abs(end - start);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+    
+    if (diffDays > 14) {
+        alert("Pilih maksimal 14 hari sekaligus.");
+        document.getElementById('batch_end_date').value = '';
+        return;
+    }
+
+    container.innerHTML = ''; // Clear existing
+    
+    let currentDate = new Date(start);
+    let index = 0;
+    
+    // Format options for date display
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: 'Asia/Jakarta' };
+    
+    while (currentDate <= end) {
+        // Build YYYY-MM-DD
+        const yyyy = currentDate.getFullYear();
+        const mm = String(currentDate.getMonth() + 1).padStart(2, '0');
+        const dd = String(currentDate.getDate()).padStart(2, '0');
+        const dateString = `${yyyy}-${mm}-${dd}`;
+        
+        // Build pretty date (e.g. "Senin, 10 Agustus 2023")
+        const prettyDate = currentDate.toLocaleDateString('id-ID', options);
+        
+        // Generate product checkboxes HTML
+        let productsHtml = '';
+        availableProducts.forEach(product => {
+            productsHtml += `
+                <div class="form-check mb-2 p-2 rounded-3 product-check-item">
+                    <input class="form-check-input border-2 border-dark" type="checkbox" 
+                        name="batch[${index}][product_ids][]" value="${product.product_id}" 
+                        id="batch_${index}_product_${product.product_id}">
+                    <label class="form-check-label fw-bold w-100 d-flex justify-content-between" for="batch_${index}_product_${product.product_id}">
+                        <span>${product.nama}</span>
+                        <span class="text-danger">Rp ${parseInt(product.harga).toLocaleString('id-ID')}</span>
+                    </label>
+                </div>
+            `;
+        });
+        
+        // Generate day block
+        const blockHtml = `
+            <div class="card mb-4 border-2 border-dark shadow-sm rounded-4 batch-day-card">
+                <div class="card-header bg-success bg-opacity-10 py-3 border-bottom border-2 border-dark">
+                    <h5 class="mb-0 fw-bold text-success d-flex align-items-center">
+                        <i class="bi bi-calendar-event me-2"></i> ${prettyDate}
+                    </h5>
+                    <input type="hidden" name="batch[${index}][tanggal]" value="${dateString}">
+                </div>
+                <div class="card-body p-4">
+                    <div class="mb-4">
+                        <label class="form-label fw-bold text-dark">Nama Paket Hari Ini <span class="text-danger">*</span></label>
+                        <input type="text" name="batch[${index}][nama_paket]" class="form-control rounded-4 border-2 border-dark p-3" 
+                            placeholder="Contoh: Paket Senin Nasi Liwet" required>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="form-label fw-bold text-dark">Pilih Produk <span class="text-muted">(minimal 2)</span> <span class="text-danger">*</span></label>
+                        <div class="border border-2 border-dark rounded-4 p-3" style="max-height: 250px; overflow-y: auto;">
+                            ${productsHtml}
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="form-label fw-bold text-dark">Foto Paket <span class="text-danger">*</span></label>
+                        <input type="file" name="batch[${index}][foto_paket]" class="form-control rounded-4 border-2 border-dark p-3" 
+                            accept="image/jpeg,image/png,image/jpg" required>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        container.insertAdjacentHTML('beforeend', blockHtml);
+        
+        // Increment date
+        currentDate.setDate(currentDate.getDate() + 1);
+        index++;
+    }
+}
 </script>
 @endsection

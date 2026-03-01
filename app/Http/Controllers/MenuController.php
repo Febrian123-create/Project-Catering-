@@ -71,6 +71,47 @@ class MenuController extends Controller
             $menu->product_id = $validated['product_id'];
             $menu->save();
 
+        } elseif ($tipe === 'mingguan_batch') {
+            $validated = $request->validate([
+                'batch_start_date' => 'required|date|after_or_equal:today',
+                'batch_end_date' => 'required|date|after_or_equal:batch_start_date',
+                'batch' => 'required|array|min:2|max:14',
+                'batch.*.tanggal' => 'required|date',
+                'batch.*.nama_paket' => 'required|string|max:80',
+                'batch.*.product_ids' => 'required|array|min:2',
+                'batch.*.product_ids.*' => 'exists:product,product_id',
+                'batch.*.foto_paket' => 'required|image|mimes:jpeg,png,jpg|max:10240',
+            ]);
+
+            foreach ($validated['batch'] as $index => $dayData) {
+                // Get selected products
+                $selectedProducts = Product::whereIn('product_id', $dayData['product_ids'])->get();
+
+                // Auto-sum harga
+                $totalHarga = $selectedProducts->sum('harga');
+
+                // Merge deskripsi
+                $mergedDeskripsi = $selectedProducts->map(function ($p) {
+                    return $p->nama . ': ' . ($p->deskripsi ?? '-');
+                })->implode(' | ');
+
+                // Upload foto baru (need to fetch from the file array correctly)
+                $fotoPath = $request->file("batch.{$index}.foto_paket")->store('menus', 'public');
+
+                $menu = new Menu();
+                $menu->menu_id = Menu::generateMenuId();
+                $menu->tipe = 'paket'; // internally store as paket
+                $menu->nama_paket = $dayData['nama_paket'];
+                $menu->harga_paket = $totalHarga;
+                $menu->deskripsi_paket = $mergedDeskripsi;
+                $menu->foto_paket = $fotoPath;
+                $menu->tgl_tersedia = $dayData['tanggal'];
+                $menu->product_id = null;
+                $menu->save();
+
+                // Attach products to junction table
+                $menu->products()->attach($dayData['product_ids']);
+            }
         } else {
             // Paket
             $validated = $request->validate([
