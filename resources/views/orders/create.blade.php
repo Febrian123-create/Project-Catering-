@@ -169,7 +169,7 @@
                         <div class="mt-4 pt-4 border-top border-2 border-dark">
                             <div class="d-flex justify-content-between align-items-center">
                                 <span class="h5 fw-bold mb-0 text-dark">Total Tagihan</span>
-                                <span class="h3 fw-bold text-danger mb-0 shadow-text">Rp {{ number_format($total, 0, ',', '.') }}</span>
+                                <span class="h3 fw-bold text-danger mb-0">Rp {{ number_format($total, 0, ',', '.') }}</span>
                             </div>
                         </div>
                     </div>

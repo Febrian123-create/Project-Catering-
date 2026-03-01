@@ -48,7 +48,7 @@
                     </div>
 
                     <h1 class="fw-black text-dark mb-3 display-5 fw-bold" style="letter-spacing: -2px;">{{ $menu->nama_display }}</h1>
-                    <div class="h3 fw-bold text-danger mb-4 shadow-text">
+                    <div class="h3 fw-bold text-danger mb-4">
                         {{ $menu->formatted_harga }}
                     </div>
                     

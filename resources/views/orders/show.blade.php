@@ -171,7 +171,7 @@
                 </div>
                 <div class="card-body p-4 text-center">
                     <p class="text-muted fw-bold mb-2 text-uppercase small">Total Tagihan Lunas</p>
-                    <h2 class="fw-bold text-danger mb-4 shadow-text">{{ $order->formatted_total }}</h2>
+                    <h2 class="fw-bold text-danger mb-4">{{ $order->formatted_total }}</h2>
 
                     @if($order->status_pembayaran == 'pending')
                         <div class="alert alert-warning border-2 border-dark rounded-4 p-3 mb-4 fw-bold small text-start shadow-sm" style="background-color: #fff3cd;">
