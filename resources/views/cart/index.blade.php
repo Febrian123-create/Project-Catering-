@@ -67,31 +67,51 @@
                                     @endforeach
                                 </div>
 
-                                <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top border-dark border-opacity-10 px-3">
+                                <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mt-3 pt-3 border-top border-dark border-opacity-10 px-3 gap-3">
                                     <div class="d-flex align-items-center gap-3">
-                                        <form action="{{ route('cart.update', $items[0]->menu_id) }}" method="POST" class="d-flex align-items-center gap-2">
+                                        <form action="{{ route('cart.update', $items[0]->menu_id) }}" method="POST" id="form-update-{{ $firstItem->bundle_id }}">
                                             @csrf
                                             @method('PUT')
                                             <input type="hidden" name="bundle_id" value="{{ $firstItem->bundle_id }}">
-                                            <input type="number" name="qty" class="form-control border-2 border-dark text-center fw-bold rounded-pill h-auto py-1" 
-                                                value="{{ $items[0]->qty }}" min="1" style="max-width: 70px;"
-                                                onchange="this.form.submit()">
-                                            <small class="fw-bold">Porsi (Set)</small>
+                                            <div class="qty-selector d-inline-flex border border-2 border-dark rounded-pill overflow-hidden bg-white">
+                                                <button type="button" class="btn btn-sm btn-light border-0 fw-bold px-3 py-1" onclick="updateCartQty('{{ $firstItem->bundle_id }}', -1)"><i class="bi bi-dash"></i></button>
+                                                <input type="number" name="qty" id="qty-{{ $firstItem->bundle_id }}" class="form-control border-0 text-center fw-bold p-0" 
+                                                    value="{{ $items[0]->qty }}" min="1" style="width: 40px; box-shadow: none;"
+                                                    onchange="this.form.submit()" readonly>
+                                                <button type="button" class="btn btn-sm btn-light border-0 fw-bold px-3 py-1" onclick="updateCartQty('{{ $firstItem->bundle_id }}', 1)"><i class="bi bi-plus"></i></button>
+                                            </div>
                                         </form>
+                                        <small class="fw-bold text-muted">Set</small>
                                     </div>
-                                    <div class="d-flex align-items-center gap-4">
-                                        <div class="text-end">
-                                            <span class="fw-bold text-danger fs-5">Rp {{ number_format($items->sum('subtotal'), 0, ',', '.') }}</span>
+                                    <div class="d-flex justify-content-between justify-content-md-end align-items-center gap-4 mt-2 mt-md-0 w-100 w-md-auto">
+                                        <span class="fw-bold text-danger fs-5">Rp {{ number_format($items->sum('subtotal'), 0, ',', '.') }}</span>
+                                        <button type="button" class="btn btn-link text-danger p-0" data-bs-toggle="modal" data-bs-target="#deleteModal-{{ $firstItem->bundle_id }}">
+                                            <i class="bi bi-trash3-fill fs-5"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- Delete Modal for Bundle --}}
+                            <div class="modal fade" id="deleteModal-{{ $firstItem->bundle_id }}" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content border-3 border-dark rounded-4 shadow-lg">
+                                        <div class="modal-header border-bottom border-dark bg-warning">
+                                            <h5 class="modal-title fw-bold text-dark"><i class="bi bi-exclamation-triangle-fill me-2"></i>Hapus Paket?</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
-                                        <form action="{{ route('cart.destroy', $items[0]->menu_id) }}" method="POST" 
-                                            onsubmit="return confirm('Hapus seluruh paket ini?')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <input type="hidden" name="bundle_id" value="{{ $firstItem->bundle_id }}">
-                                            <button type="submit" class="btn btn-link text-danger p-0">
-                                                <i class="bi bi-trash3-fill fs-5"></i>
-                                            </button>
-                                        </form>
+                                        <div class="modal-body py-4">
+                                            <p class="mb-0 fw-bold text-dark">Yakin mau hapus paket <strong>{{ $firstItem->bundle_name }}</strong> dari keranjang?</p>
+                                        </div>
+                                        <div class="modal-footer border-top-0 pt-0">
+                                            <form action="{{ route('cart.destroy', $items[0]->menu_id) }}" method="POST" class="w-100 d-flex gap-2">
+                                                @csrf
+                                                @method('DELETE')
+                                                <input type="hidden" name="bundle_id" value="{{ $firstItem->bundle_id }}">
+                                                <button type="button" class="btn btn-light border-2 border-dark rounded-pill fw-bold" data-bs-dismiss="modal" style="flex:1;">Nggak kok</button>
+                                                <button type="submit" class="btn btn-danger border-2 border-dark rounded-pill fw-bold" style="flex:1;">Ya, Hapus</button>
+                                            </form>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -99,39 +119,61 @@
                             {{-- Single Item Display --}}
                             @foreach($items as $item)
                                 @if($item->menu)
-                                    <div class="px-2 py-4 border-bottom border-1 border-dark border-opacity-10">
+                                    <div class="px-2 py-4 border-bottom border-1 border-dark border-opacity-10 mx-2">
                                         <div class="row align-items-center g-3">
-                                            <div class="col-12 col-md-5">
+                                            <div class="col-12 col-md-4">
                                                 <h6 class="fw-bold text-dark mb-1">{{ $item->menu->nama_display }}</h6>
                                                 <p class="text-muted small fw-bold mb-0">{{ $item->menu->formatted_harga }} / porsi</p>
                                             </div>
-                                            <div class="col-6 col-md-2 text-md-center">
-                                                <span class="badge rounded-pill bg-light text-dark border border-dark px-3 py-2 fw-bold">
+                                            <div class="col-6 col-md-3 text-md-center">
+                                                <span class="badge rounded-pill bg-light text-dark border border-dark px-3 py-2 fw-bold w-100">
                                                     <i class="bi bi-calendar-event me-1"></i>
                                                     {{ $item->menu->tgl_tersedia->format('d M') }}
                                                 </span>
                                             </div>
-                                            <div class="col-6 col-md-2">
-                                                <form action="{{ route('cart.update', $item->menu_id) }}" method="POST" class="d-flex justify-content-center">
+                                            <div class="col-6 col-md-2 d-flex justify-content-end justify-content-md-center">
+                                                <form action="{{ route('cart.update', $item->menu_id) }}" method="POST" id="form-update-single-{{ $item->menu_id }}">
                                                     @csrf
                                                     @method('PUT')
-                                                    <input type="number" name="qty" class="form-control border-2 border-dark text-center fw-bold rounded-pill" 
-                                                        value="{{ $item->qty }}" min="1" style="max-width: 80px;"
-                                                        onchange="this.form.submit()">
+                                                    <div class="qty-selector d-inline-flex border border-2 border-dark rounded-pill overflow-hidden bg-white">
+                                                        <button type="button" class="btn btn-sm btn-light border-0 fw-bold px-2 py-1" onclick="updateCartQty('single-{{ $item->menu_id }}', -1)"><i class="bi bi-dash"></i></button>
+                                                        <input type="number" name="qty" id="qty-single-{{ $item->menu_id }}" class="form-control border-0 text-center fw-bold p-0" 
+                                                            value="{{ $item->qty }}" min="1" style="width: 35px; box-shadow: none;"
+                                                            onchange="this.form.submit()" readonly>
+                                                        <button type="button" class="btn btn-sm btn-light border-0 fw-bold px-2 py-1" onclick="updateCartQty('single-{{ $item->menu_id }}', 1)"><i class="bi bi-plus"></i></button>
+                                                    </div>
                                                 </form>
                                             </div>
-                                            <div class="col-6 col-md-2 text-md-end">
+                                            <div class="col-9 col-md-2 text-md-end mt-4 mt-md-0">
                                                 <span class="fw-bold text-danger fs-5">Rp {{ number_format($item->subtotal, 0, ',', '.') }}</span>
                                             </div>
-                                            <div class="col-6 col-md-1 text-end">
-                                                <form action="{{ route('cart.destroy', $item->menu_id) }}" method="POST" 
-                                                    onsubmit="return confirm('Hapus item ini?')">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-link text-danger p-0">
-                                                        <i class="bi bi-trash3-fill fs-5"></i>
-                                                    </button>
-                                                </form>
+                                            <div class="col-3 col-md-1 text-end mt-4 mt-md-0">
+                                                <button type="button" class="btn btn-link text-danger p-0" data-bs-toggle="modal" data-bs-target="#deleteModal-single-{{ $item->menu_id }}">
+                                                    <i class="bi bi-trash3-fill fs-5"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {{-- Delete Modal for Single Item --}}
+                                    <div class="modal fade" id="deleteModal-single-{{ $item->menu_id }}" tabindex="-1" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content border-3 border-dark rounded-4 shadow-lg">
+                                                <div class="modal-header border-bottom border-dark bg-warning">
+                                                    <h5 class="modal-title fw-bold text-dark"><i class="bi bi-exclamation-triangle-fill me-2"></i>Hapus Menu?</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body py-4">
+                                                    <p class="mb-0 fw-bold text-dark">Yakin mau hapus <strong>{{ $item->menu->nama_display }}</strong> dari keranjang?</p>
+                                                </div>
+                                                <div class="modal-footer border-top-0 pt-0">
+                                                    <form action="{{ route('cart.destroy', $item->menu_id) }}" method="POST" class="w-100 d-flex gap-2">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="button" class="btn btn-light border-2 border-dark rounded-pill fw-bold" data-bs-dismiss="modal" style="flex:1;">Nggak kok</button>
+                                                        <button type="submit" class="btn btn-danger border-2 border-dark rounded-pill fw-bold" style="flex:1;">Ya, Hapus</button>
+                                                    </form>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -144,14 +186,9 @@
                         <a href="{{ route('menus.index') }}" class="brand-btn brand-btn-warning text-decoration-none">
                             <i class="bi bi-arrow-left me-2"></i>Hunting Lagi
                         </a>
-                        <form action="{{ route('cart.clear') }}" method="POST" 
-                            onsubmit="return confirm('Kosongkan keranjang?')">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="brand-btn brand-btn-danger text-decoration-none text-white">
-                                <i class="bi bi-trash me-2"></i>Buang Semua
-                            </button>
-                        </form>
+                        <button type="button" class="brand-btn brand-btn-danger text-decoration-none text-white" data-bs-toggle="modal" data-bs-target="#clearCartModal">
+                            <i class="bi bi-trash me-2"></i>Buang Semua
+                        </button>
                     </div>
                 </div>
             </div>
@@ -202,4 +239,45 @@
         </div>
     @endif
 </div>
+
+{{-- Clear Cart Modal --}}
+@if($cartItems->count() > 0)
+<div class="modal fade" id="clearCartModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-3 border-dark rounded-4 shadow-lg">
+            <div class="modal-header border-bottom border-dark bg-danger text-white">
+                <h5 class="modal-title fw-bold"><i class="bi bi-exclamation-circle-fill me-2"></i>Kosongkan Keranjang?</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body py-4">
+                <p class="mb-0 fw-bold text-dark text-center fs-5">Beneran mau buang semua pesanan di keranjang? 🥺</p>
+            </div>
+            <div class="modal-footer border-top-0 pt-0">
+                <form action="{{ route('cart.clear') }}" method="POST" class="w-100 d-flex gap-2">
+                    @csrf
+                    @method('DELETE')
+                    <button type="button" class="btn btn-light border-2 border-dark rounded-pill fw-bold" data-bs-dismiss="modal" style="flex:1;">Nggak Jadi</button>
+                    <button type="submit" class="btn btn-danger border-2 border-dark rounded-pill fw-bold" style="flex:1;">Ya, Kosongkan</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@endif
+
+@push('scripts')
+<script>
+    function updateCartQty(id, change) {
+        let input = document.getElementById('qty-' + id);
+        let form = document.getElementById('form-update-' + id);
+        let currentVal = parseInt(input.value);
+        let newVal = currentVal + change;
+        
+        if(newVal >= 1) {
+            input.value = newVal;
+            form.submit();
+        }
+    }
+</script>
+@endpush
 @endsection

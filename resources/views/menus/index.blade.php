@@ -214,6 +214,7 @@
                     data-harga="{{ $menu->formatted_harga }}"
                     data-foto="{{ $menu->foto_display ? asset('storage/' . $menu->foto_display) : '' }}"
                     data-tanggal="{{ $menu->tgl_tersedia->format('d M Y') }}"
+                    data-is-past="{{ $menu->tgl_tersedia->startOfDay()->lte(now()->startOfDay()) ? 'true' : 'false' }}"
                     data-url="{{ route('menus.show', $menu->menu_id) }}">
                     
                     @if($menu->foto_display)
@@ -242,6 +243,10 @@
                         <h4 class="fw-bold text-dark mb-2">{{ $menu->nama_display }}</h4>
                         <p class="text-muted small fw-bold mb-4 line-clamp-2">{{ Str::limit($menu->deskripsi_display, 100) }}</p>
                         
+                        @php
+                            $isPast = $menu->tgl_tersedia->startOfDay()->lte(now()->startOfDay());
+                        @endphp
+
                         <div class="d-flex justify-content-between align-items-center mt-auto">
                             <div>
                                 <small class="text-muted fw-bold text-uppercase">Harga</small>
@@ -250,9 +255,15 @@
                                 </div>
                             </div>
                             @if($tab !== 'mingguan')
-                                <a href="{{ route('menus.show', $menu->menu_id) }}" class="brand-btn brand-btn-primary text-decoration-none" onclick="event.stopPropagation();">
-                                    <i class="bi bi-cart-plus me-1"></i> Pesan
-                                </a>
+                                @if($isPast)
+                                    <button class="brand-btn brand-btn-disabled text-decoration-none" disabled onclick="event.stopPropagation();" style="background-color: #d1d5db; border-color: #9ca3af; color: #4b5563; cursor: not-allowed;">
+                                        TUTUP
+                                    </button>
+                                @else
+                                    <a href="{{ route('menus.show', $menu->menu_id) }}" class="brand-btn brand-btn-primary text-decoration-none" onclick="event.stopPropagation();">
+                                        <i class="bi bi-cart-plus me-1"></i> Pesan
+                                    </a>
+                                @endif
                             @else
                                 <a href="{{ route('menus.show', $menu->menu_id) }}" class="brand-btn brand-btn-primary bg-white text-dark text-decoration-none" onclick="event.stopPropagation();">
                                     Detail
@@ -360,7 +371,7 @@
                                     
                                     @auth
                                         @if($tab !== 'mingguan')
-                                            <div class="row g-2">
+                                            <div id="modalOrderActions" class="row g-2">
                                                 <div class="col-6">
                                                     <button type="submit" name="action" value="add_to_cart" class="brand-btn w-100 py-3 bg-white text-dark">
                                                         <i class="bi bi-cart-plus me-1"></i> +Keranjang
@@ -372,8 +383,11 @@
                                                     </button>
                                                 </div>
                                             </div>
+                                            <div id="modalClosedAlert" class="alert alert-secondary border-2 border-dark rounded-4 fw-bold mb-0 d-none">
+                                                <i class="bi bi-exclamation-triangle-fill me-2"></i> Pemesanan untuk menu ini sudah ditutup.
+                                            </div>
                                         @else
-                                            <div class="alert alert-info border-2 border-dark rounded-4 fw-bold">
+                                            <div class="alert alert-info border-2 border-dark rounded-4 fw-bold mb-0">
                                                 <i class="bi bi-info-circle-fill me-2"></i> Menu ini adalah bagian dari paket mingguan. Gunakan tombol di halaman utama untuk memesan seluruh paket hari ini hingga seminggu ke depan.
                                             </div>
                                         @endif
@@ -550,6 +564,30 @@ document.addEventListener('DOMContentLoaded', function() {
                 placeholder.classList.remove('d-none');
                 placeholder.classList.add('d-flex');
             }
+            
+            // Handle past menus
+            const orderActions = document.getElementById('modalOrderActions');
+            const closedAlert = document.getElementById('modalClosedAlert');
+            const qtyGroup = document.querySelector('.qty-selector').parentElement;
+            
+            if (orderActions && closedAlert) {
+                if (data.isPast === 'true') {
+                    orderActions.classList.add('d-none');
+                    closedAlert.classList.remove('d-none');
+                    qtyGroup.style.opacity = '0.5';
+                    qtyInput.disabled = true;
+                    plusBtn.disabled = true;
+                    minusBtn.disabled = true;
+                } else {
+                    orderActions.classList.remove('d-none');
+                    closedAlert.classList.add('d-none');
+                    qtyGroup.style.opacity = '1';
+                    qtyInput.disabled = false;
+                    plusBtn.disabled = false;
+                    minusBtn.disabled = false;
+                }
+            }
+            
             modal.show();
         });
     });

@@ -37,6 +37,14 @@ class CartController extends Controller
                 'qty'           => 'required|integer|min:1',
             ]);
 
+            // For packages, ensure all selected menus are for upcoming days
+            foreach ($validated['menu_ids'] as $menuId) {
+                $menu = \App\Models\Menu::find($menuId);
+                if ($menu && $menu->tgl_tersedia->startOfDay()->lte(now()->startOfDay())) {
+                    return redirect()->back()->with('error', 'Salah satu menu dalam paket ini sudah lewat atau hari ini, tidak dapat dipesan lagi.');
+                }
+            }
+
             $bundleId = \Illuminate\Support\Str::uuid()->toString();
 
             foreach ($validated['menu_ids'] as $index => $menuId) {
@@ -67,6 +75,11 @@ class CartController extends Controller
             'menu_id' => 'required|exists:menu,menu_id',
             'qty' => 'required|integer|min:1',
         ]);
+
+        $menu = \App\Models\Menu::find($validated['menu_id']);
+        if ($menu && $menu->tgl_tersedia->startOfDay()->lte(now()->startOfDay())) {
+            return redirect()->back()->with('error', 'Menu ini sudah lewat tanggalnya atau untuk hari ini, sudah tidak bisa dipesan lagi. Silakan pesan untuk besok atau hari-hari berikutnya.');
+        }
 
         $this->addToCart($validated['menu_id'], $validated['qty']);
 

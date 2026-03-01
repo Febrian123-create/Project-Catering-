@@ -137,9 +137,14 @@
                     @auth
                         @php
                             $isWeeklyTab = request()->query('from') === 'mingguan';
+                            $isPast = $menu->tgl_tersedia->startOfDay()->lte(now()->startOfDay());
                         @endphp
 
-                        @if($isWeeklyTab)
+                        @if($isPast)
+                            <div class="alert alert-secondary border-2 border-dark rounded-4 fw-bold mb-4">
+                                <i class="bi bi-exclamation-triangle-fill me-2"></i> Waktu pemesanan untuk menu ini sudah ditutup. Kami selalu menyiapkan menu fresh untuk hari-hari berikutnya!
+                            </div>
+                        @elseif($isWeeklyTab)
                             <div class="alert alert-info border-2 border-dark rounded-4 fw-bold mb-4">
                                 <i class="bi bi-info-circle-fill me-2"></i> Anda baru saja melihat menu ini dari paket mingguan. Gunakan tombol di halaman utama untuk memesan seluruh paket mingguan sekaligus.
                             </div>
