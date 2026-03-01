@@ -130,6 +130,24 @@ class MenuController extends Controller
 
                 // Attach products to daily clone
                 $dailyMenu->products()->attach($dayData['product_ids']);
+
+                // NEW: Create Satellite Satuan Menus for each product in the batch
+                // This populates the "Package Composer" dropdowns in the buyer's view
+                foreach ($dayData['product_ids'] as $pId) {
+                    $exists = Menu::where('tipe', 'satuan')
+                        ->where('tgl_tersedia', $dayData['tanggal'])
+                        ->where('product_id', $pId)
+                        ->exists();
+                    
+                    if (!$exists) {
+                        $itemMenu = new Menu();
+                        $itemMenu->menu_id = Menu::generateMenuId();
+                        $itemMenu->tipe = 'satuan';
+                        $itemMenu->tgl_tersedia = $dayData['tanggal'];
+                        $itemMenu->product_id = $pId;
+                        $itemMenu->save();
+                    }
+                }
             }
         } else {
             // Paket
