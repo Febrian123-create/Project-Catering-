@@ -81,6 +81,7 @@ class MenuController extends Controller
                 'batch.*.product_ids' => 'required|array|min:2',
                 'batch.*.product_ids.*' => 'exists:product,product_id',
                 'batch.*.foto_paket' => 'required|image|mimes:jpeg,png,jpg|max:10240',
+                'batch.*.harga_harian' => 'required|integer|min:1000',
             ]);
 
             foreach ($validated['batch'] as $index => $dayData) {
@@ -112,14 +113,14 @@ class MenuController extends Controller
                 // Attach products to weekly package
                 $menu->products()->attach($dayData['product_ids']);
 
-                // Create Daily Clone (harga flat 12k)
+                // Create Daily Clone (harga flat 12k or manual)
                 $dailyMenu = new Menu();
                 $dailyMenu->menu_id = Menu::generateMenuId();
                 $dailyMenu->tipe = 'paket_harian'; // special type for daily tab
                 $dailyMenu->nama_paket = $dayData['nama_paket'] . ' (Harian)';
                 
-                // Calculate dynamic price based on rules
-                $dailyMenu->harga_paket = $this->calculateDynamicPrice($selectedProducts);
+                // Use manual price from request or fallback
+                $dailyMenu->harga_paket = $dayData['harga_harian'] ?? 12000;
                 
                 $dailyMenu->deskripsi_paket = $mergedDeskripsi;
                 $dailyMenu->foto_paket = $fotoPath; // share the same exact photo file

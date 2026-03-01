@@ -338,8 +338,15 @@ function generateBatchForms() {
                     
                     <div class="mb-4">
                         <label class="form-label fw-bold text-dark">Pilih Produk <span class="text-muted">(minimal 2)</span> <span class="text-danger">*</span></label>
-                        <div class="border border-2 border-dark rounded-4 p-3" style="max-height: 250px; overflow-y: auto;">
+                        <div class="border border-2 border-dark rounded-4 p-3 mb-3" style="max-height: 250px; overflow-y: auto;">
                             ${productsHtml}
+                        </div>
+                        
+                        <label class="form-label fw-bold text-dark small">Harga Menu Harian (Edit jika perlu) <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text border-2 border-dark rounded-start-4 fw-bold">Rp</span>
+                            <input type="number" name="batch[${index}][harga_harian]" class="form-control rounded-end-4 border-2 border-dark p-3 fw-bold text-danger" 
+                                value="12000" min="1000" step="1000" required>
                         </div>
                     </div>
                     
