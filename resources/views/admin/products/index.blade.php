@@ -89,7 +89,7 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="p-4 border-top border-2 border-dark">
+                <div class="p-4 border-top border-2 border-dark brand-pagination d-flex justify-content-center">
                     {{ $products->links() }}
                 </div>
             @else
