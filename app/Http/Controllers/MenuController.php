@@ -149,6 +149,70 @@ class MenuController extends Controller
                     }
                 }
             }
+
+        } elseif ($tipe === 'multi_harian') {
+            $validated = $request->validate([
+                'tgl_tersedia' => 'required|date|after_or_equal:today',
+                'multi' => 'required|array|min:1',
+                'multi.*.tipe' => 'required|in:satuan,paket',
+                'multi.*.product_id' => 'required_if:multi.*.tipe,satuan|exists:product,product_id',
+                'multi.*.nama_paket' => 'required_if:multi.*.tipe,paket|string|max:80',
+                'multi.*.product_ids' => 'required_if:multi.*.tipe,paket|array|min:2',
+                'multi.*.product_ids.*' => 'exists:product,product_id',
+                'multi.*.harga_harian' => 'required_if:multi.*.tipe,paket|integer|min:1000',
+                'multi.*.foto_paket' => 'required_if:multi.*.tipe,paket|image|mimes:jpeg,png,jpg|max:10240',
+            ]);
+
+            foreach ($validated['multi'] as $index => $itemData) {
+                if ($itemData['tipe'] === 'satuan') {
+                    $menu = new Menu();
+                    $menu->menu_id = Menu::generateMenuId();
+                    $menu->tipe = 'satuan';
+                    $menu->tgl_tersedia = $validated['tgl_tersedia'];
+                    $menu->product_id = $itemData['product_id'];
+                    $menu->save();
+                } else {
+                    // It's a Paket inside Multi-Menu
+                    $selectedProducts = Product::whereIn('product_id', $itemData['product_ids'])->get();
+                    $totalHarga = $selectedProducts->sum('harga');
+                    $mergedDeskripsi = $selectedProducts->map(function ($p) {
+                        return $p->nama . ': ' . ($p->deskripsi ?? '-');
+                    })->implode(' | ');
+
+                    $fotoPath = $request->file("multi.{$index}.foto_paket")->store('menus', 'public');
+
+                    // Create the Daily Package
+                    $menu = new Menu();
+                    $menu->menu_id = Menu::generateMenuId();
+                    $menu->tipe = 'paket_harian';
+                    $menu->nama_paket = $itemData['nama_paket'];
+                    $menu->harga_paket = $itemData['harga_harian'] ?? $totalHarga;
+                    $menu->deskripsi_paket = $mergedDeskripsi;
+                    $menu->foto_paket = $fotoPath;
+                    $menu->tgl_tersedia = $validated['tgl_tersedia'];
+                    $menu->save();
+
+                    $menu->products()->attach($itemData['product_ids']);
+
+                    // Also create satellite menus for ingredients of this package
+                    foreach ($itemData['product_ids'] as $pId) {
+                        $exists = Menu::where('tipe', 'satuan')
+                            ->where('tgl_tersedia', $validated['tgl_tersedia'])
+                            ->where('product_id', $pId)
+                            ->exists();
+                        
+                        if (!$exists) {
+                            $itemMenu = new Menu();
+                            $itemMenu->menu_id = Menu::generateMenuId();
+                            $itemMenu->tipe = 'satuan';
+                            $itemMenu->tgl_tersedia = $validated['tgl_tersedia'];
+                            $itemMenu->product_id = $pId;
+                            $itemMenu->save();
+                        }
+                    }
+                }
+            }
+
         } else {
             // Paket
             $validated = $request->validate([

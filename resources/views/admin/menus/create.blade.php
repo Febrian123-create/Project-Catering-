@@ -43,6 +43,13 @@
                                     </label>
                                 </div>
                                 <div class="form-check form-check-inline">
+                                    <input class="form-check-input border-2 border-dark" type="radio" name="tipe" id="tipeMultiHarian" value="multi_harian"
+                                        {{ old('tipe') === 'multi_harian' ? 'checked' : '' }} onchange="toggleTipe()">
+                                    <label class="form-check-label fw-bold text-primary" for="tipeMultiHarian">
+                                        <i class="bi bi-plus-square-dotted me-1"></i> Multi-Menu (Harian)
+                                    </label>
+                                </div>
+                                <div class="form-check form-check-inline">
                                     <input class="form-check-input border-2 border-dark" type="radio" name="tipe" id="tipeMingguanBatch" value="mingguan_batch"
                                         {{ old('tipe') === 'mingguan_batch' ? 'checked' : '' }} onchange="toggleTipe()">
                                     <label class="form-check-label fw-bold text-success" for="tipeMingguanBatch">
@@ -52,7 +59,7 @@
                             </div>
                         </div>
 
-                        {{-- Tanggal (For Satuan & Paket) --}}
+                        {{-- Tanggal (For Satuan, Paket, & Multi) --}}
                         <div class="mb-4" id="singleDateGroup">
                             <label class="form-label fw-bold text-dark">Tanggal Tersedia</label>
                             <input type="date" name="tgl_tersedia" id="tgl_tersedia" class="form-control rounded-4 border-2 border-dark p-3" 
@@ -161,6 +168,18 @@
                             </div>
                         </div>
 
+                        {{-- MULTI-MENU SECTION --}}
+                        <div id="multiHarianSection" style="display: none;">
+                            <div id="multiHarianContainer">
+                                {{-- Repeater Rows --}}
+                            </div>
+                            <div class="text-center mb-5">
+                                <button type="button" class="brand-btn brand-btn-warning w-100 py-3" onclick="addMultiMenuRow()">
+                                    <i class="bi bi-plus-lg me-2"></i>Tambah Menu Lain di Hari Ini
+                                </button>
+                            </div>
+                        </div>
+
                         {{-- BATCH MINGGUAN SECTION --}}
                         <div id="batchMingguanSection" style="display: none;">
                             <div id="batchFormsContainer">
@@ -190,12 +209,98 @@
 // For Batch logic to pass product list to JS
 const availableProducts = @json($products);
 
+let multiMenuIndex = 0;
+
+function addMultiMenuRow() {
+    const container = document.getElementById('multiHarianContainer');
+    const index = multiMenuIndex++;
+    
+    let productsListHtml = '';
+    availableProducts.forEach(p => {
+        productsListHtml += `
+            <div class="form-check mb-1">
+                <input class="form-check-input border-2 border-dark" type="checkbox" name="multi[${index}][product_ids][]" value="${p.product_id}" id="multi_${index}_p_${p.product_id}">
+                <label class="form-check-label fw-bold small" for="multi_${index}_p_${p.product_id}">${p.nama} (${p.formatted_harga})</label>
+            </div>
+        `;
+    });
+
+    let productDropdownHtml = '<option value="">-- Pilih Produk --</option>';
+    availableProducts.forEach(p => {
+        productDropdownHtml += `<option value="${p.product_id}">${p.nama} - ${p.formatted_harga}</option>`;
+    });
+
+    const html = `
+        <div class="card mb-4 border-2 border-dark shadow-sm rounded-4 multi-menu-row" id="multi_row_${index}">
+            <div class="card-header bg-light py-2 border-bottom border-2 border-dark d-flex justify-content-between align-items-center">
+                <span class="fw-bold text-uppercase small"><i class="bi bi-list-task me-2"></i>Menu #${index + 1}</span>
+                <button type="button" class="btn btn-sm btn-danger border-2 border-dark rounded-circle p-1" onclick="removeMultiMenuRow(${index})">
+                    <i class="bi bi-x"></i>
+                </button>
+            </div>
+            <div class="card-body p-3">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label small fw-bold">Tipe</label>
+                        <select name="multi[${index}][tipe]" class="form-select border-2 border-dark small fw-bold" onchange="toggleMultiRowTipe(${index}, this.value)">
+                            <option value="satuan">Satuan</option>
+                            <option value="paket">Paket</option>
+                        </select>
+                    </div>
+                    
+                    {{-- Row Satuan Content --}}
+                    <div class="col-md-8" id="multi_row_${index}_satuan">
+                        <label class="form-label small fw-bold">Pilih Produk</label>
+                        <select name="multi[${index}][product_id]" class="form-select border-2 border-dark small">
+                            ${productDropdownHtml}
+                        </select>
+                    </div>
+
+                    {{-- Row Paket Content --}}
+                    <div class="col-md-8" id="multi_row_${index}_paket" style="display:none;">
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Nama Paket</label>
+                            <input type="text" name="multi[${index}][nama_paket]" class="form-control border-2 border-dark small" placeholder="Nama Paket">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Isi Paket (Minimal 2)</label>
+                            <div class="border border-2 border-dark rounded-3 p-2" style="max-height: 150px; overflow-y: auto;">
+                                ${productsListHtml}
+                            </div>
+                        </div>
+                        <div class="mb-2">
+                             <label class="form-label small fw-bold">Harga Harian</label>
+                             <input type="number" name="multi[${index}][harga_harian]" class="form-control border-2 border-dark small" value="12000">
+                        </div>
+                        <div>
+                            <label class="form-label small fw-bold">Upload Foto</label>
+                            <input type="file" name="multi[${index}][foto_paket]" class="form-control border-2 border-dark small" accept="image/*">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    container.insertAdjacentHTML('beforeend', html);
+}
+
+function removeMultiMenuRow(index) {
+    document.getElementById(`multi_row_${index}`).remove();
+}
+
+function toggleMultiRowTipe(index, value) {
+    document.getElementById(`multi_row_${index}_satuan`).style.display = value === 'satuan' ? 'block' : 'none';
+    document.getElementById(`multi_row_${index}_paket`).style.display = value === 'paket' ? 'block' : 'none';
+}
+
 function toggleTipe() {
     const tipe = document.querySelector('input[name="tipe"]:checked')?.value || 'satuan';
     
     // UI section toggles
     document.getElementById('satuanSection').style.display = tipe === 'satuan' ? 'block' : 'none';
     document.getElementById('paketSection').style.display = tipe === 'paket' ? 'block' : 'none';
+    document.getElementById('multiHarianSection').style.display = tipe === 'multi_harian' ? 'block' : 'none';
     document.getElementById('batchMingguanSection').style.display = tipe === 'mingguan_batch' ? 'block' : 'none';
     
     // Date group toggles
@@ -217,6 +322,10 @@ function toggleTipe() {
         document.getElementById('tgl_tersedia').setAttribute('required', 'required');
         document.getElementById('batch_start_date').removeAttribute('required');
         document.getElementById('batch_end_date').removeAttribute('required');
+
+        if (tipe === 'multi_harian' && document.getElementById('multiHarianContainer').children.length === 0) {
+            addMultiMenuRow(); // Add first row by default
+        }
     }
 }
 
