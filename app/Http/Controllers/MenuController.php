@@ -31,7 +31,7 @@ class MenuController extends Controller
         
         $allHarianMenus = [];
         if ($tab === 'harian') {
-            $allHarianMenus = Menu::with('product')
+            $allHarianMenus = Menu::with(['product', 'products'])
                 ->whereIn('tipe', ['satuan', 'paket_harian'])
                 ->whereDate('tgl_tersedia', $request->input('date', now()->toDateString()))
                 ->get();

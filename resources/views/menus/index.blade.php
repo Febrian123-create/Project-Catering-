@@ -473,38 +473,67 @@ document.addEventListener('DOMContentLoaded', function() {
     function generateItemSelection(config) {
         itemContainer.innerHTML = '';
         
+        // Robust Flattening: Gather all unique products available for this date
+        // from BOTH 'satuan' menus and 'paket_harian' ingredients.
+        const ingredients = [];
+        const seenProductIds = new Set();
+
+        if (Array.isArray(availableMenus)) {
+            availableMenus.forEach(m => {
+                if (m.tipe === 'satuan' && m.product) {
+                    if (!seenProductIds.has(m.product.product_id)) {
+                        ingredients.push({
+                            menu_id: m.menu_id,
+                            product: m.product
+                        });
+                        seenProductIds.add(m.product.product_id);
+                    }
+                } else if (m.tipe === 'paket_harian' && Array.isArray(m.products)) {
+                    m.products.forEach(p => {
+                        if (!seenProductIds.has(p.product_id)) {
+                            ingredients.push({
+                                menu_id: m.menu_id,
+                                product: p
+                            });
+                            seenProductIds.add(p.product_id);
+                        }
+                    });
+                }
+            });
+        }
+
         config.forEach((step, index) => {
             const col = document.createElement('div');
             col.className = 'col-md-5';
             
             let content = '';
             if (step.type === 'fixed') {
-                // Find fixed item menu_id if applicable (e.g. Nasi)
-                // Filter first for items that HAVE a product to avoid null errors
-                const validMenus = availableMenus.filter(m => m.product && m.tipe === 'satuan');
-                
-                const fixedItem = validMenus.find(m => m.product.kategori === step.category) || 
-                                  validMenus.find(m => m.product.nama.toLowerCase().includes(step.category.toLowerCase()));
+                // Find matching ingredient
+                const found = ingredients.find(i => 
+                    (i.product.kategori && i.product.kategori.toLowerCase() === step.category.toLowerCase()) || 
+                    (i.product.nama && i.product.nama.toLowerCase().includes(step.category.toLowerCase()))
+                );
                 
                 content = `
                     <div class="item-select-card p-4 bg-light text-center">
                         <h6 class="text-muted small fw-bold mb-1">${step.label || step.category}</h6>
-                        <h5 class="fw-bold mb-0">${fixedItem ? fixedItem.product.nama : step.category}</h5>
-                        ${fixedItem ? `<input type="hidden" name="menu_ids[]" value="${fixedItem.menu_id}">` : ''}
-                        ${!fixedItem ? `<small class="text-danger d-block mt-1">Menu ${step.category} tidak tersedia.</small>` : ''}
+                        <h5 class="fw-bold mb-0">${found ? found.product.nama : step.category}</h5>
+                        ${found ? `<input type="hidden" name="menu_ids[]" value="${found.menu_id}">` : ''}
+                        ${!found ? `<small class="text-danger d-block mt-1">Menu ${step.category} tidak tersedia.</small>` : ''}
                     </div>
                 `;
             } else {
-                // Selectable menu
-                // Filter first for items that HAVE a product to avoid null errors
-                const filtered = availableMenus.filter(m => m.product && m.tipe === 'satuan' && m.product.kategori === step.category);
+                // Selectable dropdown
+                const filtered = ingredients.filter(i => 
+                    i.product.kategori && i.product.kategori.toLowerCase() === step.category.toLowerCase()
+                );
                 
                 content = `
                     <div class="item-select-card p-4 bg-white">
                         <label class="d-block text-muted small fw-bold mb-2">${step.label || step.category}</label>
                         <select class="form-select form-select-lg menu-selector" name="menu_ids[]" required>
                             <option value="" disabled selected>Pilih ${step.category}...</option>
-                            ${filtered.map(m => `<option value="${m.menu_id}">${m.product.nama}</option>`).join('')}
+                            ${filtered.map(i => `<option value="${i.menu_id}">${i.product.nama}</option>`).join('')}
                         </select>
                         ${filtered.length === 0 ? `<small class="text-danger d-block mt-1">Stok ${step.category} habis/kosong.</small>` : ''}
                     </div>
