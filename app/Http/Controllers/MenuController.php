@@ -117,7 +117,10 @@ class MenuController extends Controller
                 $dailyMenu->menu_id = Menu::generateMenuId();
                 $dailyMenu->tipe = 'paket_harian'; // special type for daily tab
                 $dailyMenu->nama_paket = $dayData['nama_paket'] . ' (Harian)';
-                $dailyMenu->harga_paket = 12000;
+                
+                // Calculate dynamic price based on rules
+                $dailyMenu->harga_paket = $this->calculateDynamicPrice($selectedProducts);
+                
                 $dailyMenu->deskripsi_paket = $mergedDeskripsi;
                 $dailyMenu->foto_paket = $fotoPath; // share the same exact photo file
                 $dailyMenu->tgl_tersedia = $dayData['tanggal'];
@@ -269,5 +272,70 @@ class MenuController extends Controller
             ->paginate(10);
 
         return view('admin.menus.index', compact('menus'));
+    }
+
+    /**
+     * Calculate dynamic pricing for a daily package based on its components.
+     * 
+     * Rules:
+     * - Nasi + Sayur + Daging = 12k
+     * - Nasi + Daging + Daging = 17k
+     * - Nasi + Sayur + Sayur = 10k
+     * - Nasi + Sayur + Adds on (telor rebus) = 12k
+     * - Nasi + Sayur = 9k
+     * - Nasi + Daging utuh (2) = 10k
+     * - Telor rebus = 4k
+     * - Nasi = 5k
+     * - Sambel saset = 2k
+     */
+    private function calculateDynamicPrice($products)
+    {
+        $nasiCount = 0;
+        $sayurCount = 0;
+        $dagingCount = 0;
+        $telorCount = 0;
+        $dagingUtuhCount = 0;
+
+        foreach ($products as $p) {
+            $name = strtolower($p->nama);
+            $cat = strtolower($p->kategori ?? '');
+
+            if (str_contains($name, 'nasi')) {
+                $nasiCount++;
+            } elseif (str_contains($name, 'telor') || str_contains($name, 'telur')) {
+                $telorCount++;
+            } elseif ($cat === 'sayur' || str_contains($name, 'sayur')) {
+                $sayurCount++;
+            } elseif (str_contains($name, 'daging utuh')) {
+                // Specific keyword match if provided
+                $dagingUtuhCount++;
+            } elseif ($cat === 'daging' || str_contains($name, 'daging') || str_contains($name, 'ayam') || str_contains($name, 'sapi') || str_contains($name, 'katsu') || str_contains($name, 'ikan')) {
+                $dagingCount++;
+            }
+        }
+
+        // Apply rules (highest matching combo first to prevent partial matches)
+        if ($nasiCount >= 1 && $dagingCount >= 2) {
+            return 17000; // Nasi + Daging + Daging
+        }
+        if ($nasiCount >= 1 && $sayurCount >= 1 && $dagingCount >= 1) {
+            return 12000; // Nasi + Sayur + Daging
+        }
+        if ($nasiCount >= 1 && $sayurCount >= 1 && $telorCount >= 1) {
+            return 12000; // Nasi + Sayur + Adds on (telor rebus)
+        }
+        if ($nasiCount >= 1 && $sayurCount >= 2) {
+            return 10000; // Nasi + Sayur + Sayur
+        }
+        if ($nasiCount >= 1 && $dagingUtuhCount >= 2) {
+            return 10000; // Nasi + Daging utuh (2)
+        }
+        if ($nasiCount >= 1 && $sayurCount == 1 && $dagingCount == 0 && $telorCount == 0) {
+            return 9000; // Nasi + Sayur
+        }
+
+        // In case of standalone items or unrecognized combos, sum them up normally using base fallback rules or the DB raw prices
+        // Let's use the DB sum as a fallback so we don't return 0 for random stuff.
+        return $products->sum('harga');
     }
 }

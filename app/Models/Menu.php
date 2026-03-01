@@ -61,7 +61,7 @@ class Menu extends Model
     // Helper methods
     public function isPaket(): bool
     {
-        return $this->tipe === 'paket';
+        return $this->tipe === 'paket' || $this->tipe === 'paket_harian';
     }
 
     public function isSatuan(): bool
