@@ -480,19 +480,24 @@ document.addEventListener('DOMContentLoaded', function() {
             let content = '';
             if (step.type === 'fixed') {
                 // Find fixed item menu_id if applicable (e.g. Nasi)
-                const fixedItem = availableMenus.find(m => m.product.kategori === step.category) || 
-                                  availableMenus.find(m => m.product.nama.toLowerCase().includes(step.category.toLowerCase()));
+                // Filter first for items that HAVE a product to avoid null errors
+                const validMenus = availableMenus.filter(m => m.product && m.tipe === 'satuan');
+                
+                const fixedItem = validMenus.find(m => m.product.kategori === step.category) || 
+                                  validMenus.find(m => m.product.nama.toLowerCase().includes(step.category.toLowerCase()));
                 
                 content = `
                     <div class="item-select-card p-4 bg-light text-center">
-                        <h6 class="text-muted fw-bold mb-1">${step.label || step.category}</h6>
+                        <h6 class="text-muted small fw-bold mb-1">${step.label || step.category}</h6>
                         <h5 class="fw-bold mb-0">${fixedItem ? fixedItem.product.nama : step.category}</h5>
                         ${fixedItem ? `<input type="hidden" name="menu_ids[]" value="${fixedItem.menu_id}">` : ''}
+                        ${!fixedItem ? `<small class="text-danger d-block mt-1">Menu ${step.category} tidak tersedia.</small>` : ''}
                     </div>
                 `;
             } else {
                 // Selectable menu
-                const filtered = availableMenus.filter(m => m.product.kategori === step.category);
+                // Filter first for items that HAVE a product to avoid null errors
+                const filtered = availableMenus.filter(m => m.product && m.tipe === 'satuan' && m.product.kategori === step.category);
                 
                 content = `
                     <div class="item-select-card p-4 bg-white">
@@ -501,6 +506,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             <option value="" disabled selected>Pilih ${step.category}...</option>
                             ${filtered.map(m => `<option value="${m.menu_id}">${m.product.nama}</option>`).join('')}
                         </select>
+                        ${filtered.length === 0 ? `<small class="text-danger d-block mt-1">Stok ${step.category} habis/kosong.</small>` : ''}
                     </div>
                 `;
             }
