@@ -129,6 +129,10 @@ class CartController extends Controller
 
         $query->update(['qty' => $validated['qty']]);
 
+        if ($request->input('redirect_to') === 'checkout') {
+            return redirect()->route('orders.create')->with('success', 'Jumlah pesanan berhasil diupdate!');
+        }
+
         return redirect()->route('cart.index')
             ->with('success', 'Keranjang berhasil diupdate!');
     }
@@ -145,6 +149,10 @@ class CartController extends Controller
         }
 
         $query->delete();
+
+        if ($request->input('redirect_to') === 'checkout') {
+            return redirect()->route('orders.create')->with('success', 'Menu berhasil dihapus dari pesanan!');
+        }
 
         return redirect()->route('cart.index')
             ->with('success', 'Item berhasil dihapus dari keranjang!');

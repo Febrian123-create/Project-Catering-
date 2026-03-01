@@ -119,8 +119,27 @@
                                                 {{ $item->menu ? $item->menu->tgl_tersedia->format('d M Y') : '-' }}
                                             </small>
                                         </td>
-                                        <td class="text-center fw-bold text-dark">{{ $item->qty }}</td>
-                                        <td class="text-end pe-0">
+                                        <td class="text-center">
+                                            <form action="{{ route('cart.update', $item->menu_id) }}" method="POST" id="form-update-{{ $item->cart_id ?? $item->menu_id }}">
+                                                @csrf
+                                                @method('PUT')
+                                                <input type="hidden" name="redirect_to" value="checkout">
+                                                @if($item->bundle_id)
+                                                    <input type="hidden" name="bundle_id" value="{{ $item->bundle_id }}">
+                                                @endif
+                                                <div class="qty-selector d-inline-flex border border-2 border-dark rounded-pill overflow-hidden bg-white mt-1">
+                                                    <button type="button" class="btn btn-sm btn-light border-0 fw-bold px-2 py-0" onclick="updateCheckoutQty('{{ $item->cart_id ?? $item->menu_id }}', -1)"><i class="bi bi-dash"></i></button>
+                                                    <input type="number" name="qty" id="qty-{{ $item->cart_id ?? $item->menu_id }}" class="form-control border-0 text-center fw-bold p-0" 
+                                                        value="{{ $item->qty }}" min="1" style="width: 35px; box-shadow: none;"
+                                                        onchange="this.form.submit()" readonly>
+                                                    <button type="button" class="btn btn-sm btn-light border-0 fw-bold px-2 py-0" onclick="updateCheckoutQty('{{ $item->cart_id ?? $item->menu_id }}', 1)"><i class="bi bi-plus"></i></button>
+                                                </div>
+                                            </form>
+                                            @if($item->bundle_id)
+                                                <div class="small text-muted mt-1 fw-bold">(Set Paket)</div>
+                                            @endif
+                                        </td>
+                                        <td class="text-end pe-0 align-middle">
                                             <span class="fw-bold text-dark">Rp {{ number_format($item->subtotal, 0, ',', '.') }}</span>
                                         </td>
                                     </tr>
@@ -209,5 +228,17 @@
         // Initial trigger
         toggleSections();
     });
+
+    function updateCheckoutQty(id, change) {
+        let input = document.getElementById('qty-' + id);
+        let form = document.getElementById('form-update-' + id);
+        let currentVal = parseInt(input.value);
+        let newVal = currentVal + change;
+        
+        if(newVal >= 1) {
+            input.value = newVal;
+            form.submit();
+        }
+    }
 </script>
 @endpush

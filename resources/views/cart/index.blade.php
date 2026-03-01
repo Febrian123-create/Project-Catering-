@@ -182,11 +182,11 @@
                         @endif
                     @endforeach
 
-                    <div class="mt-4 pt-3 d-flex justify-content-between align-items-center">
-                        <a href="{{ route('menus.index') }}" class="brand-btn brand-btn-warning text-decoration-none">
+                    <div class="mt-4 pt-4 d-flex flex-column flex-md-row justify-content-between align-items-center gap-3 w-100">
+                        <a href="{{ route('menus.index') }}" class="brand-btn brand-btn-warning text-decoration-none w-100 w-md-auto text-center">
                             <i class="bi bi-arrow-left me-2"></i>Hunting Lagi
                         </a>
-                        <button type="button" class="brand-btn brand-btn-danger text-decoration-none text-white" data-bs-toggle="modal" data-bs-target="#clearCartModal">
+                        <button type="button" class="brand-btn brand-btn-danger text-decoration-none text-white w-100 w-md-auto text-center" data-bs-toggle="modal" data-bs-target="#clearCartModal">
                             <i class="bi bi-trash me-2"></i>Buang Semua
                         </button>
                     </div>
