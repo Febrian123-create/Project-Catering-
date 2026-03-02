@@ -158,13 +158,13 @@ class CartController extends Controller
 
     public function destroy(Request $request, $menu_id)
     {
-        $query = Cart::where('user_id', Auth::id())
-            ->where('menu_id', $menu_id);
-            
         if ($request->filled('bundle_id')) {
-            $query->where('bundle_id', $request->bundle_id);
+            $query = Cart::where('user_id', Auth::id())
+                ->where('bundle_id', $request->bundle_id);
         } else {
-            $query->whereNull('bundle_id');
+            $query = Cart::where('user_id', Auth::id())
+                ->where('menu_id', $menu_id)
+                ->whereNull('bundle_id');
         }
 
         $query->delete();

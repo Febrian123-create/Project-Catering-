@@ -156,11 +156,11 @@ class MenuController extends Controller
                 'multi' => 'required|array|min:1',
                 'multi.*.tipe' => 'required|in:satuan,paket',
                 'multi.*.product_id' => 'required_if:multi.*.tipe,satuan|exists:product,product_id',
-                'multi.*.nama_paket' => 'required_if:multi.*.tipe,paket|string|max:80',
-                'multi.*.product_ids' => 'required_if:multi.*.tipe,paket|array|min:2',
+                'multi.*.nama_paket' => 'nullable|required_if:multi.*.tipe,paket|string|max:80',
+                'multi.*.product_ids' => 'nullable|required_if:multi.*.tipe,paket|array|min:2',
                 'multi.*.product_ids.*' => 'exists:product,product_id',
-                'multi.*.harga_harian' => 'required_if:multi.*.tipe,paket|integer|min:1000',
-                'multi.*.foto_paket' => 'required_if:multi.*.tipe,paket|image|mimes:jpeg,png,jpg|max:10240',
+                'multi.*.harga_harian' => 'nullable|required_if:multi.*.tipe,paket|integer|min:1000',
+                'multi.*.foto_paket' => 'nullable|required_if:multi.*.tipe,paket|image|mimes:jpeg,png,jpg|max:10240',
             ]);
 
             foreach ($validated['multi'] as $index => $itemData) {
