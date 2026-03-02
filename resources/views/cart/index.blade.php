@@ -69,14 +69,14 @@
 
                                 <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mt-3 pt-3 border-top border-dark border-opacity-10 px-3 gap-3">
                                     <div class="d-flex align-items-center gap-3">
-                                        <form action="{{ route('cart.update', $items[0]->menu_id) }}" method="POST" id="form-update-{{ $firstItem->bundle_id }}">
+                                        <form action="{{ route('cart.update', $firstItem->menu_id) }}" method="POST" id="form-update-{{ $firstItem->bundle_id }}">
                                             @csrf
                                             @method('PUT')
                                             <input type="hidden" name="bundle_id" value="{{ $firstItem->bundle_id }}">
                                             <div class="qty-selector d-inline-flex border border-2 border-dark rounded-pill overflow-hidden bg-white">
                                                 <button type="button" class="btn btn-sm btn-light border-0 fw-bold px-3 py-1" onclick="updateCartQty('{{ $firstItem->bundle_id }}', -1)"><i class="bi bi-dash"></i></button>
                                                 <input type="number" name="qty" id="qty-{{ $firstItem->bundle_id }}" class="form-control border-0 text-center fw-bold p-0" 
-                                                    value="{{ $items[0]->qty }}" min="1" style="width: 40px; box-shadow: none;"
+                                                    value="{{ $firstItem->qty }}" min="1" style="width: 40px; box-shadow: none;"
                                                     onchange="this.form.submit()" readonly>
                                                 <button type="button" class="btn btn-sm btn-light border-0 fw-bold px-3 py-1" onclick="updateCartQty('{{ $firstItem->bundle_id }}', 1)"><i class="bi bi-plus"></i></button>
                                             </div>
@@ -104,7 +104,7 @@
                                             <p class="mb-0 fw-bold text-dark">Yakin mau hapus paket <strong>{{ $firstItem->bundle_name }}</strong> dari keranjang?</p>
                                         </div>
                                         <div class="modal-footer border-top-0 pt-0">
-                                            <form action="{{ route('cart.destroy', $items[0]->menu_id) }}" method="POST" class="w-100 d-flex gap-2">
+                                            <form action="{{ route('cart.destroy', $firstItem->menu_id) }}" method="POST" class="w-100 d-flex gap-2">
                                                 @csrf
                                                 @method('DELETE')
                                                 <input type="hidden" name="bundle_id" value="{{ $firstItem->bundle_id }}">

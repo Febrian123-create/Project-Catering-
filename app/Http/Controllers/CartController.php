@@ -158,16 +158,20 @@ class CartController extends Controller
 
     public function destroy(Request $request, $menu_id)
     {
-        if ($request->filled('bundle_id')) {
-            $query = Cart::where('user_id', Auth::id())
-                ->where('bundle_id', $request->bundle_id);
-        } else {
-            $query = Cart::where('user_id', Auth::id())
-                ->where('menu_id', $menu_id)
-                ->whereNull('bundle_id');
-        }
+        $bundleId = $request->input('bundle_id');
 
-        $query->delete();
+        if ($bundleId) {
+            // Delete all items belonging to this bundle for the current user
+            Cart::where('user_id', Auth::id())
+                ->where('bundle_id', $bundleId)
+                ->delete();
+        } else {
+            // Delete a single item not in a bundle
+            Cart::where('user_id', Auth::id())
+                ->where('menu_id', $menu_id)
+                ->whereNull('bundle_id')
+                ->delete();
+        }
 
         if ($request->input('redirect_to') === 'checkout') {
             return redirect()->route('orders.create')->with('success', 'Menu berhasil dihapus dari pesanan!');
