@@ -27,6 +27,14 @@
     --shadow-offset: 6px;
 }
 
+.bg-purple {
+    background-color: var(--fh-purple) !important;
+}
+
+.bg-light-purple {
+    background-color: #f7effc !important;
+}
+
 * {
     margin: 0;
     padding: 0;

@@ -14,6 +14,7 @@ class Menu extends Model
     public $incrementing = false;
     protected $keyType = 'string';
     public $timestamps = false;
+    protected $appends = ['formatted_harga'];
 
     protected $fillable = [
         'menu_id',
