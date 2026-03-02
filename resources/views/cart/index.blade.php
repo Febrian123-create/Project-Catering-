@@ -108,6 +108,7 @@
                                                 @csrf
                                                 @method('DELETE')
                                                 <input type="hidden" name="bundle_id" value="{{ $firstItem->bundle_id }}">
+                                                <input type="hidden" name="debug_bundle_name" value="{{ $firstItem->bundle_name }}">
                                                 <button type="button" class="btn btn-light border-2 border-dark rounded-pill fw-bold" data-bs-dismiss="modal" style="flex:1;">Nggak kok</button>
                                                 <button type="submit" class="btn btn-danger border-2 border-dark rounded-pill fw-bold" style="flex:1;">Ya, Hapus</button>
                                             </form>
